@@ -1,7 +1,7 @@
 {
   "name": "levels-debugger-ruby",
   "main": "./lib/levels-debugger",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "A debugging package for use with the levels package for the ruby language.",
   "keywords": [],
   "repository": "https://github.com/ulrichth/levels-debugger-ruby",
