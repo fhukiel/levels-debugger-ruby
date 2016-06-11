@@ -53,10 +53,14 @@ class DebuggerViewModel
     console.log "startDebugging called."
     if @saveDocument()
       executor.startDebugger();
+      executor.onReady => @startExecutableAndConnect();
       executor.onStop => @handleStopping();
-      @communicationChannel.connect();
-      @isExecutableInDebuggingMode = true;
-      @runExecutable();
+
+  startExecutableAndConnect: ->
+    console.log "Debugger.jar is ready."
+    @communicationChannel.connect();
+    @isExecutableInDebuggingMode = true;
+    @runExecutable();
 
   stopDebugging: ->
     console.log 'stopDebugging called!'
