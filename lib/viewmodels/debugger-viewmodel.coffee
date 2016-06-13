@@ -35,7 +35,7 @@ class DebuggerViewModel
     @subscriptions.add @incomingMessageDispatcher.onPositionUpdate (string) => @emitPositionUpdate(string, @isReplay);
     @subscriptions.add @incomingMessageDispatcher.onCallStackUpdate (string) => @callStackFromString(string);
     @subscriptions.add @incomingMessageDispatcher.onTableUpdate (string) => @variableTableFromString(string);
-    @subscriptions.add @incomingMessageDispatcher.onEndOfPlayback => @handleEndOfTape();
+    @subscriptions.add @incomingMessageDispatcher.onEndOfReplayTape => @handleEndOfReplayTape();
     @subscriptions.add @incomingMessageDispatcher.onAutoSteppingEnabled => @emitAutoSteppingEnabled();
     @subscriptions.add @incomingMessageDispatcher.onAutoSteppingDisabled => @emitAutoSteppingDisabled();
 
@@ -313,7 +313,7 @@ class DebuggerViewModel
     breakpointManager.restoreHiddenBreakpoint();
     @emitStatusUpdate(statusFactory.createStopped(@isReplay));
 
-  handleEndOfTape: ->
+  handleEndOfReplayTape: ->
     @emitStatusUpdate(statusFactory.createEndOfTape(false))
 
   handleLevelChanged: ->

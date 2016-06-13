@@ -29,8 +29,8 @@ class IncomingMessageDispatcher
           @emitter.emit('ready')
       else if messageCategory is "TERMINATECOMMUNICATION"
           @emitter.emit('terminate-communication')
-      else if messageCategory is "ENDOFPLAYBACK"
-          @emitter.emit('end-of-playback')
+      else if messageCategory is "ENDOFREPLAYTAPE"
+          @emitter.emit('end-of-replay-tape')
       else if messageCategory is "AUTOSTEPPINGENABLED"
           @emitter.emit('auto-stepping-enabled')
       else if messageCategory is "AUTOSTEPPINGDISABLED"
@@ -53,8 +53,8 @@ class IncomingMessageDispatcher
   onTerminate: (callback) ->
     @emitter.on('terminate-communication', callback)
 
-  onEndOfPlayback: (callback) ->
-    @emitter.on('end-of-playback', callback)
+  onEndOfReplayTape: (callback) ->
+    @emitter.on('end-of-replay-tape', callback)
 
   onAutoSteppingEnabled: (callback) ->
     @emitter.on('auto-stepping-enabled', callback)
