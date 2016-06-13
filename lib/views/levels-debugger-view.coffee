@@ -206,18 +206,22 @@ class LevelsDebuggerView extends ScrollView
   showVariableModal: (event) ->
     element = event.target;
     name = element.getAttribute('name')
-    value = @wrapLongText(element.getAttribute('value'))
+    value = element.getAttribute('value')
     address = element.getAttribute('address')
-    atom.confirm
-      message:"Variable"
-      detailedMessage:"Name:    #{name}\nAddress: #{address}\nValue:      #{value}"
+    if name? and value? and address?
+      value = @wrapLongText(element.getAttribute('value'))
+      atom.confirm
+        message:"Variable"
+        detailedMessage:"Name:    #{name}\nAddress: #{address}\nValue:      #{value}"
 
   showCallModal: (event) ->
     element = event.target;
-    call = @wrapLongText(element.getAttribute('call'))
-    atom.confirm
-      message:"Call"
-      detailedMessage:"#{call}"
+    call = element.getAttribute('call');
+    if call?
+      call = @wrapLongText(call)
+      atom.confirm
+        message:"Call"
+        detailedMessage:"#{call}"
 
   sortVariableTableByName: ->
     @debuggerModel.flipAndSortVariableTable();
