@@ -5,7 +5,7 @@ SocketChannel             = require('./messaging/socket-channel')
 outgoingMessageFactory    = require('./messaging/outgoing-message-factory').getInstance()
 messageUtils              = require('./messaging/message-utils').getInstance()
 IncomingMessageDispatcher = require('./messaging/incoming-message-dispatcher')
-DebuggerViewModel         = require('./viewmodels/debugger-viewmodel')
+DebuggerPresenter         = require('./presenter/debugger-presenter')
 LevelsDebuggerView        = require('./views/levels-debugger-view')
 
 module.exports = LevelsDebugger =
@@ -16,8 +16,8 @@ module.exports = LevelsDebugger =
     console.log 'Levels-debugger activated.'
     @incomingMessageDispatcher = new IncomingMessageDispatcher();
     @communicationChannel = new SocketChannel(@incomingMessageDispatcher);
-    @debuggerModel = new DebuggerViewModel(@incomingMessageDispatcher, @communicationChannel);
-    @levelsDebuggerView = new LevelsDebuggerView(@debuggerModel)
+    @debuggerPresenter = new DebuggerPresenter(@incomingMessageDispatcher, @communicationChannel);
+    @levelsDebuggerView = new LevelsDebuggerView(@debuggerPresenter)
     @debuggerPanel = atom.workspace.addRightPanel(item: @levelsDebuggerView, visible:false)
 
     # Events subscribed to in atom's system can be easily cleaned up with a CompositeDisposable
@@ -25,18 +25,18 @@ module.exports = LevelsDebugger =
 
     # Register command that toggles this view
     @subscriptions.add atom.commands.add 'atom-workspace', 'levels-debugger:toggle': => @toggle()
-    @subscriptions.add atom.commands.add 'atom-workspace', 'levels-debugger:startDebugging': => @debuggerModel.startDebugging();
-    @subscriptions.add atom.commands.add 'atom-workspace', 'levels-debugger:stopDebugging': => @debuggerModel.stopDebugging();
-    @subscriptions.add atom.commands.add 'atom-workspace', 'levels-debugger:step': => @debuggerModel.step();
-    @subscriptions.add atom.commands.add 'atom-workspace', 'levels-debugger:stepOver': => @debuggerModel.stepOver();
-    @subscriptions.add atom.commands.add 'atom-workspace', 'levels-debugger:runToNextBreakpoint': => @debuggerModel.runToNextBreakpoint();
-    @subscriptions.add atom.commands.add 'atom-workspace', 'levels-debugger:toggleBreakpoint': => @debuggerModel.toggleBreakpoint();
+    @subscriptions.add atom.commands.add 'atom-workspace', 'levels-debugger:startDebugging': => @debuggerPresenter.startDebugging();
+    @subscriptions.add atom.commands.add 'atom-workspace', 'levels-debugger:stopDebugging': => @debuggerPresenter.stopDebugging();
+    @subscriptions.add atom.commands.add 'atom-workspace', 'levels-debugger:step': => @debuggerPresenter.step();
+    @subscriptions.add atom.commands.add 'atom-workspace', 'levels-debugger:stepOver': => @debuggerPresenter.stepOver();
+    @subscriptions.add atom.commands.add 'atom-workspace', 'levels-debugger:runToNextBreakpoint': => @debuggerPresenter.runToNextBreakpoint();
+    @subscriptions.add atom.commands.add 'atom-workspace', 'levels-debugger:toggleBreakpoint': => @debuggerPresenter.toggleBreakpoint();
     @subscriptions.add @communicationChannel.onError (error) => @handleChannelError(error);
     @levelsWorkspace = null;
 
   deactivate: ->
     console.log("Levels-debugger deactivated.")
-    @debuggerModel.destroy();
+    @debuggerPresenter.destroy();
     @levelsDebuggerView.destroy()
     @debuggerPanel.destroy()
     @subscriptions.dispose()
@@ -58,7 +58,7 @@ module.exports = LevelsDebugger =
 
   consumeLevels: ({workspace}) ->
     @levelsWorkspace = workspace;
-    @debuggerModel.setLevelsWorkspace(@levelsWorkspace);
+    @debuggerPresenter.setLevelsWorkspace(@levelsWorkspace);
     workspace.onDidEnterWorkspace =>
       @debuggerPanel.show()
     workspace.onDidExitWorkspace =>

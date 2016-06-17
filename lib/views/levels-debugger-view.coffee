@@ -5,7 +5,7 @@ messageUtils           = require('../messaging/message-utils').getInstance()
 module.exports =
 class LevelsDebuggerView extends ScrollView
 
-  @content: (debuggerModel) ->
+  @content: (debuggerPresenter) ->
     @div id: 'outerDiv', outlet:'outerDiv', class:'outerDiv', =>
       @div id: 'statusDiv', outlet:'statusDiv', class:'statusDiv', =>
         @span id: 'statusSpan', outlet: 'statusSpan'
@@ -44,19 +44,19 @@ class LevelsDebuggerView extends ScrollView
               @text 'call stack'
             @div outlet: 'callStackDiv', id: 'callStackDiv', class: 'scrollableTableDiv'
 
-  initialize: (debuggerModel) ->
-    @debuggerModel = debuggerModel;
+  initialize: (debuggerPresenter) ->
+    @debuggerPresenter = debuggerPresenter;
     @reset();
     @subscriptions = new CompositeDisposable()
-    @subscriptions.add debuggerModel.onRunning => @handleRunning();
-    @subscriptions.add debuggerModel.onStopped => @handleStopped();
-    @subscriptions.add debuggerModel.onCallStackUpdated => @updateCallStack(@debuggerModel);
-    @subscriptions.add debuggerModel.onVariableTableUpdated => @updateVariableTable(@debuggerModel);
-    @subscriptions.add debuggerModel.onStatusUpdated (status) => @handleStatusUpdated(status);
-    @subscriptions.add debuggerModel.onAutoSteppingEnabled => @handleEnableDisableSteppingCommands(false);
-    @subscriptions.add debuggerModel.onAutoSteppingDisabled => @handleEnableDisableSteppingCommands(true);
-    @subscriptions.add debuggerModel.onEnableDisableAllBreakpoints (enable) => @handleEnableDisableAllBreakpoints(enable)
-    @subscriptions.add debuggerModel.onEnableDisableAllControls (enable) => @handleEnableDisableAllControls(enable)
+    @subscriptions.add debuggerPresenter.onRunning => @handleRunning();
+    @subscriptions.add debuggerPresenter.onStopped => @handleStopped();
+    @subscriptions.add debuggerPresenter.onCallStackUpdated => @updateCallStack(@debuggerPresenter);
+    @subscriptions.add debuggerPresenter.onVariableTableUpdated => @updateVariableTable(@debuggerPresenter);
+    @subscriptions.add debuggerPresenter.onStatusUpdated (status) => @handleStatusUpdated(status);
+    @subscriptions.add debuggerPresenter.onAutoSteppingEnabled => @handleEnableDisableSteppingCommands(false);
+    @subscriptions.add debuggerPresenter.onAutoSteppingDisabled => @handleEnableDisableSteppingCommands(true);
+    @subscriptions.add debuggerPresenter.onEnableDisableAllBreakpoints (enable) => @handleEnableDisableAllBreakpoints(enable)
+    @subscriptions.add debuggerPresenter.onEnableDisableAllControls (enable) => @handleEnableDisableAllControls(enable)
     @registerEvents();
 
   destroy: ->
@@ -79,42 +79,42 @@ class LevelsDebuggerView extends ScrollView
 # end taken from LaKrMe's levels package
 
 # ------------------------------------------------------------------------------
-# -----------------------------LINKS TO VIEWMODEL-------------------------------
+# -----------------------------LINKS TO PRESENTER-------------------------------
 # ------------------------------------------------------------------------------
   startDebugging: ->
-    @debuggerModel.startDebugging();
+    @debuggerPresenter.startDebugging();
 
   stopDebugging: ->
-    @debuggerModel.stopDebugging();
+    @debuggerPresenter.stopDebugging();
 
   step: ->
-    @debuggerModel.step();
+    @debuggerPresenter.step();
 
   stepOver: ->
-    @debuggerModel.stepOver();
+    @debuggerPresenter.stepOver();
 
   runToNextBreakpoint: ->
-    @debuggerModel.runToNextBreakpoint();
+    @debuggerPresenter.runToNextBreakpoint();
 
   runToEndOfMethod: ->
-    @debuggerModel.runToEndOfMethod();
+    @debuggerPresenter.runToEndOfMethod();
 
   toggleBreakpoint: ->
-    @debuggerModel.toggleBreakpoint();
+    @debuggerPresenter.toggleBreakpoint();
 
   removeAllBreakpoints: ->
-    @debuggerModel.removeAllBreakpoints();
+    @debuggerPresenter.removeAllBreakpoints();
 
   enableDisableAllBreakpoints: ->
-    @debuggerModel.enableDisableAllBreakpoints();
+    @debuggerPresenter.enableDisableAllBreakpoints();
 
   startReplay: (event) ->
     stopReplayButton.className = "commandButton enabled ";
-    @debuggerModel.startReplay(event.target);
+    @debuggerPresenter.startReplay(event.target);
 
   stopReplay: ->
     stopReplayButton.className = "commandButton disabled ";
-    @debuggerModel.stopReplay();
+    @debuggerPresenter.stopReplay();
 
 # ------------------------------------------------------------------------------
 # -----------------------------HELPERS------------------------------------------
@@ -125,7 +125,7 @@ class LevelsDebuggerView extends ScrollView
     stopDebuggingButton.className = "commandButton " + status;
     @handleEnableDisableSteppingCommands(enabled);
 
-  updateVariableTable: (debuggerModel) ->
+  updateVariableTable: (debuggerPresenter) ->
     $('#variableTableDiv').empty();
     @variableTable = $$ ->
       @table class:'scrollableTable', id:'variableTable', outlet:'variableTable', =>
@@ -138,8 +138,8 @@ class LevelsDebuggerView extends ScrollView
         @th class:'variableTableCell', =>
           @span  =>
             @text 'address'
-        if debuggerModel?
-          for entry in debuggerModel.getVariableTable()
+        if debuggerPresenter?
+          for entry in debuggerPresenter.getVariableTable()
             name = "#{entry.getName()}"
             value = "#{entry.getValue()}"
             address = "#{entry.getAddress()}";
@@ -157,7 +157,7 @@ class LevelsDebuggerView extends ScrollView
                   @text entry.getAddress();
     @variableTableDiv.append(@variableTable);
 
-  updateCallStack: (debuggerModel) ->
+  updateCallStack: (debuggerPresenter) ->
     $('#callStackDiv').empty();
     @callStackTable = $$ ->
       @table class:'scrollableTable', id:'callStackTable', outlet:'callStackTable', =>
@@ -167,8 +167,8 @@ class LevelsDebuggerView extends ScrollView
         @th class:'callStackTableCell', =>
           @span  =>
             @text 'replay'
-        if debuggerModel?
-          for value in debuggerModel.getCallStack() by -1
+        if debuggerPresenter?
+          for value in debuggerPresenter.getCallStack() by -1
             splitted = value.split(messageUtils.getAssignSymbol())
             methodAndArgs = splitted[0]
             callId = splitted[1];
@@ -224,7 +224,7 @@ class LevelsDebuggerView extends ScrollView
         detailedMessage:"#{call}"
 
   sortVariableTableByName: ->
-    @debuggerModel.flipAndSortVariableTable();
+    @debuggerPresenter.flipAndSortVariableTable();
 
   wrapLongText: (text) ->
     lineLength = 45;
