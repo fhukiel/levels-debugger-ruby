@@ -295,7 +295,9 @@ class DebuggerPresenter
 
   handleExecutableStopped: ->
     console.log "Executable stopped"
-    @disconnectAndCleanup();
+    if @isExecutableInDebuggingMode
+      @disconnectAndCleanup();
+      @isExecutableInDebuggingMode = false;
     @emitEnableDisableAllControls(levelsWorkspaceManager.isActiveLevelDebuggable());
 
   handleReady: ->
