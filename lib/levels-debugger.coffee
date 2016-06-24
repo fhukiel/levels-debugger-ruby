@@ -7,6 +7,7 @@ messageUtils              = require('./messaging/message-utils').getInstance()
 IncomingMessageDispatcher = require('./messaging/incoming-message-dispatcher')
 DebuggerPresenter         = require('./presenter/debugger-presenter')
 LevelsDebuggerView        = require('./views/levels-debugger-view')
+packageDeps               = require('atom-package-deps')
 
 module.exports = LevelsDebugger =
   levelsDebuggerView: null
@@ -14,6 +15,8 @@ module.exports = LevelsDebugger =
 
   activate: (state) ->
     console.log 'Levels-debugger activated.'
+    packageDeps.install('levels-debugger-ruby')
+      .then(console.log('All dependencies installed, good to go'))
     @incomingMessageDispatcher = new IncomingMessageDispatcher();
     @communicationChannel = new SocketChannel(@incomingMessageDispatcher);
     @debuggerPresenter = new DebuggerPresenter(@incomingMessageDispatcher, @communicationChannel);
