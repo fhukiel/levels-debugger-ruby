@@ -1,15 +1,18 @@
 {
   "name": "levels-debugger-ruby",
-  "package-deps": ["levels", "levels-language-ruby"],
+  "package-deps": [
+    "levels",
+    "levels-language-ruby"
+  ],
   "main": "./lib/levels-debugger",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A debugging package for use with the levels package for the ruby language.",
   "keywords": [],
   "repository": "https://github.com/ulrichth/levels-debugger-ruby",
   "license": "MIT",
   "engines": {
     "atom": ">=1.0.0 <2.0.0"
-  }  ,
+  },
   "dependencies": {
     "atom-space-pen-views": "^2.0.3"
   },
