@@ -1,6 +1,6 @@
 # Debugger package for levels-language-ruby
 
-![A screenshot of your package](https://f.cloud.github.com/assets/69169/2290250/c35d867a-a017-11e3-86be-cd7c5bf3ff9b.gif)
+![](https://github.com/ulrichth/levels-debugger-ruby/blob/master/screenshot.png)
 
 
 This package contains a debugger for use with the [levels-language-ruby](https://github.com/lakrme/atom-levels-language-ruby) package which in turn uses the [Levels](https://github.com/lakrme/atom-levels) package. Both packages are required dependencies and will be installed automatically if they're not installed already.
