@@ -1,6 +1,10 @@
-# levels-debugger-ruby package
-
-This package contains a debugger for use with the levels package. It can only debug ruby programs.
-
+# Debugger package for levels-language-ruby
 
 ![A screenshot of your package](https://f.cloud.github.com/assets/69169/2290250/c35d867a-a017-11e3-86be-cd7c5bf3ff9b.gif)
+
+
+This package contains a debugger for use with the [levels-language-ruby](https://github.com/lakrme/atom-levels-language-ruby) package which in turn uses the [Levels](https://github.com/lakrme/atom-levels) package. Both packages are required dependencies and will be installed automatically if they're not installed already.
+
+Using this debugger you'll be able to step through your ruby programs line by line, toggle breakpoints and inspect variables. You'll be able to see the call stack and replay your program from a call on forward.
+
+Two sidenotes: First, you need a Java 8 runtime environment to run the debugger. Secondly, this package is not meant as a general purpose Ruby debugger for Atom. It will only work with the levels-language-ruby dialect as it is meant to support the beginners course taught at Kiel university, which uses the levels-language-ruby dialect.
