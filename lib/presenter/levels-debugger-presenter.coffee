@@ -12,7 +12,7 @@ outgoingMessageFactory                = require('../messaging/outgoing-message-f
 messageUtils                          = require('../messaging/message-utils').getInstance()
 
 module.exports =
-class DebuggerPresenter
+class LevelsDebuggerPresenter
   #-- SETUP
   constructor: (incomingMessageDispatcher, communicationChannel) ->
     @incomingMessageDispatcher = incomingMessageDispatcher

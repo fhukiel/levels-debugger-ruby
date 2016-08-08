@@ -5,7 +5,7 @@ SocketChannel             = require('./messaging/socket-channel')
 outgoingMessageFactory    = require('./messaging/outgoing-message-factory').getInstance()
 messageUtils              = require('./messaging/message-utils').getInstance()
 IncomingMessageDispatcher = require('./messaging/incoming-message-dispatcher')
-DebuggerPresenter         = require('./presenter/debugger-presenter')
+DebuggerPresenter         = require('./presenter/levels-debugger-presenter')
 LevelsDebuggerView        = require('./views/levels-debugger-view')
 packageDeps               = require('atom-package-deps')
 
