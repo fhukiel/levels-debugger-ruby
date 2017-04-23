@@ -6,6 +6,7 @@ module.exports =
 class LevelsDebuggerView extends ScrollView
 
   @content: (debuggerPresenter) ->
+   @div id: 'mainDiv', outlet:'mainDiv', class:'debugger-view', =>
     @div id: 'outerDiv', outlet:'outerDiv', class:'outerDiv', =>
       @div id: 'statusDiv', outlet:'statusDiv', class:'statusDiv', =>
         @span id: 'statusSpan', outlet: 'statusSpan'
