@@ -1,12 +1,12 @@
 '.platform-darwin atom-workspace':
   'cmd-f9': 'levels-debugger-ruby:enable-disable-all-breakpoints'
-  'cmd-shift-f9': 'levels-debugger-ruby:delete-all-breakpoints'
+  'cmd-shift-f9': 'levels-debugger-ruby:remove-all-breakpoints'
 '.platform-linux atom-workspace':
   'ctrl-f9': 'levels-debugger-ruby:enable-disable-all-breakpoints'
-  'ctrl-shift-f9': 'levels-debugger-ruby:delete-all-breakpoints'
+  'ctrl-shift-f9': 'levels-debugger-ruby:remove-all-breakpoints'
 '.platform-win32 atom-workspace':
   'ctrl-f9': 'levels-debugger-ruby:enable-disable-all-breakpoints'
-  'ctrl-shift-f9': 'levels-debugger-ruby:delete-all-breakpoints'
+  'ctrl-shift-f9': 'levels-debugger-ruby:remove-all-breakpoints'
 'atom-workspace':
   'f5': 'levels-debugger-ruby:start-debugging'
   'f8': 'levels-debugger-ruby:run-to-next-breakpoint'

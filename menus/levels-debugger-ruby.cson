@@ -1,0 +1,59 @@
+'context-menu':
+  'atom-text-editor': [
+    {
+      'label': 'Toggle Breakpoint'
+      'command': 'levels-debugger-ruby:toggle-breakpoint'
+    }
+  ]
+'menu': [
+  {
+    'label': 'Packages'
+    'submenu': [
+      {
+        'label': 'Levels Debugger Ruby'
+        'submenu': [
+          {
+            'label': 'Toggle Debugger View'
+            'command': 'levels-debugger-ruby:toggle-debugger-view'
+          },
+          {
+            'label': 'Toggle Breakpoint'
+            'command': 'levels-debugger-ruby:toggle-breakpoint'
+          },
+          {
+            'label': 'Remove All Breakpoints'
+            'command': 'levels-debugger-ruby:remove-all-breakpoints'
+          },
+          {
+            'label': 'Enable/Disable All Breakpoints'
+            'command': 'levels-debugger-ruby:enable-disable-all-breakpoints'
+          },
+          {
+            'label': 'Start Debugging'
+            'command': 'levels-debugger-ruby:start-debugging'
+          },
+          {
+            'label': 'Stop Debugging'
+            'command': 'levels-debugger-ruby:stop-debugging'
+          },
+          {
+            'label': 'Step'
+            'command': 'levels-debugger-ruby:step'
+          },
+          {
+            'label': 'Step Over'
+            'command': 'levels-debugger-ruby:step-over'
+          },
+          {
+            'label': 'Run To End Of Method'
+            'command': 'levels-debugger-ruby:run-to-end-of-method'
+          },
+          {
+            'label': 'Run To Next Breakpoint'
+            'command': 'levels-debugger-ruby:run-to-next-breakpoint'
+          }
+        ]
+      }
+    ]
+  }
+]
