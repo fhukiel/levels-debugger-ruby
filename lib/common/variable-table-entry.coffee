@@ -1,11 +1,8 @@
 module.exports =
 class VariableTableEntry
-  constructor: (name, value, address) ->
-    @name = name;
-    @value = value;
-    @address = address;
-    @changed = false;
-    @changedExpiresAt = 0;
+  constructor: (@name, @value, @address) ->
+    @changed = false
+    @changedExpiresAt = 0
 
   getName: ->
     return @name
@@ -17,31 +14,28 @@ class VariableTableEntry
     return @address
 
   isChanged: ->
-    return @changed and !@isChangedExpired();
+    return @changed && !@isChangedExpired()
 
-  setChanged: (isChanged) ->
-    @changed = isChanged;
-    # Changed flag expires after 20 milliseconds
-    if isChanged
-      @changedExpiresAt = new Date().getTime() + 20;
-
-  setChangedExpiresAt: (time) ->
-    @changedExpiresAt = time;
+  setChanged: (@changed) ->
+    if @changed
+      @changedExpiresAt = Date.now + 20
 
   getChangedExpiresAt: ->
-    return @changedExpiresAt;
+    return @changedExpiresAt
 
   isChangedExpired: ->
-    currentTime = new Date().getTime();
-    return @changedExpiresAt < currentTime;
+    return @changedExpiresAt < Date.now
+
+  setChangedExpiresAt: (time) ->
+    @changedExpiresAt = time
 
   equals: (other) ->
     if !other?
-      return false;
-    if other.getName().valueOf() isnt @name.valueOf()
-      return false;
-    if other.getValue().valueOf() isnt @value.valueOf()
-      return false;
-    if other.getAddress().valueOf() isnt @address.valueOf()
-      return false;
-    return true;
+      return false
+    if other.getName().valueOf() != @name.valueOf()
+      return false
+    if other.getValue().valueOf() != @value.valueOf()
+      return false
+    if other.getAddress().valueOf() != @address.valueOf()
+      return false
+    return true

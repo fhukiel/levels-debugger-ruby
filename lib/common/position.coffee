@@ -1,8 +1,6 @@
 module.exports =
 class Position
-  constructor: (line, column) ->
-    @line = line;
-    @column = column;
+  constructor: (@line, @column) ->
 
   getLine: ->
     return @line
@@ -12,5 +10,5 @@ class Position
 
   isOnSameLine: (other) ->
     if other?
-      return other.getLine() == @getLine();
-    return false;
+      return other.getLine() == @line
+    return false

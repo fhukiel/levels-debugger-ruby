@@ -1,22 +1,18 @@
 module.exports =
 class Breakpoint
-  constructor: (position, marker) ->
-    @position = position;
-    @marker = marker;
+  constructor: (@position, @marker) ->
 
   getPosition: ->
     return @position
 
-  setPosition: (position) ->
-    @position = position;
+  setPosition: (@position) ->
 
   destroyMarker: ->
     if @marker?
-      @marker.destroy();
-    @marker = null;
+      @marker.destroy()
+    @marker = null
 
   hasMarker: ->
     return @marker?
 
-  setMarker: (marker) ->
-    @marker = marker;
+  setMarker: (@marker) ->
