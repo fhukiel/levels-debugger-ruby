@@ -1,44 +1,37 @@
-path                                            = require('path')
-{CompositeDisposable, Emitter, BufferedProcess} = require 'atom'
-class Excecutor
-  constructor: (serializedState) ->
-    @resetFlags();
+{BufferedProcess, Emitter} = require 'atom'
+path                       = require 'path'
 
-  serialize: ->
-  destroy: ->
+class Executor
+  constructor: ->
+    @resetFlags()
 
   startDebugger: ->
-    debuggerPath = path.join(__dirname, "debugger.jar");
-    console.log "Starting debugger, debugger is in '#{debuggerPath}'!"
-    command = "java";
+    debuggerPath = path.join(__dirname, "debugger.jar")
+    command = "java"
     args = ["-jar", debuggerPath]
-    stdout = (output) => @handleOutput(output);
+    stdout = (output) => @handleOutput(output)
     exit = (code) => @handleExit()
     @process = new BufferedProcess({command, args, stdout, exit})
-    @emitter = new Emitter();
-    console.log "Debugger started."
+    @emitter = new Emitter()
 
-  handleExit: (code) ->
-    console.log "Debugger exited: #{code}"
-    @emitStop();
-    @resetFlags();
+  handleExit: ->
+    @emitStop()
+    @resetFlags()
 
   handleOutput: (output) ->
-    console.log "Received data from Debugger process: #{output}"
+    if (output.indexOf("!!!VIEWCHANNELREADY!!!") > -1)
+      @viewChannelReady = true
 
-    if(output.indexOf("!!!VIEWCHANNELREADY!!!") > -1)
-      @viewChannelReady = true;
+    if (output.indexOf("!!!RUNTIMECHANNELREADY!!!") > -1)
+      @runtimeChannelReady = true
 
-    if(output.indexOf("!!!RUNTIMECHANNELREADY!!!") > -1)
-      @runtimeChannelReady = true;
-
-    if(@viewChannelReady and @runtimeChannelReady)
-      @emitReady();
-      @resetFlags();
+    if (@viewChannelReady && @runtimeChannelReady)
+      @emitReady()
+      @resetFlags()
 
   stopDebugger: ->
-    @process.kill();
-    @emitStop();
+    @process.kill()
+    @emitStop()
 
   emitStop: ->
     @emitter.emit('execution-stopped')
@@ -53,11 +46,11 @@ class Excecutor
     @emitter.on('debugger-ready', callback)
 
   resetFlags: ->
-    @runtimeChannelReady = false;
-    @viewChannelReady = false;
+    @runtimeChannelReady = false
+    @viewChannelReady = false
 
 module.exports =
 class ExecutorProvider
   instance = null
   @getInstance: ->
-    instance ?= new Excecutor
+    instance ?= new Executor()

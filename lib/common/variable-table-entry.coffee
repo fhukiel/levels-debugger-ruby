@@ -18,13 +18,13 @@ class VariableTableEntry
 
   setChanged: (@changed) ->
     if @changed
-      @changedExpiresAt = Date.now + 20
+      @changedExpiresAt = Date.now() + 20
 
   getChangedExpiresAt: ->
     return @changedExpiresAt
 
   isChangedExpired: ->
-    return @changedExpiresAt < Date.now
+    return @changedExpiresAt < Date.now()
 
   setChangedExpiresAt: (time) ->
     @changedExpiresAt = time
