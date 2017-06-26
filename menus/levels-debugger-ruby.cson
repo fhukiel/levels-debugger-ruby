@@ -1,5 +1,5 @@
 'context-menu':
-  'atom-text-editor': [
+  'atom-text-editor[data-grammar="levels source ruby"]': [
     {
       'label': 'Toggle Breakpoint'
       'command': 'levels-debugger-ruby:toggle-breakpoint'
