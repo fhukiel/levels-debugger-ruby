@@ -1,42 +1,44 @@
-{CompositeDisposable,Emitter} = require('atom')
-messageUtils                  = require('./message-utils').getInstance()
+{Emitter}    = require 'atom'
+messageUtils = require('./message-utils').getInstance()
 
-module.exports=
+module.exports =
 class IncomingMessageDispatcher
   constructor: ->
-    @emitter = new Emitter();
+    @emitter = new Emitter()
 
   dispatch: (message) ->
-    # Because messages are read from a stream, multiple messages can be contained in the message string
-    if message.indexOf(messageUtils.getFinalSymbol()) > -1
-      @handleMessage(messageUtils.removeNewLineSymbol(msg)) for msg in message.split(messageUtils.getFinalSymbol())
-    else
-      @handleMessage(message)
+    if message?
+      if message.indexOf(messageUtils.getFinalSymbol()) > -1
+        for msg in message.split(messageUtils.getFinalSymbol())
+          @handleMessage(messageUtils.removeNewLineSymbol(msg))
+      else
+        @handleMessage(message)
 
   handleMessage: (message) ->
-    if message? and message.length != 0
+    if message? && message.length != 0
       if message.indexOf(messageUtils.getDelimiter()) > -1
         messageCategory = message.split(messageUtils.getDelimiter())[0]
       else
-        messageCategory = message;
-      if messageCategory is "TABLEUPDATED"
-          @emitter.emit('table-updated', message)
-      else if messageCategory is "POSITIONUPDATED"
-          @emitter.emit('position-updated', message)
-      else if messageCategory is "CALLSTACKUPDATED"
-          @emitter.emit('callstack-updated', message)
-      else if messageCategory is "READY"
-          @emitter.emit('ready')
-      else if messageCategory is "TERMINATECOMMUNICATION"
-          @emitter.emit('terminate-communication')
-      else if messageCategory is "ENDOFREPLAYTAPE"
-          @emitter.emit('end-of-replay-tape')
-      else if messageCategory is "AUTOSTEPPINGENABLED"
-          @emitter.emit('auto-stepping-enabled')
-      else if messageCategory is "AUTOSTEPPINGDISABLED"
-          @emitter.emit('auto-stepping-disabled')
+        messageCategory = message
+
+      if messageCategory == 'TABLEUPDATED'
+        @emitter.emit('table-updated', message)
+      else if messageCategory == 'POSITIONUPDATED'
+        @emitter.emit('position-updated', message)
+      else if messageCategory == 'CALLSTACKUPDATED'
+        @emitter.emit('callstack-updated', message)
+      else if messageCategory == 'READY'
+        @emitter.emit('ready')
+      else if messageCategory == 'TERMINATECOMMUNICATION'
+        @emitter.emit('terminate-communication')
+      else if messageCategory == 'ENDOFREPLAYTAPE'
+        @emitter.emit('end-of-replay-tape')
+      else if messageCategory == 'AUTOSTEPPINGENABLED'
+        @emitter.emit('auto-stepping-enabled')
+      else if messageCategory == 'AUTOSTEPPINGDISABLED'
+        @emitter.emit('auto-stepping-disabled')
       else
-        console.log "Cannot handle category '#{messageCategory}'"
+        console.log("Cannot handle category '#{messageCategory}'!")
 
   onTableUpdate: (callback) ->
     @emitter.on('table-updated', callback)
