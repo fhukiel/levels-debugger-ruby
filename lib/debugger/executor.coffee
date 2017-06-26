@@ -10,19 +10,19 @@ class Executor
     command = "java"
     args = ["-jar", debuggerPath]
     stdout = (output) => @handleOutput(output)
-    exit = (code) => @handleExit()
+    exit = (code) => @handleExit(code)
     @process = new BufferedProcess({command, args, stdout, exit})
     @emitter = new Emitter()
 
-  handleExit: ->
+  handleExit: (code) ->
     @emitStop()
     @resetFlags()
 
   handleOutput: (output) ->
-    if (output.indexOf("!!!VIEWCHANNELREADY!!!") > -1)
+    if (output.indexOf('!!!VIEWCHANNELREADY!!!') > -1)
       @viewChannelReady = true
 
-    if (output.indexOf("!!!RUNTIMECHANNELREADY!!!") > -1)
+    if (output.indexOf('!!!RUNTIMECHANNELREADY!!!') > -1)
       @runtimeChannelReady = true
 
     if (@viewChannelReady && @runtimeChannelReady)
@@ -52,5 +52,6 @@ class Executor
 module.exports =
 class ExecutorProvider
   instance = null
+
   @getInstance: ->
     instance ?= new Executor()
