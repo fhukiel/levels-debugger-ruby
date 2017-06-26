@@ -1,10 +1,6 @@
 module.exports =
 class StatusUpdateEvent
-  constructor: (status, displayMessage, isBlocking, styleClass) ->
-    @status = status;
-    @displayMessage = displayMessage;
-    @isBlocking = isBlocking;
-    @styleClass = styleClass
+  constructor: (@status, @displayMessage, @isBlocking, @styleClass) ->
 
   getStatus: ->
     return @status

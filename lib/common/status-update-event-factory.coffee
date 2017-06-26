@@ -1,68 +1,69 @@
-StatusUpdateEvent    = require('./status-update-event')
+StatusUpdateEvent = require('./status-update-event')
 
 class StatusUpdateEventFactory
-  constructor: (serializedState) ->
-
   createDisabled: (isReplay) ->
-    return @createGeneric(isReplay, @getDisabledMessage(), @getDisabledStatus(), true);
+    return @createGeneric(isReplay, @getDisabledMessage(), @getDisabledStatus(), true)
 
   createRunning: (isReplay) ->
-    return @createGeneric(isReplay, @getRunningMessage(), @getRunningStatus(), true);
+    return @createGeneric(isReplay, @getRunningMessage(), @getRunningStatus(), true)
 
   createWaiting: (isReplay) ->
-    return @createGeneric(isReplay, @getWaitingMessage(), @getWaitingStatus(), false);
+    return @createGeneric(isReplay, @getWaitingMessage(), @getWaitingStatus(), false)
 
   createStopped: (isReplay) ->
-    return @createGeneric(isReplay, @getStoppedMessage(), @getStoppedStatus(), true);
+    return @createGeneric(isReplay, @getStoppedMessage(), @getStoppedStatus(), true)
 
   createEndOfTape: (isReplay) ->
-    return @createGeneric(isReplay, @getEndOfTapeMessage(), @getEndOfTapeStatus(), true);
+    return @createGeneric(isReplay, @getEndOfTapeMessage(), @getEndOfTapeStatus(), true)
 
   createGeneric: (isReplay, message, status, isBlocking) ->
-    message = @createMessage(isReplay, message);
-    styleClass = @createStyleClass(isReplay, status);
-    return new StatusUpdateEvent(status, message, isBlocking, styleClass);
+    message = @createMessage(isReplay, message)
+    styleClass = @createStyleClass(isReplay, status)
+    return new StatusUpdateEvent(status, message, isBlocking, styleClass)
 
   createStyleClass: (isReplay, status) ->
-    styleClass = if isReplay then "status " + status + " replay" else "status " + status;
-    return styleClass;
+    styleClass = 'status ' + status
+    if isReplay
+      styleClass += ' replay'
 
-  createMessage: (isReplay, msg) ->
-    messageText = if isReplay then "(REPLAY) " + msg else msg;
-    return messageText;
+    return styleClass
+
+  createMessage: (isReplay, message) ->
+    return if isReplay then '(REPLAY) ' + message else message
 
   getRunningStatus: ->
-    return "running";
+    return 'running'
 
   getWaitingStatus: ->
-    return "waiting";
+    return 'waiting'
 
   getStoppedStatus: ->
-    return "stopped";
+    return 'stopped'
 
   getEndOfTapeStatus: ->
-    return "endoftape";
+    return 'endoftape'
 
   getDisabledStatus: ->
-    return "disabled";
+    return 'disabled'
 
   getRunningMessage: ->
-    return "Debugger running";
+    return 'Debugger Running'
 
   getWaitingMessage: ->
-    return "Debugger waiting for step"
+    return 'Debugger Waiting For Step'
 
   getStoppedMessage: ->
-    return "Debugger stopped";
+    return 'Debugger Stopped'
 
   getEndOfTapeMessage: ->
-    return "End of tape";
+    return 'End Of Tape'
 
   getDisabledMessage: ->
-    return "Level not debuggable"
+    return 'Level Not Debuggable'
 
 module.exports =
 class StatusUpdateEventFactoryProvider
   instance = null
+
   @getInstance: ->
-    instance ?= new StatusUpdateEventFactory
+    instance ?= new StatusUpdateEventFactory()
