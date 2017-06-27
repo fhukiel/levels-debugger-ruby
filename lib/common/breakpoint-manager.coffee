@@ -1,4 +1,4 @@
-Breakpoint             = require './breakpoint'
+Breakpoint             = require('./breakpoint')
 levelsWorkspaceManager = require('./levels-workspace-manager').getInstance()
 positionUtils          = require('./position-utils').getInstance()
 
@@ -51,7 +51,7 @@ class BreakpointManager
 
   hideBreakpoint: (position) ->
     if @hiddenBreakpointPosition? && position.isOnSameLine(@hiddenBreakpointPosition)
-      console.log "Breakpoint already hidden, can't hide again!"
+      console.log("Breakpoint already hidden, can't hide again!")
     else
       breakpoint = @getBreakpoint(position)
       if breakpoint?

@@ -19,6 +19,7 @@ class StatusUpdateEventFactory
   createGeneric: (isReplay, message, status, isBlocking) ->
     message = @createMessage(isReplay, message)
     styleClass = @createStyleClass(isReplay, status)
+
     return new StatusUpdateEvent(status, message, isBlocking, styleClass)
 
   createStyleClass: (isReplay, status) ->

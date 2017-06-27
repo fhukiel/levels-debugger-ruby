@@ -1,5 +1,5 @@
-{Emitter} = require 'atom'
-net       = require 'net'
+{Emitter} = require('atom')
+net       = require('net')
 
 module.exports =
 class SocketChannel
@@ -12,14 +12,11 @@ class SocketChannel
   connect: ->
     @socket = net.createConnection(@port, @host)
     @socket.setNoDelay(true)
-    @socket.on('close', () => @handleClose())
-    @socket.on('connect', () => @handleConnect())
+    @socket.on('close', => @handleClose())
+    @socket.on('connect', => @handleConnect())
     @socket.on('data', (data) => @handleData(data))
-    @socket.on('drain', () => @handleDrain())
-    @socket.on('end', () => @handleEnd())
     @socket.on('error', (error) => @handleError(error))
-    @socket.on('lookup', () => @handleLookup())
-    @socket.on('timeout', () => @handleTimeout())
+    @socket.on('timeout', => @handleTimeout())
 
   disconnect: ->
     if @socket?
@@ -38,15 +35,9 @@ class SocketChannel
   handleData: (buffer) ->
     @dispatcher.dispatch("#{buffer}")
 
-  handleDrain: ->
-
-  handleEnd: ->
-
   handleError: (error) ->
     console.log("An error occurred: #{error}")
     @emitter.emit('channel-error')
-
-  handleLookup: ->
 
   handleTimeout: ->
     @socket.destroy()

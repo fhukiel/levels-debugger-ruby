@@ -8,8 +8,7 @@ class Breakpoint
   setPosition: (@position) ->
 
   destroyMarker: ->
-    if @marker?
-      @marker.destroy()
+    @marker?.destroy()
     @marker = null
 
   hasMarker: ->

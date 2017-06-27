@@ -1,5 +1,5 @@
-{Point}  = require 'atom'
-Position = require './position'
+{Point}  = require('atom')
+Position = require('./position')
 
 class PositionUtils
   fromPoint: (point) ->

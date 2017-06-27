@@ -1,4 +1,4 @@
-VariableTableEntry = require './variable-table-entry'
+VariableTableEntry = require('./variable-table-entry')
 messageUtils       = require('../messaging/message-utils').getInstance()
 
 class VariableTableManager
@@ -45,11 +45,9 @@ class VariableTableManager
 
   sort: (table) ->
     if @sortAscending
-      table.sort (e1, e2) =>
-        return if e1.getName() >= e2.getName() then 1 else -1
+      table.sort((e1, e2) => if e1.getName() >= e2.getName() then 1 else -1)
     else
-      table.sort (e1, e2) =>
-        return if e1.getName() <= e2.getName() then 1 else -1
+      table.sort((e1, e2) => if e1.getName() <= e2.getName() then 1 else -1)
 
 module.exports =
 class VariableTableManagerProvider

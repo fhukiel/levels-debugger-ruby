@@ -1,4 +1,4 @@
-{Emitter}    = require 'atom'
+{Emitter}    = require('atom')
 messageUtils = require('./message-utils').getInstance()
 
 module.exports =
@@ -38,7 +38,7 @@ class IncomingMessageDispatcher
       else if messageCategory == 'AUTOSTEPPINGDISABLED'
         @emitter.emit('auto-stepping-disabled')
       else
-        console.log("Cannot handle category '#{messageCategory}'!")
+        console.log("Cannot handle message category '#{messageCategory}'!")
 
   onTableUpdate: (callback) ->
     @emitter.on('table-updated', callback)

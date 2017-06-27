@@ -1,5 +1,5 @@
-{BufferedProcess, Emitter} = require 'atom'
-path                       = require 'path'
+{BufferedProcess, Emitter} = require('atom')
+path                       = require('path')
 
 class Executor
   constructor: ->
@@ -16,6 +16,7 @@ class Executor
 
   handleExit: (code) ->
     @emitStop()
+    @emitter.dispose()
     @resetFlags()
 
   handleOutput: (output) ->
@@ -32,6 +33,7 @@ class Executor
   stopDebugger: ->
     @process.kill()
     @emitStop()
+    @emitter.dispose()
 
   emitStop: ->
     @emitter.emit('execution-stopped')

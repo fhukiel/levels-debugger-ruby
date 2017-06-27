@@ -5,10 +5,10 @@ class OutgoingMessageFactory
     return position.getLine() + messageUtils.getDelimiter() + position.getColumn()
 
   createAddBreakpointMessage: (position) ->
-    return 'ADDBREAKPOINT' + messageUtils.getDelimiter() +  @positionToString(position) + messageUtils.getNewLineSymbol()
+    return 'ADDBREAKPOINT' + messageUtils.getDelimiter() + @positionToString(position) + messageUtils.getNewLineSymbol()
 
   createRemoveBreakpointMessage: (position) ->
-    return 'REMOVEBREAKPOINT' + messageUtils.getDelimiter() +  @positionToString(position) + messageUtils.getNewLineSymbol()
+    return 'REMOVEBREAKPOINT' + messageUtils.getDelimiter() + @positionToString(position) + messageUtils.getNewLineSymbol()
 
   createRunToNextBreakpointMessage: ->
     return 'RUNTONEXTBREAKPOINT' + messageUtils.getNewLineSymbol()
