@@ -1,26 +1,26 @@
-StatusUpdateEvent = require('./status-update-event')
+StatusUpdateEvent = require './status-update-event'
 
 class StatusUpdateEventFactory
   createDisabled: (isReplay) ->
-    return @createGeneric(isReplay, @getDisabledMessage(), @getDisabledStatus(), true)
+    return @createGeneric isReplay, @getDisabledMessage(), @getDisabledStatus(), true
 
   createRunning: (isReplay) ->
-    return @createGeneric(isReplay, @getRunningMessage(), @getRunningStatus(), true)
+    return @createGeneric isReplay, @getRunningMessage(), @getRunningStatus(), true
 
   createWaiting: (isReplay) ->
-    return @createGeneric(isReplay, @getWaitingMessage(), @getWaitingStatus(), false)
+    return @createGeneric isReplay, @getWaitingMessage(), @getWaitingStatus(), false
 
   createStopped: (isReplay) ->
-    return @createGeneric(isReplay, @getStoppedMessage(), @getStoppedStatus(), true)
+    return @createGeneric isReplay, @getStoppedMessage(), @getStoppedStatus(), true
 
   createEndOfTape: (isReplay) ->
-    return @createGeneric(isReplay, @getEndOfTapeMessage(), @getEndOfTapeStatus(), true)
+    return @createGeneric isReplay, @getEndOfTapeMessage(), @getEndOfTapeStatus(), true
 
   createGeneric: (isReplay, message, status, isBlocking) ->
-    message = @createMessage(isReplay, message)
-    styleClass = @createStyleClass(isReplay, status)
+    message = @createMessage isReplay, message
+    styleClass = @createStyleClass isReplay, status
 
-    return new StatusUpdateEvent(status, message, isBlocking, styleClass)
+    return new StatusUpdateEvent status, message, isBlocking, styleClass
 
   createStyleClass: (isReplay, status) ->
     styleClass = 'status ' + status
@@ -67,4 +67,4 @@ class StatusUpdateEventFactoryProvider
   instance = null
 
   @getInstance: ->
-    instance ?= new StatusUpdateEventFactory()
+    instance ?= new StatusUpdateEventFactory

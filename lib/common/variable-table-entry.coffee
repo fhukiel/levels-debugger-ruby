@@ -19,6 +19,7 @@ class VariableTableEntry
   setChanged: (@changed) ->
     if @changed
       @changedExpiresAt = Date.now() + 20
+    return
 
   getChangedExpiresAt: ->
     return @changedExpiresAt
@@ -26,16 +27,15 @@ class VariableTableEntry
   isChangedExpired: ->
     return @changedExpiresAt < Date.now()
 
-  setChangedExpiresAt: (time) ->
-    @changedExpiresAt = time
+  setChangedExpiresAt: (@changedExpiresAt) ->
 
   equals: (other) ->
     if !other?
       return false
-    if other.getName().valueOf() != @name.valueOf()
+    if other.getName() != @name
       return false
-    if other.getValue().valueOf() != @value.valueOf()
+    if other.getValue() != @value
       return false
-    if other.getAddress().valueOf() != @address.valueOf()
+    if other.getAddress() != @address
       return false
     return true

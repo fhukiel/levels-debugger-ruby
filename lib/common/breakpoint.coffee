@@ -10,6 +10,7 @@ class Breakpoint
   destroyMarker: ->
     @marker?.destroy()
     @marker = null
+    return
 
   hasMarker: ->
     return @marker?

@@ -1,10 +1,10 @@
-Breakpoint             = require('./breakpoint')
+Breakpoint             = require './breakpoint'
 levelsWorkspaceManager = require('./levels-workspace-manager').getInstance()
 positionUtils          = require('./position-utils').getInstance()
 
 class BreakpointManager
   constructor: ->
-    @breakPoints = new Array()
+    @breakPoints = new Array
     @areBreakpointsEnabled = true
     @hiddenBreakpointPosition = null
 
@@ -18,31 +18,33 @@ class BreakpointManager
     for bp in @breakPoints
       bp?.destroyMarker()
 
-    @breakPoints = new Array()
+    @breakPoints = new Array
+    return
 
   flip: ->
     @areBreakpointsEnabled = !@areBreakpointsEnabled
     for bp in @breakPoints
       if bp?.hasMarker()
         bp.destroyMarker()
-        bp.setMarker(levelsWorkspaceManager.addBreakpointMarker(positionUtils.toPoint(bp.getPosition()), @areBreakpointsEnabled))
+        bp.setMarker levelsWorkspaceManager.addBreakpointMarker(positionUtils.toPoint(bp.getPosition()), @areBreakpointsEnabled)
+    return
 
   toggle: (point) ->
-    breakPointPosition = positionUtils.fromPoint(point)
-    existingBreakpoint = @getBreakpoint(breakPointPosition)
+    breakPointPosition = positionUtils.fromPoint point
+    existingBreakpoint = @getBreakpoint breakPointPosition
 
     if existingBreakpoint?
-      @breakPoints = @breakPoints.filter((bp) => bp != existingBreakpoint)
+      @breakPoints = @breakPoints.filter (bp) -> bp != existingBreakpoint
       existingBreakpoint.destroyMarker()
       return false
     else
-      marker = levelsWorkspaceManager.addBreakpointMarker(point, @areBreakpointsEnabled)
-      @breakPoints.push(new Breakpoint(breakPointPosition, marker))
+      marker = levelsWorkspaceManager.addBreakpointMarker point, @areBreakpointsEnabled
+      @breakPoints.push new Breakpoint(breakPointPosition, marker)
       return true
 
   getBreakpoint: (position) ->
     for bp in @breakPoints
-      if bp?.getPosition().isOnSameLine(position)
+      if bp?.getPosition().isOnSameLine position
         return bp
     return null
 
@@ -53,23 +55,25 @@ class BreakpointManager
     if @hiddenBreakpointPosition? && position.isOnSameLine(@hiddenBreakpointPosition)
       console.log("Breakpoint already hidden, can't hide again!")
     else
-      breakpoint = @getBreakpoint(position)
+      breakpoint = @getBreakpoint position
       if breakpoint?
         breakpoint.destroyMarker()
         @hiddenBreakpointPosition = breakpoint.getPosition()
+    return
 
   restoreHiddenBreakpoint: ->
     if @hiddenBreakpointPosition?
-      existingBreakpoint = @getBreakpoint(@hiddenBreakpointPosition)
+      existingBreakpoint = @getBreakpoint @hiddenBreakpointPosition
       if existingBreakpoint?
-        marker = levelsWorkspaceManager.addBreakpointMarker(positionUtils.toPoint(@hiddenBreakpointPosition), @areBreakpointsEnabled)
-        existingBreakpoint.setMarker(marker)
+        marker = levelsWorkspaceManager.addBreakpointMarker positionUtils.toPoint(@hiddenBreakpointPosition), @areBreakpointsEnabled
+        existingBreakpoint.setMarker marker
 
     @hiddenBreakpointPosition = null
+    return
 
 module.exports =
 class BreakpointManagerProvider
   instance = null
 
   @getInstance: ->
-    instance ?= new BreakpointManager()
+    instance ?= new BreakpointManager
