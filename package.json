@@ -23,6 +23,9 @@
     "atom-package-deps": "^4.0.1",
     "atom-space-pen-views": "^2.0.3"
   },
+  "devDependencies": {
+    "coffeelint": "^1.16.0"
+  },
   "package-deps": [
     "levels",
     "levels-language-ruby"
