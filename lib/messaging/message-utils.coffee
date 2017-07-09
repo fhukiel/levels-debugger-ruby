@@ -12,14 +12,11 @@ class MessageUtils
     return require('os').EOL
 
   removeNewLineSymbol: (string) ->
-    strCopy = string?.replace('\n', '')
-    strCopy = strCopy?.replace('\r', '')
-
-    return strCopy
+    return string?.replace('\n', '').replace '\r', ''
 
 module.exports =
 class MessageUtilsProvider
   instance = null
 
   @getInstance: ->
-    instance ?= new MessageUtils()
+    instance ?= new MessageUtils

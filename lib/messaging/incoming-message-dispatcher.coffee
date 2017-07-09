@@ -1,18 +1,19 @@
-{Emitter}    = require('atom')
+{Emitter}    = require 'atom'
 messageUtils = require('./message-utils').getInstance()
 
 module.exports =
 class IncomingMessageDispatcher
   constructor: ->
-    @emitter = new Emitter()
+    @emitter = new Emitter
 
   dispatch: (message) ->
     if message?
       if message.indexOf(messageUtils.getFinalSymbol()) > -1
-        for msg in message.split(messageUtils.getFinalSymbol())
-          @handleMessage(messageUtils.removeNewLineSymbol(msg))
+        for msg in message.split messageUtils.getFinalSymbol()
+          @handleMessage messageUtils.removeNewLineSymbol(msg)
       else
-        @handleMessage(message)
+        @handleMessage message
+    return
 
   handleMessage: (message) ->
     if message? && message.length != 0
@@ -22,44 +23,45 @@ class IncomingMessageDispatcher
         messageCategory = message
 
       if messageCategory == 'TABLEUPDATED'
-        @emitter.emit('table-updated', message)
+        @emitter.emit 'table-updated', message
       else if messageCategory == 'POSITIONUPDATED'
-        @emitter.emit('position-updated', message)
+        @emitter.emit 'position-updated', message
       else if messageCategory == 'CALLSTACKUPDATED'
-        @emitter.emit('callstack-updated', message)
+        @emitter.emit 'callstack-updated', message
       else if messageCategory == 'READY'
-        @emitter.emit('ready')
+        @emitter.emit 'ready'
       else if messageCategory == 'TERMINATECOMMUNICATION'
-        @emitter.emit('terminate-communication')
+        @emitter.emit 'terminate-communication'
       else if messageCategory == 'ENDOFREPLAYTAPE'
-        @emitter.emit('end-of-replay-tape')
+        @emitter.emit 'end-of-replay-tape'
       else if messageCategory == 'AUTOSTEPPINGENABLED'
-        @emitter.emit('auto-stepping-enabled')
+        @emitter.emit 'auto-stepping-enabled'
       else if messageCategory == 'AUTOSTEPPINGDISABLED'
-        @emitter.emit('auto-stepping-disabled')
+        @emitter.emit 'auto-stepping-disabled'
       else
-        console.log("Cannot handle message category '#{messageCategory}'!")
+        console.log "Cannot handle message category '#{messageCategory}'!"
+    return
 
   onTableUpdate: (callback) ->
-    @emitter.on('table-updated', callback)
+    @emitter.on 'table-updated', callback
 
   onPositionUpdate: (callback) ->
-    @emitter.on('position-updated', callback)
+    @emitter.on 'position-updated', callback
 
   onCallStackUpdate: (callback) ->
-    @emitter.on('callstack-updated', callback)
+    @emitter.on 'callstack-updated', callback
 
   onReady: (callback) ->
-    @emitter.on('ready', callback)
+    @emitter.on 'ready', callback
 
   onTerminate: (callback) ->
-    @emitter.on('terminate-communication', callback)
+    @emitter.on 'terminate-communication', callback
 
   onEndOfReplayTape: (callback) ->
-    @emitter.on('end-of-replay-tape', callback)
+    @emitter.on 'end-of-replay-tape', callback
 
   onAutoSteppingEnabled: (callback) ->
-    @emitter.on('auto-stepping-enabled', callback)
+    @emitter.on 'auto-stepping-enabled', callback
 
   onAutoSteppingDisabled: (callback) ->
-    @emitter.on('auto-stepping-disabled', callback)
+    @emitter.on 'auto-stepping-disabled', callback

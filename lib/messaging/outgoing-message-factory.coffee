@@ -42,4 +42,4 @@ class OutgoingMessageFactoryProvider
   instance = null
 
   @getInstance: ->
-    instance ?= new OutgoingMessageFactory()
+    instance ?= new OutgoingMessageFactory

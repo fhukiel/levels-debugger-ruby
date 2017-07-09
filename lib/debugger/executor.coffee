@@ -46,7 +46,6 @@ class Executor
 
   onStop: (callback) ->
     @emitter.on 'execution-stopped', callback
-    return
 
   emitReady: ->
     @emitter.emit 'debugger-ready'
@@ -54,7 +53,6 @@ class Executor
 
   onReady: (callback) ->
     @emitter.on 'debugger-ready', callback
-    return
 
   resetFlags: ->
     @runtimeChannelReady = false
