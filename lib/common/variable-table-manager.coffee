@@ -1,5 +1,5 @@
 VariableTableEntry = require './variable-table-entry'
-messageUtils       = require('../messaging/message-utils').getInstance()
+MessageUtils       = require '../messaging/message-utils'
 
 class VariableTableManager
   constructor: ->
@@ -14,13 +14,13 @@ class VariableTableManager
 
   fromString: (string, oldTable) ->
     variableTable = new Array
-    splitted = string?.split messageUtils.getDelimiter()
+    splitted = string?.split MessageUtils.getDelimiter()
 
     if splitted?
       for i in [1..splitted.length]
         string = splitted[i]
         if string?
-          innerSplitted = string.split messageUtils.getAssignSymbol()
+          innerSplitted = string.split MessageUtils.getAssignSymbol()
           entry = new VariableTableEntry innerSplitted[0], innerSplitted[1], innerSplitted[2]
           variableTable.push entry
 

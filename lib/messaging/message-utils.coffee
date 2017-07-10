@@ -1,22 +1,16 @@
+module.exports =
 class MessageUtils
-  getDelimiter: ->
+  @getDelimiter: ->
     return ';'
 
-  getAssignSymbol: ->
+  @getAssignSymbol: ->
     return '=*='
 
-  getFinalSymbol: ->
+  @getFinalSymbol: ->
     return '/!/'
 
-  getNewLineSymbol: ->
+  @getNewLineSymbol: ->
     return require('os').EOL
 
-  removeNewLineSymbol: (string) ->
+  @removeNewLineSymbol: (string) ->
     return string?.replace('\n', '').replace '\r', ''
-
-module.exports =
-class MessageUtilsProvider
-  instance = null
-
-  @getInstance: ->
-    instance ?= new MessageUtils

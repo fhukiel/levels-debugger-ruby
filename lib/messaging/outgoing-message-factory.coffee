@@ -1,45 +1,39 @@
-messageUtils = require('./message-utils').getInstance()
-
-class OutgoingMessageFactory
-  positionToString: (position) ->
-    return position.getLine() + messageUtils.getDelimiter() + position.getColumn()
-
-  createAddBreakpointMessage: (position) ->
-    return 'ADDBREAKPOINT' + messageUtils.getDelimiter() + @positionToString(position) + messageUtils.getNewLineSymbol()
-
-  createRemoveBreakpointMessage: (position) ->
-    return 'REMOVEBREAKPOINT' + messageUtils.getDelimiter() + @positionToString(position) + messageUtils.getNewLineSymbol()
-
-  createRunToNextBreakpointMessage: ->
-    return 'RUNTONEXTBREAKPOINT' + messageUtils.getNewLineSymbol()
-
-  createRunToEndOfMethodMessage: ->
-    return 'RUNTOENDOFMETHOD' + messageUtils.getNewLineSymbol()
-
-  createEnableAllBreakpointsMessage: ->
-    return 'ENABLEALLBREAKPOINTS' + messageUtils.getNewLineSymbol()
-
-  createDisableAllBreakpointsMessage: ->
-    return 'DISABLEALLBREAKPOINTS' + messageUtils.getNewLineSymbol()
-
-  createStartReplayMessage: (callID) ->
-    return 'STARTREPLAY' + messageUtils.getDelimiter() + callID + messageUtils.getNewLineSymbol()
-
-  createStepMessage: ->
-    return 'STEP' + messageUtils.getNewLineSymbol()
-
-  createStepOverMessage: ->
-    return 'STEPOVER' + messageUtils.getNewLineSymbol()
-
-  createStopReplayMessage: ->
-    return 'STOPREPLAY' + messageUtils.getNewLineSymbol()
-
-  createRemoveAllBreakpointsMessage: ->
-    return 'REMOVEALLBREAKPOINTS' + messageUtils.getNewLineSymbol()
+MessageUtils = require './message-utils'
 
 module.exports =
-class OutgoingMessageFactoryProvider
-  instance = null
+class OutgoingMessageFactory
+  @positionToString: (position) ->
+    return position.getLine() + MessageUtils.getDelimiter() + position.getColumn()
 
-  @getInstance: ->
-    instance ?= new OutgoingMessageFactory
+  @createAddBreakpointMessage: (position) ->
+    return 'ADDBREAKPOINT' + MessageUtils.getDelimiter() + OutgoingMessageFactory.positionToString(position) + MessageUtils.getNewLineSymbol()
+
+  @createRemoveBreakpointMessage: (position) ->
+    return 'REMOVEBREAKPOINT' + MessageUtils.getDelimiter() + OutgoingMessageFactory.positionToString(position) + MessageUtils.getNewLineSymbol()
+
+  @createRunToNextBreakpointMessage: ->
+    return 'RUNTONEXTBREAKPOINT' + MessageUtils.getNewLineSymbol()
+
+  @createRunToEndOfMethodMessage: ->
+    return 'RUNTOENDOFMETHOD' + MessageUtils.getNewLineSymbol()
+
+  @createEnableAllBreakpointsMessage: ->
+    return 'ENABLEALLBREAKPOINTS' + MessageUtils.getNewLineSymbol()
+
+  @createDisableAllBreakpointsMessage: ->
+    return 'DISABLEALLBREAKPOINTS' + MessageUtils.getNewLineSymbol()
+
+  @createStartReplayMessage: (callID) ->
+    return 'STARTREPLAY' + MessageUtils.getDelimiter() + callID + MessageUtils.getNewLineSymbol()
+
+  @createStepMessage: ->
+    return 'STEP' + MessageUtils.getNewLineSymbol()
+
+  @createStepOverMessage: ->
+    return 'STEPOVER' + MessageUtils.getNewLineSymbol()
+
+  @createStopReplayMessage: ->
+    return 'STOPREPLAY' + MessageUtils.getNewLineSymbol()
+
+  @createRemoveAllBreakpointsMessage: ->
+    return 'REMOVEALLBREAKPOINTS' + MessageUtils.getNewLineSymbol()

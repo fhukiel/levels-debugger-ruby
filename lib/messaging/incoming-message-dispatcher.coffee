@@ -1,5 +1,5 @@
 {Emitter}    = require 'atom'
-messageUtils = require('./message-utils').getInstance()
+MessageUtils = require './message-utils'
 
 module.exports =
 class IncomingMessageDispatcher
@@ -8,17 +8,17 @@ class IncomingMessageDispatcher
 
   dispatch: (message) ->
     if message?
-      if message.indexOf(messageUtils.getFinalSymbol()) > -1
-        for msg in message.split messageUtils.getFinalSymbol()
-          @handleMessage messageUtils.removeNewLineSymbol(msg)
+      if message.includes MessageUtils.getFinalSymbol()
+        for msg in message.split MessageUtils.getFinalSymbol()
+          @handleMessage MessageUtils.removeNewLineSymbol(msg)
       else
         @handleMessage message
     return
 
   handleMessage: (message) ->
     if message? && message.length != 0
-      if message.indexOf(messageUtils.getDelimiter()) > -1
-        messageCategory = message.split(messageUtils.getDelimiter())[0]
+      if message.includes MessageUtils.getDelimiter()
+        messageCategory = message.split(MessageUtils.getDelimiter())[0]
       else
         messageCategory = message
 

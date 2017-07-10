@@ -1,9 +1,10 @@
-messageUtils = require('../messaging/message-utils').getInstance()
+MessageUtils = require '../messaging/message-utils'
 
+module.exports =
 class CallStackFactory
-  fromString: (string) ->
+  @fromString: (string) ->
     callStack = new Array
-    splitted = string?.split messageUtils.getDelimiter()
+    splitted = string?.split MessageUtils.getDelimiter()
 
     if splitted?
       for i in [1..splitted.length]
@@ -11,10 +12,3 @@ class CallStackFactory
           callStack.push splitted[i]
 
     return callStack
-
-module.exports =
-class CallStackFactoryProvider
-  instance = null
-
-  @getInstance: ->
-    instance ?= new CallStackFactory
