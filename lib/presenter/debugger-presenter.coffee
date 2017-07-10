@@ -1,14 +1,14 @@
 {CompositeDisposable, Emitter} = require 'atom'
 breakpointManager              = require('../common/breakpoint-manager').getInstance()
-callStackFactory               = require('../common/call-stack-factory').getInstance()
+CallStackFactory               = require '../common/call-stack-factory'
 levelsWorkspaceManager         = require('../common/levels-workspace-manager').getInstance()
 Position                       = require '../common/position'
-positionUtils                  = require('../common/position-utils').getInstance()
-statusFactory                  = require('../common/status-update-event-factory').getInstance()
+PositionUtils                  = require '../common/position-utils'
+StatusFactory                  = require '../common/status-update-event-factory'
 variableTableManager           = require('../common/variable-table-manager').getInstance()
 executor                       = require('../debugger/executor').getInstance()
-messageUtils                   = require('../messaging/message-utils').getInstance()
-outgoingMessageFactory         = require('../messaging/outgoing-message-factory').getInstance()
+MessageUtils                   = require '../messaging/message-utils'
+OutgoingMessageFactory         = require '../messaging/outgoing-message-factory'
 
 module.exports =
 class LevelsDebuggerPresenter
@@ -19,13 +19,14 @@ class LevelsDebuggerPresenter
     @positionMarker = null
     @isReplay = false
     @isExecutableInDebuggingMode = false
-    @currentStatusEvent = statusFactory.createStopped false
+    @currentStatusEvent = StatusFactory.createStopped false
     @lastEventBeforeDisabling = @currentStatusEvent
     @lastEventBeforeReplay = null
     @setupSubscriptions()
 
   setupSubscriptions: ->
     @subscriptions = new CompositeDisposable
+    @subscriptions.add @communicationChannel.onError((error) => @handleChannelError error)
     @subscriptions.add @incomingMessageDispatcher.onReady(=> @handleReady())
     @subscriptions.add @incomingMessageDispatcher.onTerminate(=> @handleStopping())
     @subscriptions.add @incomingMessageDispatcher.onPositionUpdate((string) => @emitPositionUpdate string, @isReplay)
@@ -76,22 +77,22 @@ class LevelsDebuggerPresenter
 
   step: ->
     if @isExecutableInDebuggingMode
-      @emitStatusUpdate statusFactory.createRunning(@isReplay)
-      @communicationChannel.sendMessage outgoingMessageFactory.createStepMessage()
+      @emitStatusUpdate StatusFactory.createRunning(@isReplay)
+      @communicationChannel.sendMessage OutgoingMessageFactory.createStepMessage()
     return
 
   stepOver: ->
     if @isExecutableInDebuggingMode
-      @emitStatusUpdate statusFactory.createRunning(@isReplay)
-      @communicationChannel.sendMessage outgoingMessageFactory.createStepOverMessage()
+      @emitStatusUpdate StatusFactory.createRunning(@isReplay)
+      @communicationChannel.sendMessage OutgoingMessageFactory.createStepOverMessage()
     return
 
   toggleBreakpoint: ->
     currentPosition = levelsWorkspaceManager.getActiveTextEditorPosition()
     if breakpointManager.toggle currentPosition
-      @sendBreakpointAdded positionUtils.fromPoint(currentPosition)
+      @sendBreakpointAdded PositionUtils.fromPoint(currentPosition)
     else
-      @sendBreakpointRemoved positionUtils.fromPoint(currentPosition)
+      @sendBreakpointRemoved PositionUtils.fromPoint(currentPosition)
     return
 
   removeAllBreakpoints: ->
@@ -107,27 +108,27 @@ class LevelsDebuggerPresenter
 
   runToNextBreakpoint: ->
     if @isExecutableInDebuggingMode
-      @emitStatusUpdate statusFactory.createRunning(@isReplay)
-      @communicationChannel.sendMessage outgoingMessageFactory.createRunToNextBreakpointMessage()
+      @emitStatusUpdate StatusFactory.createRunning(@isReplay)
+      @communicationChannel.sendMessage OutgoingMessageFactory.createRunToNextBreakpointMessage()
     return
 
   runToEndOfMethod: ->
     if @isExecutableInDebuggingMode
-      @emitStatusUpdate statusFactory.createRunning(@isReplay)
-      @communicationChannel.sendMessage outgoingMessageFactory.createRunToEndOfMethodMessage()
+      @emitStatusUpdate StatusFactory.createRunning(@isReplay)
+      @communicationChannel.sendMessage OutgoingMessageFactory.createRunToEndOfMethodMessage()
     return
 
   startReplay: (element) ->
     id = element.getAttribute 'id'
-    @communicationChannel.sendMessage outgoingMessageFactory.createStartReplayMessage("#{id}")
+    @communicationChannel.sendMessage OutgoingMessageFactory.createStartReplayMessage("#{id}")
 
-    if !@isReplay && @currentStatusEvent.getStatus() != statusFactory.getEndOfTapeStatus()
+    if !@isReplay && @currentStatusEvent.getStatus() != StatusFactory.getEndOfTapeStatus()
       @lastEventBeforeReplay = @currentStatusEvent
     @isReplay = true
     return
 
   stopReplay: ->
-    @communicationChannel.sendMessage outgoingMessageFactory.createStopReplayMessage()
+    @communicationChannel.sendMessage OutgoingMessageFactory.createStopReplayMessage()
     @isReplay = false
     @emitStatusUpdate @lastEventBeforeReplay
     return
@@ -157,7 +158,7 @@ class LevelsDebuggerPresenter
     return @variableTable
 
   callStackFromString: (string) ->
-    @callStack = callStackFactory.fromString string
+    @callStack = CallStackFactory.fromString string
     @emitCallStackUpdate()
     return
 
@@ -175,22 +176,22 @@ class LevelsDebuggerPresenter
     return
 
   sendBreakpointRemoved: (breakpointPosition) ->
-    @communicationChannel.sendMessage outgoingMessageFactory.createRemoveBreakpointMessage(breakpointPosition)
+    @communicationChannel.sendMessage OutgoingMessageFactory.createRemoveBreakpointMessage(breakpointPosition)
     return
 
   sendBreakpointAdded: (breakpointPosition) ->
-    @communicationChannel.sendMessage outgoingMessageFactory.createAddBreakpointMessage(breakpointPosition)
+    @communicationChannel.sendMessage OutgoingMessageFactory.createAddBreakpointMessage(breakpointPosition)
     return
 
   sendRemoveAllBreakpoints: ->
-    @communicationChannel.sendMessage outgoingMessageFactory.createRemoveAllBreakpointsMessage()
+    @communicationChannel.sendMessage OutgoingMessageFactory.createRemoveAllBreakpointsMessage()
     return
 
   sendEnableDisableAllBreakpoints: ->
     if breakpointManager.getAreBreakpointsEnabled()
-      @communicationChannel.sendMessage outgoingMessageFactory.createEnableAllBreakpointsMessage()
+      @communicationChannel.sendMessage OutgoingMessageFactory.createEnableAllBreakpointsMessage()
     else
-      @communicationChannel.sendMessage outgoingMessageFactory.createDisableAllBreakpointsMessage()
+      @communicationChannel.sendMessage OutgoingMessageFactory.createDisableAllBreakpointsMessage()
     return
 
   flipAndSortVariableTable: ->
@@ -242,7 +243,7 @@ class LevelsDebuggerPresenter
     return
 
   emitPositionUpdate: (positionString, isReplay) ->
-    splitted = positionString.split messageUtils.getDelimiter()
+    splitted = positionString.split MessageUtils.getDelimiter()
     currentPosition = new Position +splitted[1], +splitted[2]
 
     breakpointManager.restoreHiddenBreakpoint()
@@ -253,9 +254,9 @@ class LevelsDebuggerPresenter
     @positionMarker = levelsWorkspaceManager.addPositionMarker currentPosition
 
     @emitter.emit 'position-updated', currentPosition
-    @emitStatusUpdate statusFactory.createWaiting(isReplay)
+    @emitStatusUpdate StatusFactory.createWaiting(isReplay)
 
-    atom.workspace.getActiveTextEditor().scrollToBufferPosition positionUtils.toPoint(currentPosition)
+    atom.workspace.getActiveTextEditor().scrollToBufferPosition PositionUtils.toPoint(currentPosition)
     return
 
   emitCallStackUpdate: ->
@@ -281,6 +282,11 @@ class LevelsDebuggerPresenter
 
   emitEnableDisableAllControls: (enabled) ->
     @emitter.emit 'enable-disable-all-commands', enabled
+    return
+
+  handleChannelError: (error) ->
+    console.log("A communication channel error occurred: #{error}")
+    stopDebugging()
     return
 
   handleWorkspaceEntered: ->
@@ -316,11 +322,11 @@ class LevelsDebuggerPresenter
     if @positionMarker?
       @positionMarker.destroy()
     breakpointManager.restoreHiddenBreakpoint()
-    @emitStatusUpdate statusFactory.createStopped(@isReplay)
+    @emitStatusUpdate StatusFactory.createStopped(@isReplay)
     return
 
   handleEndOfReplayTape: ->
-    @emitStatusUpdate statusFactory.createEndOfTape(false)
+    @emitStatusUpdate StatusFactory.createEndOfTape(false)
     return
 
   handleLevelChanged: ->
@@ -329,8 +335,8 @@ class LevelsDebuggerPresenter
         @emitStatusUpdate @lastEventBeforeDisabling
         @emitEnableDisableAllControls true
       else
-        if @currentStatusEvent.getStatus() != statusFactory.getDisabledStatus()
+        if @currentStatusEvent.getStatus() != StatusFactory.getDisabledStatus()
           @lastEventBeforeDisabling = @currentStatusEvent
-        @emitStatusUpdate statusFactory.createDisabled(@isReplay)
+        @emitStatusUpdate StatusFactory.createDisabled(@isReplay)
         @emitEnableDisableAllControls false
     return

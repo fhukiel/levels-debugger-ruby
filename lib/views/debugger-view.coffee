@@ -1,7 +1,7 @@
 {CompositeDisposable}  = require('atom')
 {$,$$,ScrollView}      = require('atom-space-pen-views')
-messageUtils           = require('../messaging/message-utils').getInstance()
-# ------------------------------------------------------------------------------
+MessageUtils           = require '../messaging/message-utils'
+
 module.exports =
 class LevelsDebuggerView extends ScrollView
 
@@ -170,7 +170,7 @@ class LevelsDebuggerView extends ScrollView
             @text 'replay'
         if debuggerPresenter?
           for value in debuggerPresenter.getCallStack() by -1
-            splitted = value.split(messageUtils.getAssignSymbol())
+            splitted = value.split(MessageUtils.getAssignSymbol())
             methodAndArgs = splitted[0]
             callId = splitted[1];
             linkId = "link#{callId}";
