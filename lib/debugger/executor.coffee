@@ -17,8 +17,7 @@ class Executor
 
   stopDebugger: ->
     @process.kill()
-    @emitStop()
-    @emitter.dispose()
+    @handleExit null
     return
 
   handleExit: (code) ->
@@ -28,10 +27,10 @@ class Executor
     return
 
   handleOutput: (output) ->
-    if output.indexOf('!!!VIEWCHANNELREADY!!!') > -1
+    if output.includes '!!!VIEWCHANNELREADY!!!'
       @viewChannelReady = true
 
-    if output.indexOf('!!!RUNTIMECHANNELREADY!!!') > -1
+    if output.includes '!!!RUNTIMECHANNELREADY!!!'
       @runtimeChannelReady = true
 
     if @viewChannelReady && @runtimeChannelReady
