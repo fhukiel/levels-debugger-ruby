@@ -16,8 +16,9 @@ class Executor
     return
 
   stopDebugger: ->
-    @process.kill()
-    @handleExit null
+    if @process?
+      @process.kill()
+      @handleExit undefined
     return
 
   handleExit: (code) ->
