@@ -1,199 +1,169 @@
 @import "ui-variables";
-@statusHeight: @tab-height + @component-padding;
-@highlightColor: #FFE816;
-@contrastColor: #000080;
-@runningColor: #008361;
-@stoppedColor: @contrastColor;
-@waitingColor: #FFE816;
-@disabledColor: #FF0000;
+
 @breakpointColor: @contrastColor;
 @breakpointDisabledColor: #C0C0C0;
-@positionColor: @highlightColor;
+@contrastColor: #000080;
+@disabledColor: #FF0000;
 @endOfTapeColor: #800080;
+@highlightColor: #FFE600;
+@positionColor: @highlightColor;
+@runningColor: #008361;
+@statusHeight: @tab-height + @component-padding;
+@stoppedColor: @contrastColor;
+@waitingColor: #FFE816;
 
-/*
-##### DIVs #####
-*/
-.debugger-view {
-  .outerDiv {
-    width:270px;
-    overflow: scroll;
+atom-text-editor.editor {
+  .line-number {
+    &.syntax--annotation:hover {
+      opacity: 1;
+    }
+
+    &.annotation-position {
+      color: #000000;
+      background-color: @positionColor;
+    }
+
+    &.annotation-breakpoint {
+      color: #00FF00;
+      background-color: @breakpointColor;
+    }
+
+    &.annotation-breakpoint-disabled {
+      color: #000000;
+      background-color: @breakpointDisabledColor;
+    }
   }
+}
 
-  .statusDiv {
-    text-align: center;
+.levels-debugger-ruby {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+
+  .status {
+    flex: 0 0 auto;
+    font-size: @font-size;
     height: @statusHeight;
-  }
-
-  .flexDiv {
-    display:flex;
-  }
-
-  .resizeHandlerDiv {
-    width: 10px;
-    min-width: 10px;
-    cursor:col-resize;
-  }
-
-  .commandWrapperDiv {
+    text-align: center;
     width: 100%;
-  }
-
-  .controlElementDiv {
-    margin-bottom: 20px;
-    margin-right: 10px;
-  }
-
-  .controlElementHeaderDiv{
-    font-size: 14px;
-    font-weight: bold;
-    font-family: sans-serif;
-    margin-bottom: 5px;
-  }
-
-  .scrollableTableDiv {
-    overflow: scroll;
-    width: 100%;
-    margin-left: 5px;
-  }
-
-  .ellipsisDiv {
-    width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .disabledDiv {
-    pointer-events: none;
-    opacity: 0.4;
-  }
-
-  /*
-  ##### Status Span #####
-  */
-
-  span.status {
-    font-size: 13px;
-    width:100%;
-    display:inline-block;
     line-height: @statusHeight;
+    margin-bottom: 5px;
+
+    &.stopped {
+      background-color: @stoppedColor;
+      color: white;
+    }
+
+    &.running {
+      background-color: @runningColor;
+      color: white;
+    }
+
+    &.waiting {
+      background-color: @waitingColor;
+      color: black;
+    }
+
+    &.disabled {
+      background-color: @disabledColor;
+      color: white;
+    }
+
+    &.endoftape {
+      background-color: @endOfTapeColor;
+      color: white;
+    }
+
+    &.replay {
+      background-image: repeating-linear-gradient(135deg, transparent, transparent 35px, rgba(255, 255, 255, 0.5) 35px, rgba(255, 255, 255, 0.5) 70px);
+    }
   }
 
-  span.stopped {
-    background-color: @stoppedColor;
-    color: white;
+  .header {
+    flex: 0 0 auto;
+    font-size: @font-size;
+    font-weight: bold;
+    margin: 5px 5px;
   }
 
-  span.running {
-    background-color: @runningColor;
-    color: white;
-  }
+  .buttons {
+    flex: 0 0 auto;
+    font-size: @font-size;
+    margin: 5px 5px;
 
-  span.waiting {
-    background-color: @waitingColor;
-    color: black;
-  }
+    button {
+      margin-top: 5px;
+      margin-bottom: 5px;
+    }
 
-  span.disabled {
-    background-color: @disabledColor;
-    color: white;
-  }
+    button:first-child {
+      margin-top: 0px;
+    }
 
-  span.endoftape {
-    background-color: @endOfTapeColor;
-    color: white;
+    button:last-child {
+      margin-bottom: 0px;
+    }
   }
-
-  span.replay {
-    background-image: repeating-linear-gradient(135deg, transparent, transparent 35px, rgba(255,255,255,.5) 35px, rgba(255,255,255,.5) 70px);
-  }
-
-  /*
-  ##### Buttons #####
-  */
 
   button {
-    width:100%;
-    font-size: 13px;
     display: block;
-  }
-
-  button.commandButton{
-    margin-left: 5px;
-    margin-bottom: 4px;
-  }
-
-  button.disabled {
-    pointer-events: none;
-    opacity: 0.3;
-  }
-
-  /*
-  ##### Tables #####
-  */
-  .scrollableTable {
     width: 100%;
-    table-layout: fixed;
-    border-collapse:collapse;
-  }
-
-  .highlightableRow:hover {
-    background-color: @highlightColor;
-    color:black;
-  }
-
-  .callStackTableCell {
-    width: 50%;
-  }
-
-  .variableTableCell {
-    width: 33%;
-  }
-
-  .highlighted-cell {
-    animation: highlight 1s;
+    font-size: @font-size;
   }
 
   @keyframes highlight {
     0% {
       background: @highlightColor;
     }
+
     100% {
       background: none;
     }
   }
 
-  table.scrollableTable,
-  table.scrollableTable th,
-  table.scrollableTable tr,
-  table.scrollableTable td {
+  table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+  }
+
+  table,
+  table th,
+  table tr,
+  table td {
     border: 1px solid;
-    font-size: 13px;
+    font-size: @font-size;
     text-align: center;
+  }
+
+  td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .highlight {
+    animation: highlight 1s;
+  }
+
+  .variables, .stack {
+    overflow: auto;
+    flex: 1;
+    margin: 5px;
+  }
+
+  .stack td, .stack th {
+    width: 50%;
+  }
+
+  .variables td, .variables th {
+    width: 33%;
   }
 }
 
-
-/*
-##### Line number annotations
-*/
-atom-text-editor.editor {
-  .line-number {
-    &.syntax--annotation:hover {
-      opacity: 1;
-    }
-    &.annotation-position {
-      color: #000;
-      background-color: @positionColor;
-    }
-    &.annotation-breakpoint {
-      color: #00FF00;
-      background-color: @breakpointColor;
-    }
-    &.annotation-breakpoint-disabled {
-      color: #00FF00;
-      background-color: @breakpointDisabledColor;
-    }
-  }
+.levels-debugger-ruby[disabled="true"] {
+  opacity: 0.3;
+  pointer-events: none;
 }

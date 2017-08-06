@@ -21,8 +21,7 @@
     "atom": ">=1.17.0 <2.0.0"
   },
   "dependencies": {
-    "atom-package-deps": "^4.0.1",
-    "atom-space-pen-views": "^2.0.3"
+    "atom-package-deps": "^4.0.1"
   },
   "devDependencies": {
     "coffeelint": "^1.16.0"
