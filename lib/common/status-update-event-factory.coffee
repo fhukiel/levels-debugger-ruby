@@ -18,10 +18,10 @@ class StatusUpdateEventFactory
     return StatusUpdateEventFactory.createGeneric isReplay, StatusUpdateEventFactory.getEndOfTapeMessage(), StatusUpdateEventFactory.getEndOfTapeStatus(), true
 
   @createGeneric: (isReplay, message, status, isBlocking) ->
-    message = StatusUpdateEventFactory.createMessage isReplay, message
+    msg = StatusUpdateEventFactory.createMessage isReplay, message
     styleClass = StatusUpdateEventFactory.createStyleClass isReplay, status
 
-    return new StatusUpdateEvent status, message, isBlocking, styleClass
+    return new StatusUpdateEvent status, msg, isBlocking, styleClass
 
   @createStyleClass: (isReplay, status) ->
     styleClass = 'status ' + status

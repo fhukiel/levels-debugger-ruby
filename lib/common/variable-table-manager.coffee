@@ -13,7 +13,7 @@ class VariableTableManager
     @sortAscending = !@sortAscending
 
   fromString: (string, oldTable) ->
-    variableTable = new Array
+    variableTable = []
     splitted = string?.split MessageUtils.getDelimiter()
 
     if splitted?

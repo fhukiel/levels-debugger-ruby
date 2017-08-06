@@ -4,7 +4,7 @@ PositionUtils          = require './position-utils'
 
 class BreakpointManager
   constructor: ->
-    @breakPoints = new Array
+    @breakPoints = []
     @areBreakpointsEnabled = true
     @hiddenBreakpointPosition = null
 
@@ -18,7 +18,7 @@ class BreakpointManager
     for bp in @breakPoints
       bp?.destroyMarker()
 
-    @breakPoints = new Array
+    @breakPoints = []
     return
 
   flip: ->
@@ -26,7 +26,7 @@ class BreakpointManager
     for bp in @breakPoints
       if bp?.hasMarker()
         bp.destroyMarker()
-        bp.setMarker levelsWorkspaceManager.addBreakpointMarker(PositionUtils.toPoint(bp.getPosition()), @areBreakpointsEnabled)
+        bp.setMarker levelsWorkspaceManager.addBreakpointMarker PositionUtils.toPoint(bp.getPosition()), @areBreakpointsEnabled
     return
 
   toggle: (point) ->
@@ -39,7 +39,7 @@ class BreakpointManager
       return false
     else
       marker = levelsWorkspaceManager.addBreakpointMarker point, @areBreakpointsEnabled
-      @breakPoints.push new Breakpoint(breakPointPosition, marker)
+      @breakPoints.push new Breakpoint breakPointPosition, marker
       return true
 
   getBreakpoint: (position) ->

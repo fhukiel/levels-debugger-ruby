@@ -3,7 +3,7 @@ MessageUtils = require '../messaging/message-utils'
 module.exports =
 class CallStackFactory
   @fromString: (string) ->
-    callStack = new Array
+    callStack = []
     splitted = string?.split MessageUtils.getDelimiter()
 
     if splitted?

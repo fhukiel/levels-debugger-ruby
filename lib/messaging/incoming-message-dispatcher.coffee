@@ -10,17 +10,15 @@ class IncomingMessageDispatcher
     if message?
       if message.includes MessageUtils.getFinalSymbol()
         for msg in message.split MessageUtils.getFinalSymbol()
-          @handleMessage MessageUtils.removeNewLineSymbol(msg)
+          @handleMessage MessageUtils.removeNewLineSymbol msg
       else
         @handleMessage message
+
     return
 
   handleMessage: (message) ->
     if message? && message.length != 0
-      if message.includes MessageUtils.getDelimiter()
-        messageCategory = message.split(MessageUtils.getDelimiter())[0]
-      else
-        messageCategory = message
+      messageCategory = message.split(MessageUtils.getDelimiter())[0]
 
       if messageCategory == 'TABLEUPDATED'
         @emitter.emit 'table-updated', message
@@ -40,6 +38,7 @@ class IncomingMessageDispatcher
         @emitter.emit 'auto-stepping-disabled'
       else
         console.log "Cannot handle message category '#{messageCategory}'!"
+
     return
 
   onTableUpdate: (callback) ->
