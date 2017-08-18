@@ -1,3 +1,9 @@
+## 0.4.0 (2017-08-18)
+
+* Added keybord shortcuts and menu entries to control the debugger
+* Converted the debugger view into a dock item
+* Removed the `atom-space-pen-view` dependency
+
 ## 0.3.0 (2017-05-14)
 
 * Removed the `atom-text-editor` shadow DOM boundary
