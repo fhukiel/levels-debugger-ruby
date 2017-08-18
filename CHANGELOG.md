@@ -1,3 +1,7 @@
+## 0.4.1 (2017-08-19)
+
+* Fixed a bug where some keyboard shortcuts failed within a not debuggable file
+
 ## 0.4.0 (2017-08-18)
 
 * Added keybord shortcuts and menu entries to control the debugger
