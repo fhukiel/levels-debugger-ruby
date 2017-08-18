@@ -11,84 +11,96 @@ class DebuggerView
     @statusDiv.className = 'status'
     @element.appendChild @statusDiv
 
-    @buttonsHeader = document.createElement 'div'
-    @buttonsHeader.className = 'header'
-    @buttonsHeader.innerHTML = 'Commands'
-    @element.appendChild @buttonsHeader
+    @commandsHeader = document.createElement 'div'
+    @commandsHeader.className = 'header'
+    @commandsHeader.innerHTML = 'Commands'
+    @commandsHeader.title = 'Commands'
+    @element.appendChild @commandsHeader
 
-    @buttonsDiv = document.createElement 'div'
-    @buttonsDiv.className = 'buttons'
-    @element.appendChild @buttonsDiv
+    @commandsDiv = document.createElement 'div'
+    @commandsDiv.className = 'commands'
+    @element.appendChild @commandsDiv
 
     @toggleBreakpointButton = document.createElement 'button'
     @toggleBreakpointButton.className = 'btn'
     @toggleBreakpointButton.innerHTML = 'Toggle Breakpoint'
+    @toggleBreakpointButton.title = 'Toggle Breakpoint'
     @toggleBreakpointButton.addEventListener 'click', => @toggleBreakpoint()
-    @buttonsDiv.appendChild @toggleBreakpointButton
+    @commandsDiv.appendChild @toggleBreakpointButton
 
     @removeAllBreakpointsButton = document.createElement 'button'
     @removeAllBreakpointsButton.className = 'btn'
     @removeAllBreakpointsButton.innerHTML = 'Remove All Breakpoints'
+    @removeAllBreakpointsButton.title = 'Remove All Breakpoints'
     @removeAllBreakpointsButton.addEventListener 'click', => @removeAllBreakpoints()
-    @buttonsDiv.appendChild @removeAllBreakpointsButton
+    @commandsDiv.appendChild @removeAllBreakpointsButton
 
     @enableDisableAllBreakpointsButton = document.createElement 'button'
     @enableDisableAllBreakpointsButton.className = 'btn'
     @enableDisableAllBreakpointsButton.innerHTML = 'Disable All Breakpoints'
+    @enableDisableAllBreakpointsButton.title = 'Disable All Breakpoints'
     @enableDisableAllBreakpointsButton.addEventListener 'click', => @enableDisableAllBreakpoints()
-    @buttonsDiv.appendChild @enableDisableAllBreakpointsButton
+    @commandsDiv.appendChild @enableDisableAllBreakpointsButton
 
     @startDebuggingButton = document.createElement 'button'
     @startDebuggingButton.className = 'btn'
     @startDebuggingButton.innerHTML = 'Start Debugging'
+    @startDebuggingButton.title = 'Start Debugging'
     @startDebuggingButton.addEventListener 'click', => @startDebugging()
-    @buttonsDiv.appendChild @startDebuggingButton
+    @commandsDiv.appendChild @startDebuggingButton
 
     @stopDebuggingButton = document.createElement 'button'
     @stopDebuggingButton.className = 'btn'
     @stopDebuggingButton.disabled = true
     @stopDebuggingButton.innerHTML = 'Stop Debugging'
+    @stopDebuggingButton.title = 'Stop Debugging'
     @stopDebuggingButton.addEventListener 'click', => @stopDebugging()
-    @buttonsDiv.appendChild @stopDebuggingButton
+    @commandsDiv.appendChild @stopDebuggingButton
 
     @stepButton = document.createElement 'button'
     @stepButton.className = 'btn'
     @stepButton.disabled = true
     @stepButton.innerHTML = 'Step'
+    @stepButton.title = 'Step'
     @stepButton.addEventListener 'click', => @step()
-    @buttonsDiv.appendChild @stepButton
+    @commandsDiv.appendChild @stepButton
 
     @stepOverButton = document.createElement 'button'
     @stepOverButton.className = 'btn'
     @stepOverButton.disabled = true
     @stepOverButton.innerHTML = 'Step Over'
+    @stepOverButton.title = 'Step Over'
     @stepOverButton.addEventListener 'click', => @stepOver()
-    @buttonsDiv.appendChild @stepOverButton
+    @commandsDiv.appendChild @stepOverButton
 
     @runToEndOfMethodButton = document.createElement 'button'
     @runToEndOfMethodButton.className = 'btn'
     @runToEndOfMethodButton.disabled = true
     @runToEndOfMethodButton.innerHTML = 'Run To End Of Method'
+    @runToEndOfMethodButton.title = 'Run To End Of Method'
     @runToEndOfMethodButton.addEventListener 'click', => @runToEndOfMethod()
-    @buttonsDiv.appendChild @runToEndOfMethodButton
+    @commandsDiv.appendChild @runToEndOfMethodButton
 
     @runToNextBreakpointButton = document.createElement 'button'
     @runToNextBreakpointButton.className = 'btn'
     @runToNextBreakpointButton.disabled = true
     @runToNextBreakpointButton.innerHTML = 'Run To Next Breakpoint'
+    @runToNextBreakpointButton.title = 'Run To Next Breakpoint'
     @runToNextBreakpointButton.addEventListener 'click', => @runToNextBreakpoint()
-    @buttonsDiv.appendChild @runToNextBreakpointButton
+    @commandsDiv.appendChild @runToNextBreakpointButton
 
     @stopReplayButton = document.createElement 'button'
     @stopReplayButton.className = 'btn'
     @stopReplayButton.disabled = true
     @stopReplayButton.innerHTML = 'Stop Replay'
+    @stopReplayButton.title = 'Stop Replay'
     @stopReplayButton.addEventListener 'click', => @stopReplay()
-    @buttonsDiv.appendChild @stopReplayButton
+    @commandsDiv.appendChild @stopReplayButton
 
     @variablesHeader = document.createElement 'div'
     @variablesHeader.className = 'header'
     @variablesHeader.innerHTML = 'Defined Variables'
+    @variablesHeader.title = 'Defined Variables'
     @element.appendChild @variablesHeader
 
     @variablesDiv = document.createElement 'div'
@@ -99,16 +111,25 @@ class DebuggerView
     @variablesTable.className = 'table'
     @variablesDiv.appendChild @variablesTable
 
+    @variablesTableHead = document.createElement 'thead'
+    @variablesTable.appendChild @variablesTableHead
+
+    @variablesTableBody = document.createElement 'tbody'
+    @variablesTable.appendChild @variablesTableBody
+
     @variablesTableHeader = document.createElement 'tr'
-    @variablesTable.appendChild @variablesTableHeader
+    @variablesTableHead.appendChild @variablesTableHeader
 
     @variablesTableHeaderVariable = document.createElement 'th'
     @variablesTableHeaderVariable.innerHTML = 'Variable'
-    @variablesTableHeaderVariable.addEventListener 'dblclick', => @sortVariableTableByName()
+    @variablesTableHeaderVariable.title = 'Variable'
+    @variablesTableHeaderVariable.addEventListener 'click', => @sortVariableTableByName()
     @variablesTableHeaderValue = document.createElement 'th'
     @variablesTableHeaderValue.innerHTML = 'Value'
+    @variablesTableHeaderValue.title = 'Value'
     @variablesTableHeaderAddress = document.createElement 'th'
     @variablesTableHeaderAddress.innerHTML = 'Address'
+    @variablesTableHeaderAddress.title = 'Address'
     @variablesTableHeader.appendChild @variablesTableHeaderVariable
     @variablesTableHeader.appendChild @variablesTableHeaderValue
     @variablesTableHeader.appendChild @variablesTableHeaderAddress
@@ -116,6 +137,7 @@ class DebuggerView
     @stackHeader = document.createElement 'div'
     @stackHeader.className = 'header'
     @stackHeader.innerHTML = 'Call Stack'
+    @stackHeader.title = 'Call Stack'
     @element.appendChild @stackHeader
 
     @stackDiv = document.createElement 'div'
@@ -126,13 +148,21 @@ class DebuggerView
     @stackTable.className = 'table'
     @stackDiv.appendChild @stackTable
 
+    @stackTableHead = document.createElement 'thead'
+    @stackTable.appendChild @stackTableHead
+
+    @stackTableBody = document.createElement 'tbody'
+    @stackTable.appendChild @stackTableBody
+
     @stackTableHeader = document.createElement 'tr'
-    @stackTable.appendChild @stackTableHeader
+    @stackTableHead.appendChild @stackTableHeader
 
     @stackTableHeaderCall = document.createElement 'th'
     @stackTableHeaderCall.innerHTML = 'Call'
+    @stackTableHeaderCall.title = 'Call'
     @stackTableHeaderReplay = document.createElement 'th'
     @stackTableHeaderReplay.innerHTML = 'Replay'
+    @stackTableHeaderReplay.title = 'Replay'
     @stackTableHeader.appendChild @stackTableHeaderCall
     @stackTableHeader.appendChild @stackTableHeaderReplay
 
@@ -208,30 +238,33 @@ class DebuggerView
     @handleEnableDisableSteppingCommands enabled
 
   updateVariableTable: (debuggerPresenter) ->
-    @clearTable @variablesTable
+    @clearTableBody @variablesTableBody
 
     if debuggerPresenter?
       for entry in debuggerPresenter.getVariableTable()
         name = "#{entry.getName()}"
         value = "#{entry.getValue()}"
         address = "#{entry.getAddress()}"
-        cellClass = if entry.isChanged() then 'highlight' else ''
+        rowClass = if entry.isChanged() then 'highlight' else ''
 
         row = document.createElement 'tr'
-        row.className = cellClass
-        rowName = document.createElement 'td'
-        rowName.innerHTML = name
-        rowValue = document.createElement 'td'
-        rowValue.innerHTML = value
-        rowAddress = document.createElement 'td'
-        rowAddress.innerHTML = address
-        row.appendChild rowName
-        row.appendChild rowValue
-        row.appendChild rowAddress
-        @variablesTable.appendChild row
+        row.className = rowClass
+        cellName = document.createElement 'td'
+        cellName.innerHTML = name
+        cellName.title = name
+        cellValue = document.createElement 'td'
+        cellValue.innerHTML = value
+        cellValue.title = value
+        cellAddress = document.createElement 'td'
+        cellAddress.innerHTML = address
+        cellAddress.title = address
+        row.appendChild cellName
+        row.appendChild cellValue
+        row.appendChild cellAddress
+        @variablesTableBody.appendChild row
 
   updateCallStack: (debuggerPresenter) ->
-    @clearTable @stackTable
+    @clearTableBody @stackTableBody
 
     if debuggerPresenter?
       for value in debuggerPresenter.getCallStack() by -1
@@ -240,18 +273,20 @@ class DebuggerView
         callID = splitted[1]
 
         row = document.createElement 'tr'
-        rowCall = document.createElement 'td'
-        rowCall.innerHTML = methodAndArgs
-        rowReplay = document.createElement 'td'
+        cellCall = document.createElement 'td'
+        cellCall.innerHTML = methodAndArgs
+        cellCall.title = methodAndArgs
+        cellReplay = document.createElement 'td'
         replayButton = document.createElement 'button'
         replayButton.className = 'btn'
         replayButton.innerHTML = 'Replay'
-        replayButton.setAttribute 'callID', callID
+        replayButton.title = 'Replay'
+        replayButton.setAttribute 'call-id', callID
         replayButton.addEventListener 'click', (event) => @startReplay event
-        rowReplay.appendChild replayButton
-        row.appendChild rowCall
-        row.appendChild rowReplay
-        @stackTable.appendChild row
+        cellReplay.appendChild replayButton
+        row.appendChild cellCall
+        row.appendChild cellReplay
+        @stackTableBody.appendChild row
 
   reset: ->
     @updateCallStack undefined
@@ -272,25 +307,27 @@ class DebuggerView
     @startDebuggingButton.disabled = false
 
   handleEnableDisableSteppingCommands: (enabled) ->
-    @stepButton.disabled = !enabled
-    @stepOverButton.disabled = !enabled
-    @runToNextBreakpointButton.disabled = !enabled
-    @runToEndOfMethodButton.disabled = !enabled
+    disabled = !enabled
+    @stepButton.disabled = disabled
+    @stepOverButton.disabled = disabled
+    @runToNextBreakpointButton.disabled = disabled
+    @runToEndOfMethodButton.disabled = disabled
 
   handleEnableDisableAllBreakpoints: (enabled) ->
     text = if enabled then 'Disable All Breakpoints' else 'Enable All Breakpoints'
     @enableDisableAllBreakpointsButton.innerHTML = text
+    @enableDisableAllBreakpointsButton.title = text
 
   handleStatusUpdated: (event) ->
-    @statusDiv.className = event.getStyleClass()
+    @statusDiv.className = 'status ' + event.getStyleClass()
     @statusDiv.innerHTML = event.getDisplayMessage()
+    @statusDiv.title = event.getDisplayMessage()
     @handleEnableDisableSteppingCommands !event.isBlockingStatus()
 
   handleEnableDisableAllControls: (enabled) ->
     @element.setAttribute 'disabled', !enabled
 
-  clearTable: (table) ->
-    rows = table.rows
-    i = rows.length
-    while --i
-      table.deleteRow i
+  clearTableBody: (tableBody) ->
+    i = tableBody.rows.length
+    while i-- > 0
+      tableBody.deleteRow i

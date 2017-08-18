@@ -1,16 +1,16 @@
 @import "ui-variables";
 
 @breakpointColor: @contrastColor;
-@breakpointDisabledColor: #C0C0C0;
-@contrastColor: #000080;
-@disabledColor: #FF0000;
-@endOfTapeColor: #800080;
+@breakpointDisabledColor: silver;
+@contrastColor: navy;
+@disabledColor: red;
+@endOfTapeColor: purple;
 @highlightColor: #FFE600;
 @positionColor: @highlightColor;
-@runningColor: #008361;
+@runningColor: #00805E;
 @statusHeight: @tab-height + @component-padding;
 @stoppedColor: @contrastColor;
-@waitingColor: #FFE816;
+@waitingColor: @highlightColor;
 
 atom-text-editor.editor {
   .line-number {
@@ -18,21 +18,27 @@ atom-text-editor.editor {
       opacity: 1;
     }
 
-    &.annotation-position {
-      color: #000000;
-      background-color: @positionColor;
-    }
-
     &.annotation-breakpoint {
-      color: #00FF00;
       background-color: @breakpointColor;
+      color: lime;
     }
 
     &.annotation-breakpoint-disabled {
-      color: #000000;
       background-color: @breakpointDisabledColor;
+      color: black;
+    }
+
+    &.annotation-position {
+      background-color: @positionColor;
+      color: black;
     }
   }
+}
+
+.levels-debugger-ruby[disabled="true"] {
+  opacity: 0.3;
+  pointer-events: none;
+  user-select: none;
 }
 
 .levels-debugger-ruby {
@@ -40,62 +46,22 @@ atom-text-editor.editor {
   flex-direction: column;
   height: 100%;
   width: 100%;
-  position: absolute;
 
-  .status {
-    flex: 0 0 auto;
+  button {
+    display: block;
     font-size: @font-size;
-    height: @statusHeight;
-    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     width: 100%;
-    line-height: @statusHeight;
-    margin-bottom: 5px;
-
-    &.stopped {
-      background-color: @stoppedColor;
-      color: white;
-    }
-
-    &.running {
-      background-color: @runningColor;
-      color: white;
-    }
-
-    &.waiting {
-      background-color: @waitingColor;
-      color: black;
-    }
-
-    &.disabled {
-      background-color: @disabledColor;
-      color: white;
-    }
-
-    &.endoftape {
-      background-color: @endOfTapeColor;
-      color: white;
-    }
-
-    &.replay {
-      background-image: repeating-linear-gradient(135deg, transparent, transparent 35px, rgba(255, 255, 255, 0.5) 35px, rgba(255, 255, 255, 0.5) 70px);
-    }
   }
 
-  .header {
+  .commands {
     flex: 0 0 auto;
-    font-size: @font-size;
-    font-weight: bold;
-    margin: 5px 5px;
-  }
-
-  .buttons {
-    flex: 0 0 auto;
-    font-size: @font-size;
-    margin: 5px 5px;
+    margin: 5px;
 
     button {
-      margin-top: 5px;
-      margin-bottom: 5px;
+      margin: 5px 0px;
     }
 
     button:first-child {
@@ -107,10 +73,99 @@ atom-text-editor.editor {
     }
   }
 
-  button {
-    display: block;
-    width: 100%;
+  .header {
+    flex: 0 0 auto;
     font-size: @font-size;
+    font-weight: bold;
+    margin: 5px;
+  }
+
+  .highlight {
+    animation: highlight 1s;
+  }
+
+  .stack {
+    margin: 5px 5px 0px 5px;
+    overflow-y: auto;
+
+    td, th {
+      width: 50%;
+    }
+  }
+
+  .status {
+    align-items: center;
+    display: flex;
+    flex: 0 0 auto;
+    font-size: @font-size;
+    height: @statusHeight;
+    justify-content: center;
+    margin-bottom: 5px;
+    text-align: center;
+    width: 100%;
+
+    &.status-disabled {
+      background-color: @disabledColor;
+      color: white;
+    }
+
+    &.status-endoftape {
+      background-color: @endOfTapeColor;
+      color: white;
+    }
+
+    &.status-replay {
+      background-image: repeating-linear-gradient(135deg, transparent, transparent 35px, rgba(255, 255, 255, 0.5) 35px, rgba(255, 255, 255, 0.5) 70px);
+    }
+
+    &.status-running {
+      background-color: @runningColor;
+      color: white;
+    }
+
+    &.status-stopped {
+      background-color: @stoppedColor;
+      color: white;
+    }
+
+    &.status-waiting {
+      background-color: @waitingColor;
+      color: black;
+    }
+  }
+
+  table {
+    border-collapse: collapse;
+    margin: 0px;
+    table-layout: fixed;
+    width: 100%;
+  }
+
+  table > thead:first-child > tr:first-child > th {
+    border-top: 1px solid @base-border-color;
+  }
+
+  table > thead:last-child > tr:last-child > th {
+    border-bottom: 2px solid @base-border-color;
+  }
+
+  .table td, .table th {
+    border-top: 1px solid @base-border-color;
+    font-size: @font-size;
+    overflow: hidden;
+    text-align: center;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+
+  .variables {
+    margin: 5px;
+    overflow-y: auto;
+
+    td, th {
+      width: 33%;
+    }
   }
 
   @keyframes highlight {
@@ -122,48 +177,4 @@ atom-text-editor.editor {
       background: none;
     }
   }
-
-  table {
-    width: 100%;
-    table-layout: fixed;
-    border-collapse: collapse;
-  }
-
-  table,
-  table th,
-  table tr,
-  table td {
-    border: 1px solid;
-    font-size: @font-size;
-    text-align: center;
-  }
-
-  td {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .highlight {
-    animation: highlight 1s;
-  }
-
-  .variables, .stack {
-    overflow: auto;
-    flex: 1;
-    margin: 5px;
-  }
-
-  .stack td, .stack th {
-    width: 50%;
-  }
-
-  .variables td, .variables th {
-    width: 33%;
-  }
-}
-
-.levels-debugger-ruby[disabled="true"] {
-  opacity: 0.3;
-  pointer-events: none;
 }

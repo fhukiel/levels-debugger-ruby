@@ -24,9 +24,9 @@ class StatusUpdateEventFactory
     return new StatusUpdateEvent status, msg, isBlocking, styleClass
 
   @createStyleClass: (isReplay, status) ->
-    styleClass = 'status ' + status
+    styleClass = 'status-' + status
     if isReplay
-      styleClass += ' replay'
+      styleClass += ' status-replay'
 
     return styleClass
 
