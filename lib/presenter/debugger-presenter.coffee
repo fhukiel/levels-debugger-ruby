@@ -94,11 +94,12 @@ class DebuggerPresenter
     return
 
   toggleBreakpoint: ->
-    currentPosition = levelsWorkspaceManager.getActiveTextEditorPosition()
-    if breakpointManager.toggle currentPosition
-      @sendBreakpointAdded PositionUtils.fromPoint currentPosition
-    else
-      @sendBreakpointRemoved PositionUtils.fromPoint currentPosition
+    if levelsWorkspaceManager.isActiveLevelDebuggable()
+      currentPosition = levelsWorkspaceManager.getActiveTextEditorPosition()
+      if breakpointManager.toggle currentPosition
+        @sendBreakpointAdded PositionUtils.fromPoint currentPosition
+      else
+        @sendBreakpointRemoved PositionUtils.fromPoint currentPosition
     return
 
   removeAllBreakpoints: ->
@@ -146,13 +147,15 @@ class DebuggerPresenter
 
   saveDocument: ->
     textEditor = levelsWorkspaceManager.getActiveTextEditor()
-    saveHere = textEditor.getPath() ? atom.showSaveDialogSync()
 
-    if saveHere?
-      textEditor.saveAs saveHere
-      levelsWorkspaceManager.getActiveTerminal().show()
-      levelsWorkspaceManager.getActiveTerminal().focus()
-      return true
+    if textEditor?
+      saveHere = textEditor.getPath() ? atom.showSaveDialogSync()
+
+      if saveHere?
+        textEditor.saveAs saveHere
+        levelsWorkspaceManager.getActiveTerminal().show()
+        levelsWorkspaceManager.getActiveTerminal().focus()
+        return true
     return false
 
   variableTableFromString: (string) ->
