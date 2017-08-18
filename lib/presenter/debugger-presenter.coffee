@@ -22,6 +22,7 @@ class DebuggerPresenter
     @currentStatusEvent = StatusFactory.createStopped false
     @lastEventBeforeDisabling = @currentStatusEvent
     @lastEventBeforeReplay = null
+
     @setupSubscriptions()
 
   setupSubscriptions: ->
@@ -46,6 +47,7 @@ class DebuggerPresenter
     levelsWorkspaceManager.attachWorkspace workspace
     workspace.onDidEnterWorkspace => @handleWorkspaceEntered()
     workspace.onDidEnterWorkspace => @handleLevelChanged()
+    workspace.onDidExitWorkspace => @handleWorkspaceExited()
 
     if levelsWorkspaceManager.getActiveLevelCodeEditor()?
       @handleWorkspaceEntered()
@@ -298,6 +300,9 @@ class DebuggerPresenter
     levelsWorkspaceManager.getWorkspace().getActiveLevelCodeEditor().onDidStopExecution => @handleExecutableStopped()
     levelsWorkspaceManager.getWorkspace().onDidChangeActiveLevel => @handleLevelChanged()
     return
+
+  handleWorkspaceExited: ->
+    @handleLevelChanged()
 
   handleExecutableStarted: ->
     if @isExecutableInDebuggingMode
