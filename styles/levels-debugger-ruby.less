@@ -8,9 +8,10 @@
 @highlightColor: #FFE600;
 @positionColor: @highlightColor;
 @runningColor: #00805E;
-@statusHeight: @tab-height + @component-padding;
 @stoppedColor: @contrastColor;
 @waitingColor: @highlightColor;
+
+@statusHeight: @tab-height + @component-padding;
 
 atom-text-editor.editor {
   .line-number {
@@ -49,7 +50,6 @@ atom-text-editor.editor {
 
   button {
     display: block;
-    font-size: @font-size;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -75,7 +75,6 @@ atom-text-editor.editor {
 
   .header {
     flex: 0 0 auto;
-    font-size: @font-size;
     font-weight: bold;
     margin: 5px;
   }
@@ -97,7 +96,6 @@ atom-text-editor.editor {
     align-items: center;
     display: flex;
     flex: 0 0 auto;
-    font-size: @font-size;
     height: @statusHeight;
     justify-content: center;
     margin-bottom: 5px;
@@ -152,7 +150,6 @@ atom-text-editor.editor {
   .table td, .table th {
     border-color: @base-border-color;
     border-top: 1px solid @base-border-color;
-    font-size: @font-size;
     overflow: hidden;
     text-align: center;
     text-overflow: ellipsis;
