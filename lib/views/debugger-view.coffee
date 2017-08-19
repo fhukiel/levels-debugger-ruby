@@ -297,7 +297,7 @@ class DebuggerView
         replayButton.className = 'btn'
         replayButton.innerHTML = 'Replay'
         replayButton.title = 'Replay'
-        replayButton.setAttribute 'call-id', callID
+        replayButton.setAttribute 'data-call-id', callID
         replayButton.addEventListener 'click', (event) => @startReplay event
         cellReplay.appendChild replayButton
         row.appendChild cellCall

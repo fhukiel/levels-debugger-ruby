@@ -126,7 +126,7 @@ class DebuggerPresenter
     return
 
   startReplay: (element) ->
-    id = element.getAttribute 'call-id'
+    id = element.getAttribute 'data-call-id'
     @socketChannel.sendMessage OutgoingMessageFactory.createStartReplayMessage "#{id}"
 
     if !@isReplay && @currentStatusEvent.getStatus() != StatusFactory.getEndOfTapeStatus()
