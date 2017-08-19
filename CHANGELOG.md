@@ -1,3 +1,7 @@
+## 0.4.2 (2017-08-19)
+
+* Changed the scrolling behavior of the stack and variable table so that the table headers are always visible
+
 ## 0.4.1 (2017-08-19)
 
 * Fixed a bug where some keyboard shortcuts failed within a not debuggable file
