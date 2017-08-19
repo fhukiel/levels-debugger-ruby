@@ -1,17 +1,17 @@
 @import "ui-variables";
 
-@breakpointColor: @contrastColor;
-@breakpointDisabledColor: silver;
-@contrastColor: navy;
-@disabledColor: red;
-@endOfTapeColor: purple;
-@highlightColor: #FFE600;
-@positionColor: @highlightColor;
-@runningColor: #00805E;
-@stoppedColor: @contrastColor;
-@waitingColor: @highlightColor;
+@breakpoint-color: @contrast-color;
+@breakpoint-disabled-color: silver;
+@contrast-color: navy;
+@disabled-color: red;
+@end-of-tape-color: purple;
+@highlight-color: #FFE600;
+@position-color: @highlight-color;
+@running-color: #00805E;
+@stopped-color: @contrast-color;
+@waiting-color: @highlight-color;
 
-@statusHeight: @tab-height + @component-padding;
+@status-height: @tab-height + @component-padding;
 
 atom-text-editor.editor {
   .line-number {
@@ -20,17 +20,17 @@ atom-text-editor.editor {
     }
 
     &.annotation-breakpoint {
-      background-color: @breakpointColor;
+      background-color: @breakpoint-color;
       color: lime;
     }
 
     &.annotation-breakpoint-disabled {
-      background-color: @breakpointDisabledColor;
+      background-color: @breakpoint-disabled-color;
       color: black;
     }
 
     &.annotation-position {
-      background-color: @positionColor;
+      background-color: @position-color;
       color: black;
     }
   }
@@ -83,9 +83,18 @@ atom-text-editor.editor {
     animation: highlight 1s;
   }
 
-  .stack {
-    margin: 5px 5px 0px 5px;
+  .stack-body {
+    margin: 0px 5px;
     overflow-y: auto;
+
+    td, th {
+      width: 50%;
+    }
+  }
+
+  .stack-head {
+    margin: 5px 5px 0px 5px;
+    flex: 0 0 auto;
 
     td, th {
       width: 50%;
@@ -96,19 +105,18 @@ atom-text-editor.editor {
     align-items: center;
     display: flex;
     flex: 0 0 auto;
-    height: @statusHeight;
+    height: @status-height;
     justify-content: center;
     margin-bottom: 5px;
     text-align: center;
-    width: 100%;
 
     &.status-disabled {
-      background-color: @disabledColor;
+      background-color: @disabled-color;
       color: white;
     }
 
     &.status-endoftape {
-      background-color: @endOfTapeColor;
+      background-color: @end-of-tape-color;
       color: white;
     }
 
@@ -117,17 +125,17 @@ atom-text-editor.editor {
     }
 
     &.status-running {
-      background-color: @runningColor;
+      background-color: @running-color;
       color: white;
     }
 
     &.status-stopped {
-      background-color: @stoppedColor;
+      background-color: @stopped-color;
       color: white;
     }
 
     &.status-waiting {
-      background-color: @waitingColor;
+      background-color: @waiting-color;
       color: black;
     }
   }
@@ -139,11 +147,15 @@ atom-text-editor.editor {
     width: 100%;
   }
 
-  table > thead:first-child > tr:first-child > th {
+  .table > tbody:first-child > tr:first-child > td {
+    border-top-style: none;
+  }
+
+  .table > thead:first-child > tr:first-child > th {
     border-top: 1px solid @base-border-color;
   }
 
-  table > thead:last-child > tr:last-child > th {
+  .table > thead:last-child > tr:last-child > th {
     border-bottom: 2px solid @base-border-color;
   }
 
@@ -157,9 +169,18 @@ atom-text-editor.editor {
     white-space: nowrap;
   }
 
-  .variables {
-    margin: 5px;
+  .variables-body {
+    margin: 0px 5px 5px 5px;
     overflow-y: auto;
+
+    td, th {
+      width: 33%;
+    }
+  }
+
+  .variables-head {
+    margin: 5px 5px 0px 5px;
+    flex: 0 0 auto;
 
     td, th {
       width: 33%;
@@ -168,7 +189,7 @@ atom-text-editor.editor {
 
   @keyframes highlight {
     0% {
-      background: @highlightColor;
+      background: @highlight-color;
     }
 
     100% {

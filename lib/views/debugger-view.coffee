@@ -103,36 +103,44 @@ class DebuggerView
     @variablesHeader.title = 'Defined Variables'
     @element.appendChild @variablesHeader
 
-    @variablesDiv = document.createElement 'div'
-    @variablesDiv.className = 'variables'
-    @element.appendChild @variablesDiv
+    @variablesHeadDiv = document.createElement 'div'
+    @variablesHeadDiv.className = 'variables-head'
+    @element.appendChild @variablesHeadDiv
 
-    @variablesTable = document.createElement 'table'
-    @variablesTable.className = 'table'
-    @variablesDiv.appendChild @variablesTable
+    @variablesHeadTable = document.createElement 'table'
+    @variablesHeadTable.className = 'table'
+    @variablesHeadDiv.appendChild @variablesHeadTable
 
-    @variablesTableHead = document.createElement 'thead'
-    @variablesTable.appendChild @variablesTableHead
+    @variablesHeadTableHead = document.createElement 'thead'
+    @variablesHeadTable.appendChild @variablesHeadTableHead
 
-    @variablesTableBody = document.createElement 'tbody'
-    @variablesTable.appendChild @variablesTableBody
+    @variablesHeadTableHeadRow = document.createElement 'tr'
+    @variablesHeadTableHead.appendChild @variablesHeadTableHeadRow
 
-    @variablesTableHeader = document.createElement 'tr'
-    @variablesTableHead.appendChild @variablesTableHeader
+    @variablesHeadTableHeadVariable = document.createElement 'th'
+    @variablesHeadTableHeadVariable.innerHTML = 'Variable'
+    @variablesHeadTableHeadVariable.title = 'Variable'
+    @variablesHeadTableHeadVariable.addEventListener 'click', => @sortVariableTableByName()
+    @variablesHeadTableHeadValue = document.createElement 'th'
+    @variablesHeadTableHeadValue.innerHTML = 'Value'
+    @variablesHeadTableHeadValue.title = 'Value'
+    @variablesHeadTableHeadAddress = document.createElement 'th'
+    @variablesHeadTableHeadAddress.innerHTML = 'Address'
+    @variablesHeadTableHeadAddress.title = 'Address'
+    @variablesHeadTableHeadRow.appendChild @variablesHeadTableHeadVariable
+    @variablesHeadTableHeadRow.appendChild @variablesHeadTableHeadValue
+    @variablesHeadTableHeadRow.appendChild @variablesHeadTableHeadAddress
 
-    @variablesTableHeaderVariable = document.createElement 'th'
-    @variablesTableHeaderVariable.innerHTML = 'Variable'
-    @variablesTableHeaderVariable.title = 'Variable'
-    @variablesTableHeaderVariable.addEventListener 'click', => @sortVariableTableByName()
-    @variablesTableHeaderValue = document.createElement 'th'
-    @variablesTableHeaderValue.innerHTML = 'Value'
-    @variablesTableHeaderValue.title = 'Value'
-    @variablesTableHeaderAddress = document.createElement 'th'
-    @variablesTableHeaderAddress.innerHTML = 'Address'
-    @variablesTableHeaderAddress.title = 'Address'
-    @variablesTableHeader.appendChild @variablesTableHeaderVariable
-    @variablesTableHeader.appendChild @variablesTableHeaderValue
-    @variablesTableHeader.appendChild @variablesTableHeaderAddress
+    @variablesBodyDiv = document.createElement 'div'
+    @variablesBodyDiv.className = 'variables-body'
+    @element.appendChild @variablesBodyDiv
+
+    @variablesBodyTable = document.createElement 'table'
+    @variablesBodyTable.className = 'table'
+    @variablesBodyDiv.appendChild @variablesBodyTable
+
+    @variablesBodyTableBody = document.createElement 'tbody'
+    @variablesBodyTable.appendChild @variablesBodyTableBody
 
     @stackHeader = document.createElement 'div'
     @stackHeader.className = 'header'
@@ -140,31 +148,39 @@ class DebuggerView
     @stackHeader.title = 'Call Stack'
     @element.appendChild @stackHeader
 
-    @stackDiv = document.createElement 'div'
-    @stackDiv.className = 'stack'
-    @element.appendChild @stackDiv
+    @stackHeadDiv = document.createElement 'div'
+    @stackHeadDiv.className = 'stack-head'
+    @element.appendChild @stackHeadDiv
 
-    @stackTable = document.createElement 'table'
-    @stackTable.className = 'table'
-    @stackDiv.appendChild @stackTable
+    @stackHeadTable = document.createElement 'table'
+    @stackHeadTable.className = 'table'
+    @stackHeadDiv.appendChild @stackHeadTable
 
-    @stackTableHead = document.createElement 'thead'
-    @stackTable.appendChild @stackTableHead
+    @stackHeadTableHead = document.createElement 'thead'
+    @stackHeadTable.appendChild @stackHeadTableHead
 
-    @stackTableBody = document.createElement 'tbody'
-    @stackTable.appendChild @stackTableBody
+    @stackHeadTableHeadRow = document.createElement 'tr'
+    @stackHeadTableHead.appendChild @stackHeadTableHeadRow
 
-    @stackTableHeader = document.createElement 'tr'
-    @stackTableHead.appendChild @stackTableHeader
+    @stackHeadTableHeadCall = document.createElement 'th'
+    @stackHeadTableHeadCall.innerHTML = 'Call'
+    @stackHeadTableHeadCall.title = 'Call'
+    @stackHeadTableHeadReplay = document.createElement 'th'
+    @stackHeadTableHeadReplay.innerHTML = 'Replay'
+    @stackHeadTableHeadReplay.title = 'Replay'
+    @stackHeadTableHeadRow.appendChild @stackHeadTableHeadCall
+    @stackHeadTableHeadRow.appendChild @stackHeadTableHeadReplay
 
-    @stackTableHeaderCall = document.createElement 'th'
-    @stackTableHeaderCall.innerHTML = 'Call'
-    @stackTableHeaderCall.title = 'Call'
-    @stackTableHeaderReplay = document.createElement 'th'
-    @stackTableHeaderReplay.innerHTML = 'Replay'
-    @stackTableHeaderReplay.title = 'Replay'
-    @stackTableHeader.appendChild @stackTableHeaderCall
-    @stackTableHeader.appendChild @stackTableHeaderReplay
+    @stackBodyDiv = document.createElement 'div'
+    @stackBodyDiv.className = 'stack-body'
+    @element.appendChild @stackBodyDiv
+
+    @stackBodyTable = document.createElement 'table'
+    @stackBodyTable.className = 'table'
+    @stackBodyDiv.appendChild @stackBodyTable
+
+    @stackBodyTableBody = document.createElement 'tbody'
+    @stackBodyTable.appendChild @stackBodyTableBody
 
     @reset()
 
@@ -238,7 +254,7 @@ class DebuggerView
     @handleEnableDisableSteppingCommands enabled
 
   updateVariableTable: (debuggerPresenter) ->
-    @clearTableBody @variablesTableBody
+    @clearTableBody @variablesBodyTableBody
 
     if debuggerPresenter?
       for entry in debuggerPresenter.getVariableTable()
@@ -261,10 +277,10 @@ class DebuggerView
         row.appendChild cellName
         row.appendChild cellValue
         row.appendChild cellAddress
-        @variablesTableBody.appendChild row
+        @variablesBodyTableBody.appendChild row
 
   updateCallStack: (debuggerPresenter) ->
-    @clearTableBody @stackTableBody
+    @clearTableBody @stackBodyTableBody
 
     if debuggerPresenter?
       for value in debuggerPresenter.getCallStack() by -1
@@ -286,7 +302,7 @@ class DebuggerView
         cellReplay.appendChild replayButton
         row.appendChild cellCall
         row.appendChild cellReplay
-        @stackTableBody.appendChild row
+        @stackBodyTableBody.appendChild row
 
   reset: ->
     @updateCallStack undefined
