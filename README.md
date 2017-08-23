@@ -6,6 +6,8 @@ This package contains a debugger for use with the [`levels-language-ruby`](https
 
 Using this debugger you will be able to step through your Ruby programs line by line, toggle breakpoints and inspect variables. Furthermore, you will be able to see the call stack and replay your program from a call on forward.
 
+To get started, you may want to take a look at the [user manual](https://github.com/fhukiel/levels-debugger-ruby/wiki).
+
 **Note:** This package is not meant as a general purpose Ruby debugger for Atom. It will only work with the `levels-language-ruby` dialect as it is meant to support the beginners computer science course taught at [Kiel University](https://www.uni-kiel.de), which uses the `levels-language-ruby` dialect.
 
 ## Requirements
