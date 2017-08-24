@@ -93,8 +93,8 @@ atom-text-editor.editor {
   }
 
   .stack-head {
-    margin: 5px 5px 0px 5px;
     flex: 0 0 auto;
+    margin: 5px 5px 0px 5px;
 
     td, th {
       width: 50%;
@@ -103,21 +103,21 @@ atom-text-editor.editor {
 
   .status {
     align-items: center;
+    color: white;
     display: flex;
     flex: 0 0 auto;
     height: @status-height;
     justify-content: center;
     margin-bottom: 5px;
+    overflow: auto;
     text-align: center;
 
     &.status-disabled {
       background-color: @disabled-color;
-      color: white;
     }
 
     &.status-endoftape {
       background-color: @end-of-tape-color;
-      color: white;
     }
 
     &.status-replay {
@@ -126,12 +126,10 @@ atom-text-editor.editor {
 
     &.status-running {
       background-color: @running-color;
-      color: white;
     }
 
     &.status-stopped {
       background-color: @stopped-color;
-      color: white;
     }
 
     &.status-waiting {
@@ -179,8 +177,8 @@ atom-text-editor.editor {
   }
 
   .variables-head {
-    margin: 5px 5px 0px 5px;
     flex: 0 0 auto;
+    margin: 5px 5px 0px 5px;
 
     td, th {
       width: 33%;
