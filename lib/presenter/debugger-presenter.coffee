@@ -4,7 +4,7 @@ CallStackFactory               = require '../common/call-stack-factory'
 levelsWorkspaceManager         = require('../common/levels-workspace-manager').getInstance()
 Position                       = require '../common/position'
 PositionUtils                  = require '../common/position-utils'
-StatusFactory                  = require '../common/status-update-event-factory'
+StatusUpdateEventFactory       = require '../common/status-update-event-factory'
 variableTableManager           = require('../common/variable-table-manager').getInstance()
 executor                       = require('../debugger/executor').getInstance()
 MessageUtils                   = require '../messaging/message-utils'
@@ -19,24 +19,20 @@ class DebuggerPresenter
     @positionMarker = null
     @isReplay = false
     @isExecutableInDebuggingMode = false
-    @currentStatusEvent = StatusFactory.createStopped false
+    @currentStatusEvent = StatusUpdateEventFactory.createStopped false
     @lastEventBeforeDisabling = @currentStatusEvent
     @lastEventBeforeReplay = null
 
-    @setupSubscriptions()
-
-  setupSubscriptions: ->
     @subscriptions = new CompositeDisposable
     @subscriptions.add @socketChannel.onError (error) => @handleChannelError error
     @subscriptions.add @incomingMessageDispatcher.onReady => @handleReady()
     @subscriptions.add @incomingMessageDispatcher.onTerminate => @handleStopping()
-    @subscriptions.add @incomingMessageDispatcher.onPositionUpdated (string) => @emitPositionUpdate string, @isReplay
+    @subscriptions.add @incomingMessageDispatcher.onPositionUpdated (string) => @emitPositionUpdated string, @isReplay
     @subscriptions.add @incomingMessageDispatcher.onCallStackUpdated (string) => @callStackFromString string
     @subscriptions.add @incomingMessageDispatcher.onTableUpdated (string) => @variableTableFromString string
     @subscriptions.add @incomingMessageDispatcher.onEndOfReplayTape => @handleEndOfReplayTape()
     @subscriptions.add @incomingMessageDispatcher.onAutoSteppingEnabled => @emitAutoSteppingEnabled()
     @subscriptions.add @incomingMessageDispatcher.onAutoSteppingDisabled => @emitAutoSteppingDisabled()
-    return
 
   destroy: ->
     @disconnectAndCleanup()
@@ -46,12 +42,10 @@ class DebuggerPresenter
   setLevelsWorkspace: (workspace) ->
     levelsWorkspaceManager.attachWorkspace workspace
     workspace.onDidEnterWorkspace => @handleWorkspaceEntered()
-    workspace.onDidEnterWorkspace => @handleLevelChanged()
     workspace.onDidExitWorkspace => @handleWorkspaceExited()
 
-    if levelsWorkspaceManager.getActiveLevelCodeEditor()?
-      @handleWorkspaceEntered()
-    @handleLevelChanged()
+    @handleWorkspaceEntered()
+    return
 
   startDebugging: ->
     if @saveDocument() && !@isExecutableInDebuggingMode
@@ -83,13 +77,13 @@ class DebuggerPresenter
 
   step: ->
     if @isExecutableInDebuggingMode
-      @emitStatusUpdate StatusFactory.createRunning @isReplay
+      @emitStatusUpdate StatusUpdateEventFactory.createRunning @isReplay
       @socketChannel.sendMessage OutgoingMessageFactory.createStepMessage()
     return
 
   stepOver: ->
     if @isExecutableInDebuggingMode
-      @emitStatusUpdate StatusFactory.createRunning @isReplay
+      @emitStatusUpdate StatusUpdateEventFactory.createRunning @isReplay
       @socketChannel.sendMessage OutgoingMessageFactory.createStepOverMessage()
     return
 
@@ -115,13 +109,13 @@ class DebuggerPresenter
 
   runToNextBreakpoint: ->
     if @isExecutableInDebuggingMode
-      @emitStatusUpdate StatusFactory.createRunning @isReplay
+      @emitStatusUpdate StatusUpdateEventFactory.createRunning @isReplay
       @socketChannel.sendMessage OutgoingMessageFactory.createRunToNextBreakpointMessage()
     return
 
   runToEndOfMethod: ->
     if @isExecutableInDebuggingMode
-      @emitStatusUpdate StatusFactory.createRunning @isReplay
+      @emitStatusUpdate StatusUpdateEventFactory.createRunning @isReplay
       @socketChannel.sendMessage OutgoingMessageFactory.createRunToEndOfMethodMessage()
     return
 
@@ -129,7 +123,7 @@ class DebuggerPresenter
     id = element.getAttribute 'data-call-id'
     @socketChannel.sendMessage OutgoingMessageFactory.createStartReplayMessage "#{id}"
 
-    if !@isReplay && @currentStatusEvent.getStatus() != StatusFactory.getEndOfTapeStatus()
+    if !@isReplay && @currentStatusEvent.getStatus() != StatusUpdateEventFactory.getEndOfTapeStatus()
       @lastEventBeforeReplay = @currentStatusEvent
     @isReplay = true
     return
@@ -251,7 +245,7 @@ class DebuggerPresenter
     @emitter.emit 'stopped'
     return
 
-  emitPositionUpdate: (positionString, isReplay) ->
+  emitPositionUpdated: (positionString, isReplay) ->
     splitted = positionString.split MessageUtils.getDelimiter()
     currentPosition = new Position +splitted[1], +splitted[2]
 
@@ -263,7 +257,7 @@ class DebuggerPresenter
     @positionMarker = levelsWorkspaceManager.addPositionMarker currentPosition
 
     @emitter.emit 'position-updated', currentPosition
-    @emitStatusUpdate StatusFactory.createWaiting isReplay
+    @emitStatusUpdate StatusUpdateEventFactory.createWaiting isReplay
 
     atom.workspace.getActiveTextEditor().scrollToBufferPosition PositionUtils.toPoint currentPosition
     return
@@ -299,8 +293,9 @@ class DebuggerPresenter
     return
 
   handleWorkspaceEntered: ->
-    levelsWorkspaceManager.getWorkspace().getActiveLevelCodeEditor().onDidStartExecution => @handleExecutableStarted()
-    levelsWorkspaceManager.getWorkspace().getActiveLevelCodeEditor().onDidStopExecution => @handleExecutableStopped()
+    @handleLevelChanged()
+    levelsWorkspaceManager.getWorkspace().getActiveLevelCodeEditor()?.onDidStartExecution => @handleExecutableStarted()
+    levelsWorkspaceManager.getWorkspace().getActiveLevelCodeEditor()?.onDidStopExecution => @handleExecutableStopped()
     levelsWorkspaceManager.getWorkspace().onDidChangeActiveLevel => @handleLevelChanged()
     return
 
@@ -334,11 +329,11 @@ class DebuggerPresenter
     if @positionMarker?
       @positionMarker.destroy()
     breakpointManager.restoreHiddenBreakpoint()
-    @emitStatusUpdate StatusFactory.createStopped @isReplay
+    @emitStatusUpdate StatusUpdateEventFactory.createStopped @isReplay
     return
 
   handleEndOfReplayTape: ->
-    @emitStatusUpdate StatusFactory.createEndOfTape false
+    @emitStatusUpdate StatusUpdateEventFactory.createEndOfTape false
     return
 
   handleLevelChanged: ->
@@ -347,8 +342,8 @@ class DebuggerPresenter
         @emitStatusUpdate @lastEventBeforeDisabling
         @emitEnableDisableAllControls true
       else
-        if @currentStatusEvent.getStatus() != StatusFactory.getDisabledStatus()
+        if @currentStatusEvent.getStatus() != StatusUpdateEventFactory.getDisabledStatus()
           @lastEventBeforeDisabling = @currentStatusEvent
-        @emitStatusUpdate StatusFactory.createDisabled @isReplay
+        @emitStatusUpdate StatusUpdateEventFactory.createDisabled @isReplay
         @emitEnableDisableAllControls false
     return
