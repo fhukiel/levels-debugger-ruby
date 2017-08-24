@@ -13,4 +13,4 @@ class MessageUtils
     return require('os').EOL
 
   @removeNewLineSymbol: (string) ->
-    return string?.replace(MessageUtils.getNewLineSymbol(), '')
+    return string?.replace MessageUtils.getNewLineSymbol(), ''
