@@ -3,7 +3,7 @@ MessageUtils       = require '../messaging/message-utils'
 
 class VariableTableManager
   constructor: ->
-    @sortAscending = true
+    @resetSortMode()
 
   resetSortMode: ->
     @sortAscending = true
