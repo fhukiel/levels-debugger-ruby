@@ -6,37 +6,37 @@ class OutgoingMessageFactory
     return position.getLine() + MessageUtils.getDelimiter() + position.getColumn()
 
   @createAddBreakpointMessage: (position) ->
-    return MessageUtils.createMessage 'ADDBREAKPOINT' + MessageUtils.getDelimiter() + OutgoingMessageFactory.positionToString position
+    return OutgoingMessageFactory.createMessage 'ADDBREAKPOINT' + MessageUtils.getDelimiter() + OutgoingMessageFactory.positionToString position
 
   @createRemoveBreakpointMessage: (position) ->
-    return MessageUtils.createMessage 'REMOVEBREAKPOINT' + MessageUtils.getDelimiter() + OutgoingMessageFactory.positionToString position
+    return OutgoingMessageFactory.createMessage 'REMOVEBREAKPOINT' + MessageUtils.getDelimiter() + OutgoingMessageFactory.positionToString position
 
   @createRunToNextBreakpointMessage: ->
-    return MessageUtils.createMessage 'RUNTONEXTBREAKPOINT'
+    return OutgoingMessageFactory.createMessage 'RUNTONEXTBREAKPOINT'
 
   @createRunToEndOfMethodMessage: ->
-    return MessageUtils.createMessage 'RUNTOENDOFMETHOD'
+    return OutgoingMessageFactory.createMessage 'RUNTOENDOFMETHOD'
 
   @createEnableAllBreakpointsMessage: ->
-    return MessageUtils.createMessage 'ENABLEALLBREAKPOINTS'
+    return OutgoingMessageFactory.createMessage 'ENABLEALLBREAKPOINTS'
 
   @createDisableAllBreakpointsMessage: ->
-    return MessageUtils.createMessage 'DISABLEALLBREAKPOINTS'
+    return OutgoingMessageFactory.createMessage 'DISABLEALLBREAKPOINTS'
 
   @createStartReplayMessage: (callID) ->
-    return MessageUtils.createMessage 'STARTREPLAY' + MessageUtils.getDelimiter() + callID
+    return OutgoingMessageFactory.createMessage 'STARTREPLAY' + MessageUtils.getDelimiter() + callID
 
   @createStepMessage: ->
-    return MessageUtils.createMessage 'STEP'
+    return OutgoingMessageFactory.createMessage 'STEP'
 
   @createStepOverMessage: ->
-    return MessageUtils.createMessage 'STEPOVER'
+    return OutgoingMessageFactory.createMessage 'STEPOVER'
 
   @createStopReplayMessage: ->
-    return MessageUtils.createMessage 'STOPREPLAY'
+    return OutgoingMessageFactory.createMessage 'STOPREPLAY'
 
   @createRemoveAllBreakpointsMessage: ->
-    return MessageUtils.createMessage 'REMOVEALLBREAKPOINTS'
+    return OutgoingMessageFactory.createMessage 'REMOVEALLBREAKPOINTS'
 
   @createMessage: (msg) ->
     return msg + MessageUtils.getNewLineSymbol()
