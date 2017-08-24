@@ -41,13 +41,13 @@ class IncomingMessageDispatcher
 
     return
 
-  onTableUpdate: (callback) ->
+  onTableUpdated: (callback) ->
     @emitter.on 'table-updated', callback
 
-  onPositionUpdate: (callback) ->
+  onPositionUpdated: (callback) ->
     @emitter.on 'position-updated', callback
 
-  onCallStackUpdate: (callback) ->
+  onCallStackUpdated: (callback) ->
     @emitter.on 'callstack-updated', callback
 
   onReady: (callback) ->

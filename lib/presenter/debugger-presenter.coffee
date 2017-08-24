@@ -30,9 +30,9 @@ class DebuggerPresenter
     @subscriptions.add @socketChannel.onError (error) => @handleChannelError error
     @subscriptions.add @incomingMessageDispatcher.onReady => @handleReady()
     @subscriptions.add @incomingMessageDispatcher.onTerminate => @handleStopping()
-    @subscriptions.add @incomingMessageDispatcher.onPositionUpdate (string) => @emitPositionUpdate string, @isReplay
-    @subscriptions.add @incomingMessageDispatcher.onCallStackUpdate (string) => @callStackFromString string
-    @subscriptions.add @incomingMessageDispatcher.onTableUpdate (string) => @variableTableFromString string
+    @subscriptions.add @incomingMessageDispatcher.onPositionUpdated (string) => @emitPositionUpdate string, @isReplay
+    @subscriptions.add @incomingMessageDispatcher.onCallStackUpdated (string) => @callStackFromString string
+    @subscriptions.add @incomingMessageDispatcher.onTableUpdated (string) => @variableTableFromString string
     @subscriptions.add @incomingMessageDispatcher.onEndOfReplayTape => @handleEndOfReplayTape()
     @subscriptions.add @incomingMessageDispatcher.onAutoSteppingEnabled => @emitAutoSteppingEnabled()
     @subscriptions.add @incomingMessageDispatcher.onAutoSteppingDisabled => @emitAutoSteppingDisabled()
