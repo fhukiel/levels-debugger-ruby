@@ -27,7 +27,7 @@ class DebuggerPresenter
     @subscriptions.add @socketChannel.onError (error) => @handleChannelError error
     @subscriptions.add @incomingMessageDispatcher.onReady => @handleReady()
     @subscriptions.add @incomingMessageDispatcher.onTerminate => @handleStopping()
-    @subscriptions.add @incomingMessageDispatcher.onPositionUpdated (string) => @emitPositionUpdated string, @isReplay
+    @subscriptions.add @incomingMessageDispatcher.onPositionUpdated (string) => @emitPositionUpdated string
     @subscriptions.add @incomingMessageDispatcher.onCallStackUpdated (string) => @callStackFromString string
     @subscriptions.add @incomingMessageDispatcher.onTableUpdated (string) => @variableTableFromString string
     @subscriptions.add @incomingMessageDispatcher.onEndOfReplayTape => @handleEndOfReplayTape()
@@ -91,20 +91,20 @@ class DebuggerPresenter
     if levelsWorkspaceManager.isActiveLevelDebuggable()
       currentPosition = levelsWorkspaceManager.getActiveTextEditorPosition()
       if breakpointManager.toggle currentPosition
-        @sendBreakpointAdded PositionUtils.fromPoint currentPosition
+        @socketChannel.sendMessage OutgoingMessageFactory.createAddBreakpointMessage PositionUtils.fromPoint currentPosition
       else
-        @sendBreakpointRemoved PositionUtils.fromPoint currentPosition
+        @socketChannel.sendMessage OutgoingMessageFactory.createRemoveBreakpointMessage PositionUtils.fromPoint currentPosition
     return
 
   removeAllBreakpoints: ->
     breakpointManager.removeAll()
-    @sendRemoveAllBreakpoints()
+    @socketChannel.sendMessage OutgoingMessageFactory.createRemoveAllBreakpointsMessage()
     return
 
   enableDisableAllBreakpoints: ->
     breakpointManager.flip()
     @sendEnableDisableAllBreakpoints()
-    @emitEnableDisableAllBreakpoints breakpointManager.getAreBreakpointsEnabled()
+    @emitter.emit 'enable-disable-all-breakpoints', breakpointManager.getAreBreakpointsEnabled()
     return
 
   runToNextBreakpoint: ->
@@ -120,8 +120,8 @@ class DebuggerPresenter
     return
 
   startReplay: (element) ->
-    id = element.getAttribute 'data-call-id'
-    @socketChannel.sendMessage OutgoingMessageFactory.createStartReplayMessage "#{id}"
+    callID = element.getAttribute 'data-call-id'
+    @socketChannel.sendMessage OutgoingMessageFactory.createStartReplayMessage "#{callID}"
 
     if !@isReplay && @currentStatusEvent.getStatus() != StatusUpdateEventFactory.getEndOfTapeStatus()
       @lastEventBeforeReplay = @currentStatusEvent
@@ -136,7 +136,7 @@ class DebuggerPresenter
 
   popFromCallStack: ->
     @callStack.pop()
-    @emitCallStackUpdate()
+    @emitCallStackUpdated()
     return
 
   saveDocument: ->
@@ -147,14 +147,15 @@ class DebuggerPresenter
 
       if saveHere?
         textEditor.saveAs saveHere
-        levelsWorkspaceManager.getActiveTerminal().show()
-        levelsWorkspaceManager.getActiveTerminal().focus()
+        terminal = levelsWorkspaceManager.getActiveTerminal()
+        terminal.show()
+        terminal.focus()
         return true
     return false
 
   variableTableFromString: (string) ->
     @variableTable = variableTableManager.fromString string, @variableTable
-    @emitVariableTableUpdate()
+    @emitVariableTableUpdated()
     return
 
   getVariableTable: ->
@@ -162,7 +163,7 @@ class DebuggerPresenter
 
   callStackFromString: (string) ->
     @callStack = CallStackFactory.fromString string
-    @emitCallStackUpdate()
+    @emitCallStackUpdated()
     return
 
   getCallStack: ->
@@ -178,18 +179,6 @@ class DebuggerPresenter
     atom.commands.dispatch workspaceView, 'levels:stop-execution'
     return
 
-  sendBreakpointRemoved: (breakpointPosition) ->
-    @socketChannel.sendMessage OutgoingMessageFactory.createRemoveBreakpointMessage breakpointPosition
-    return
-
-  sendBreakpointAdded: (breakpointPosition) ->
-    @socketChannel.sendMessage OutgoingMessageFactory.createAddBreakpointMessage breakpointPosition
-    return
-
-  sendRemoveAllBreakpoints: ->
-    @socketChannel.sendMessage OutgoingMessageFactory.createRemoveAllBreakpointsMessage()
-    return
-
   sendEnableDisableAllBreakpoints: ->
     if breakpointManager.getAreBreakpointsEnabled()
       @socketChannel.sendMessage OutgoingMessageFactory.createEnableAllBreakpointsMessage()
@@ -200,7 +189,7 @@ class DebuggerPresenter
   flipAndSortVariableTable: ->
     variableTableManager.flipSortMode()
     variableTableManager.sort @variableTable
-    @emitVariableTableUpdate()
+    @emitVariableTableUpdated()
     return
 
   onRunning: (callback) ->
@@ -233,19 +222,7 @@ class DebuggerPresenter
   onEnableDisableAllControls: (callback) ->
     @emitter.on 'enable-disable-all-commands', callback
 
-  emitEnableDisableAllBreakpoints: (enabled) ->
-    @emitter.emit 'enable-disable-all-breakpoints', enabled
-    return
-
-  emitDebuggingStarted: ->
-    @emitter.emit 'running'
-    return
-
-  emitDebuggingStopped: ->
-    @emitter.emit 'stopped'
-    return
-
-  emitPositionUpdated: (positionString, isReplay) ->
+  emitPositionUpdated: (positionString) ->
     splitted = positionString.split MessageUtils.getDelimiter()
     currentPosition = new Position +splitted[1], +splitted[2]
 
@@ -257,16 +234,16 @@ class DebuggerPresenter
     @positionMarker = levelsWorkspaceManager.addPositionMarker currentPosition
 
     @emitter.emit 'position-updated', currentPosition
-    @emitStatusUpdate StatusUpdateEventFactory.createWaiting isReplay
+    @emitStatusUpdate StatusUpdateEventFactory.createWaiting @isReplay
 
-    atom.workspace.getActiveTextEditor().scrollToBufferPosition PositionUtils.toPoint currentPosition
+    levelsWorkspaceManager.getActiveTextEditor()?.scrollToBufferPosition PositionUtils.toPoint currentPosition
     return
 
-  emitCallStackUpdate: ->
+  emitCallStackUpdated: ->
     @emitter.emit 'call-stack-updated'
     return
 
-  emitVariableTableUpdate: ->
+  emitVariableTableUpdated: ->
     @emitter.emit 'variable-table-updated'
     return
 
@@ -294,13 +271,15 @@ class DebuggerPresenter
 
   handleWorkspaceEntered: ->
     @handleLevelChanged()
-    levelsWorkspaceManager.getWorkspace().getActiveLevelCodeEditor()?.onDidStartExecution => @handleExecutableStarted()
-    levelsWorkspaceManager.getWorkspace().getActiveLevelCodeEditor()?.onDidStopExecution => @handleExecutableStopped()
+    editor = levelsWorkspaceManager.getActiveLevelCodeEditor()
+    editor?.onDidStartExecution => @handleExecutableStarted()
+    editor?.onDidStopExecution => @handleExecutableStopped()
     levelsWorkspaceManager.getWorkspace().onDidChangeActiveLevel => @handleLevelChanged()
     return
 
   handleWorkspaceExited: ->
     @handleLevelChanged()
+    return
 
   handleExecutableStarted: ->
     if @isExecutableInDebuggingMode
@@ -317,15 +296,15 @@ class DebuggerPresenter
     return
 
   handleReady: ->
-    @emitDebuggingStarted()
+    @emitter.emit 'running'
     for bp in breakpointManager.getBreakpoints()
-      @sendBreakpointAdded bp.getPosition()
+      @socketChannel.sendMessage OutgoingMessageFactory.createAddBreakpointMessage bp.getPosition()
     @sendEnableDisableAllBreakpoints()
     return
 
   handleStopping: ->
     @isReplay = false
-    @emitDebuggingStopped()
+    @emitter.emit 'stopped'
     if @positionMarker?
       @positionMarker.destroy()
     breakpointManager.restoreHiddenBreakpoint()
