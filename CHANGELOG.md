@@ -1,3 +1,8 @@
+## 0.4.3 (2017-08-25)
+
+* Made the status div scrollable when the status text is too long
+* Moved the user manual to a wiki page
+
 ## 0.4.2 (2017-08-19)
 
 * Changed the scrolling behavior of the stack and variable table so that the table headers are always visible
