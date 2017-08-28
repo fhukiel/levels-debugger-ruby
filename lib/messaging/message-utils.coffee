@@ -1,16 +1,13 @@
 module.exports =
 class MessageUtils
-  @getDelimiter: ->
-    return ';'
+  @DELIMITER: ';'
 
-  @getAssignSymbol: ->
-    return '=*='
+  @ASSIGN_SYMBOL: '=*='
 
-  @getFinalSymbol: ->
-    return '/!/'
+  @FINAL_SYMBOL: '/!/'
 
-  @getNewLineSymbol: ->
+  @getNewlineSymbol: ->
     return require('os').EOL
 
-  @removeNewLineSymbol: (string) ->
-    return string?.replace MessageUtils.getNewLineSymbol(), ''
+  @removeNewlineSymbol: (string) ->
+    return string?.replace MessageUtils.getNewlineSymbol(), ''

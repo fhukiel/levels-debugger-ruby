@@ -14,13 +14,13 @@ class VariableTableManager
 
   fromString: (string, oldTable) ->
     variableTable = []
-    splitted = string?.split MessageUtils.getDelimiter()
+    splitted = string?.split MessageUtils.DELIMITER
 
     if splitted?
       for i in [1..splitted.length]
         string = splitted[i]
         if string?
-          innerSplitted = string.split MessageUtils.getAssignSymbol()
+          innerSplitted = string.split MessageUtils.ASSIGN_SYMBOL
           entry = new VariableTableEntry innerSplitted[0], innerSplitted[1], innerSplitted[2]
           variableTable.push entry
 

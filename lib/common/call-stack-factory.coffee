@@ -4,7 +4,7 @@ module.exports =
 class CallStackFactory
   @fromString: (string) ->
     callStack = []
-    splitted = string?.split MessageUtils.getDelimiter()
+    splitted = string?.split MessageUtils.DELIMITER
 
     if splitted?
       for i in [1..splitted.length]

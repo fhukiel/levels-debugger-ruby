@@ -8,9 +8,9 @@ class IncomingMessageDispatcher
 
   dispatch: (message) ->
     if message?
-      if message.includes MessageUtils.getFinalSymbol()
-        for msg in message.split MessageUtils.getFinalSymbol()
-          @handleMessage MessageUtils.removeNewLineSymbol msg
+      if message.includes MessageUtils.FINAL_SYMBOL
+        for msg in message.split MessageUtils.FINAL_SYMBOL
+          @handleMessage MessageUtils.removeNewlineSymbol msg
       else
         @handleMessage message
 
@@ -18,7 +18,7 @@ class IncomingMessageDispatcher
 
   handleMessage: (message) ->
     if message? && message.length != 0
-      messageCategory = message.split(MessageUtils.getDelimiter())[0]
+      messageCategory = message.split(MessageUtils.DELIMITER)[0]
 
       if messageCategory == 'TABLEUPDATED'
         @emitter.emit 'table-updated', message

@@ -223,7 +223,7 @@ class DebuggerPresenter
     @emitter.on 'enable-disable-all-commands', callback
 
   emitPositionUpdated: (positionString) ->
-    splitted = positionString.split MessageUtils.getDelimiter()
+    splitted = positionString.split MessageUtils.DELIMITER
     currentPosition = new Position +splitted[1], +splitted[2]
 
     breakpointManager.restoreHiddenBreakpoint()

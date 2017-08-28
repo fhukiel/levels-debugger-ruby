@@ -3,13 +3,13 @@ MessageUtils = require './message-utils'
 module.exports =
 class OutgoingMessageFactory
   @positionToString: (position) ->
-    return position.getLine() + MessageUtils.getDelimiter() + position.getColumn()
+    return position.getLine() + MessageUtils.DELIMITER + position.getColumn()
 
   @createAddBreakpointMessage: (position) ->
-    return OutgoingMessageFactory.createMessage 'ADDBREAKPOINT' + MessageUtils.getDelimiter() + OutgoingMessageFactory.positionToString position
+    return OutgoingMessageFactory.createMessage 'ADDBREAKPOINT' + MessageUtils.DELIMITER + OutgoingMessageFactory.positionToString position
 
   @createRemoveBreakpointMessage: (position) ->
-    return OutgoingMessageFactory.createMessage 'REMOVEBREAKPOINT' + MessageUtils.getDelimiter() + OutgoingMessageFactory.positionToString position
+    return OutgoingMessageFactory.createMessage 'REMOVEBREAKPOINT' + MessageUtils.DELIMITER + OutgoingMessageFactory.positionToString position
 
   @createRunToNextBreakpointMessage: ->
     return OutgoingMessageFactory.createMessage 'RUNTONEXTBREAKPOINT'
@@ -24,7 +24,7 @@ class OutgoingMessageFactory
     return OutgoingMessageFactory.createMessage 'DISABLEALLBREAKPOINTS'
 
   @createStartReplayMessage: (callID) ->
-    return OutgoingMessageFactory.createMessage 'STARTREPLAY' + MessageUtils.getDelimiter() + callID
+    return OutgoingMessageFactory.createMessage 'STARTREPLAY' + MessageUtils.DELIMITER + callID
 
   @createStepMessage: ->
     return OutgoingMessageFactory.createMessage 'STEP'
@@ -39,4 +39,4 @@ class OutgoingMessageFactory
     return OutgoingMessageFactory.createMessage 'REMOVEALLBREAKPOINTS'
 
   @createMessage: (msg) ->
-    return msg + MessageUtils.getNewLineSymbol()
+    return msg + MessageUtils.getNewlineSymbol()

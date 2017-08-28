@@ -5,8 +5,6 @@ class Breakpoint
   getPosition: ->
     return @position
 
-  setPosition: (@position) ->
-
   destroyMarker: ->
     @marker?.destroy()
     @marker = null

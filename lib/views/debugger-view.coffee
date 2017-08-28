@@ -280,7 +280,7 @@ class DebuggerView
     @clearTableBody @stackBodyTableBody
 
     for value in @debuggerPresenter.getCallStack() by -1
-      splitted = value.split MessageUtils.getAssignSymbol()
+      splitted = value.split MessageUtils.ASSIGN_SYMBOL
       methodAndArgs = splitted[0]
       callID = splitted[1]
 
