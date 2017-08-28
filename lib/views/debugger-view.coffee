@@ -184,6 +184,8 @@ class DebuggerView
     @subscriptions = new CompositeDisposable
     @subscriptions.add @debuggerPresenter.onRunning => @handleRunning()
     @subscriptions.add @debuggerPresenter.onStopped => @handleStopped()
+    @subscriptions.add @debuggerPresenter.onReplayStarted => @handleReplayStarted()
+    @subscriptions.add @debuggerPresenter.onReplayStopped => @handleReplayStopped()
     @subscriptions.add @debuggerPresenter.onCallStackUpdated => @updateCallStack()
     @subscriptions.add @debuggerPresenter.onVariableTableUpdated => @updateVariableTable()
     @subscriptions.add @debuggerPresenter.onStatusUpdated (status) => @handleStatusUpdated status
@@ -192,9 +194,12 @@ class DebuggerView
     @subscriptions.add @debuggerPresenter.onEnableDisableAllBreakpoints (enable) => @handleEnableDisableAllBreakpoints enable
     @subscriptions.add @debuggerPresenter.onEnableDisableAllControls (enable) => @handleEnableDisableAllControls enable
 
+    @debuggerPresenter.initDebuggerView()
+
   destroy: ->
     @element.remove()
     @subscriptions.dispose()
+    return
 
   getTitle: ->
     return 'Levels Debugger Ruby'
@@ -211,6 +216,15 @@ class DebuggerView
   getElement: ->
     return @element
 
+  toggleBreakpoint: ->
+    @debuggerPresenter.toggleBreakpoint()
+
+  removeAllBreakpoints: ->
+    @debuggerPresenter.removeAllBreakpoints()
+
+  enableDisableAllBreakpoints: ->
+    @debuggerPresenter.enableDisableAllBreakpoints()
+
   startDebugging: ->
     @debuggerPresenter.startDebugging()
 
@@ -223,40 +237,89 @@ class DebuggerView
   stepOver: ->
     @debuggerPresenter.stepOver()
 
-  runToNextBreakpoint: ->
-    @debuggerPresenter.runToNextBreakpoint()
-
   runToEndOfMethod: ->
     @debuggerPresenter.runToEndOfMethod()
 
-  toggleBreakpoint: ->
-    @debuggerPresenter.toggleBreakpoint()
-
-  removeAllBreakpoints: ->
-    @debuggerPresenter.removeAllBreakpoints()
-
-  enableDisableAllBreakpoints: ->
-    @debuggerPresenter.enableDisableAllBreakpoints()
+  runToNextBreakpoint: ->
+    @debuggerPresenter.runToNextBreakpoint()
 
   startReplay: (event) ->
-    @stopReplayButton.disabled = false
     @debuggerPresenter.startReplay event.target
 
   stopReplay: ->
-    @stopReplayButton.disabled = true
     @debuggerPresenter.stopReplay()
 
+  clearTableBody: (tableBody) ->
+    i = tableBody.rows.length
+    while i-- > 0
+      tableBody.deleteRow i
+    return
+
+  clearTables: ->
+    @clearTableBody @stackBodyTableBody
+    @clearTableBody @variablesBodyTableBody
+    return
+
+  sortVariableTableByName: ->
+    @debuggerPresenter.flipAndSortVariableTable()
+    return
+
   enableDisableCommandsOnStartStop: (enabled) ->
+    @startDebuggingButton.disabled = enabled
     @stopDebuggingButton.disabled = !enabled
     @handleEnableDisableSteppingCommands enabled
+    return
+
+  handleRunning: ->
+    @enableDisableCommandsOnStartStop true
+    return
+
+  handleStopped: ->
+    @clearTables()
+    @enableDisableCommandsOnStartStop false
+    @stopReplayButton.disabled = true
+    return
+
+  handleReplayStarted: ->
+    @stopReplayButton.disabled = false
+    return
+
+  handleReplayStopped: ->
+    @stopReplayButton.disabled = true
+    return
+
+  updateCallStack: ->
+    @clearTableBody @stackBodyTableBody
+
+    for entry in @debuggerPresenter.getCallStack() by -1
+      methodAndArgs = entry.getMethodAndArgs()
+      callID = entry.getCallID()
+
+      row = document.createElement 'tr'
+      cellCall = document.createElement 'td'
+      cellCall.innerHTML = methodAndArgs
+      cellCall.title = methodAndArgs
+      cellReplay = document.createElement 'td'
+      replayButton = document.createElement 'button'
+      replayButton.className = 'btn'
+      replayButton.innerHTML = 'Replay'
+      replayButton.title = 'Replay'
+      replayButton.setAttribute 'data-call-id', callID
+      replayButton.addEventListener 'click', (event) => @startReplay event
+      cellReplay.appendChild replayButton
+      row.appendChild cellCall
+      row.appendChild cellReplay
+      @stackBodyTableBody.appendChild row
+
+    return
 
   updateVariableTable: ->
     @clearTableBody @variablesBodyTableBody
 
     for entry in @debuggerPresenter.getVariableTable()
-      name = "#{entry.getName()}"
-      value = "#{entry.getValue()}"
-      address = "#{entry.getAddress()}"
+      name = entry.getName()
+      value = entry.getValue()
+      address = entry.getAddress()
       rowClass = if entry.isChanged() then 'highlight' else ''
 
       row = document.createElement 'tr'
@@ -275,46 +338,14 @@ class DebuggerView
       row.appendChild cellAddress
       @variablesBodyTableBody.appendChild row
 
-  updateCallStack: ->
-    @clearTableBody @stackBodyTableBody
+    return
 
-    for value in @debuggerPresenter.getCallStack() by -1
-      methodAndArgs = "#{value.getMethodAndArgs()}"
-      callID = "#{value.getCallID()}"
-
-      row = document.createElement 'tr'
-      cellCall = document.createElement 'td'
-      cellCall.innerHTML = methodAndArgs
-      cellCall.title = methodAndArgs
-      cellReplay = document.createElement 'td'
-      replayButton = document.createElement 'button'
-      replayButton.className = 'btn'
-      replayButton.innerHTML = 'Replay'
-      replayButton.title = 'Replay'
-      replayButton.setAttribute 'data-call-id', callID
-      replayButton.addEventListener 'click', (event) => @startReplay event
-      cellReplay.appendChild replayButton
-      row.appendChild cellCall
-      row.appendChild cellReplay
-      @stackBodyTableBody.appendChild row
-
-  reset: ->
-    @clearTableBody @stackBodyTableBody
-    @clearTableBody @variablesBodyTableBody
-
-  sortVariableTableByName: ->
-    @debuggerPresenter.flipAndSortVariableTable()
-
-  handleRunning: ->
-    @reset()
-    @enableDisableCommandsOnStartStop true
-    @startDebuggingButton.disabled = true
-
-  handleStopped: ->
-    @reset()
-    @enableDisableCommandsOnStartStop false
-    @stopReplayButton.disabled = true
-    @startDebuggingButton.disabled = false
+  handleStatusUpdated: (event) ->
+    @statusDiv.className = 'status ' + event.getStyleClass()
+    @statusDiv.innerHTML = event.getDisplayMessage()
+    @statusDiv.title = event.getDisplayMessage()
+    @handleEnableDisableSteppingCommands !event.isBlockingStatus()
+    return
 
   handleEnableDisableSteppingCommands: (enabled) ->
     disabled = !enabled
@@ -322,22 +353,14 @@ class DebuggerView
     @stepOverButton.disabled = disabled
     @runToNextBreakpointButton.disabled = disabled
     @runToEndOfMethodButton.disabled = disabled
+    return
 
   handleEnableDisableAllBreakpoints: (enabled) ->
     text = if enabled then 'Disable All Breakpoints' else 'Enable All Breakpoints'
     @enableDisableAllBreakpointsButton.innerHTML = text
     @enableDisableAllBreakpointsButton.title = text
-
-  handleStatusUpdated: (event) ->
-    @statusDiv.className = 'status ' + event.getStyleClass()
-    @statusDiv.innerHTML = event.getDisplayMessage()
-    @statusDiv.title = event.getDisplayMessage()
-    @handleEnableDisableSteppingCommands !event.isBlockingStatus()
+    return
 
   handleEnableDisableAllControls: (enabled) ->
     @element.setAttribute 'disabled', !enabled
-
-  clearTableBody: (tableBody) ->
-    i = tableBody.rows.length
-    while i-- > 0
-      tableBody.deleteRow i
+    return

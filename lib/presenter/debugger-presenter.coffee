@@ -22,6 +22,8 @@ class DebuggerPresenter
     @currentStatusEvent = StatusUpdateEventFactory.createStopped false
     @lastEventBeforeDisabling = @currentStatusEvent
     @lastEventBeforeReplay = null
+    @autoSteppingEnabled = false
+    @allControlsEnabled = true
 
     @subscriptions = new CompositeDisposable
     @subscriptions.add @socketChannel.onError (error) => @handleChannelError error
@@ -41,12 +43,38 @@ class DebuggerPresenter
     @subscriptions.dispose()
     return
 
+  initDebuggerView: ->
+    if @isExecutableInDebuggingMode
+      @emitRunning()
+      @emitVariableTableUpdated()
+      @emitCallStackUpdated()
+
+      if @autoSteppingEnabled
+        @emitAutoSteppingEnabled()
+      else
+        @emitAutoSteppingDisabled()
+
+      if @isReplay
+        @emitReplayStarted()
+
+    @emitEnableDisableAllBreakpoints()
+    @emitStatusUpdate @currentStatusEvent
+    @emitEnableDisableAllControls @allControlsEnabled
+
+  disconnectAndCleanup: ->
+    @variableTable = []
+    @callStack = []
+    @socketChannel.disconnect()
+    executor.stopDebugger()
+    @isExecutableInDebuggingMode = false
+    @stopExecutable()
+    variableTableManager.resetSortMode()
+    return
+
   setLevelsWorkspace: (workspace) ->
     levelsWorkspaceManager.attachWorkspace workspace
     workspace.onDidEnterWorkspace => @handleWorkspaceEntered()
     workspace.onDidExitWorkspace => @handleWorkspaceExited()
-
-    @handleWorkspaceEntered()
     return
 
   startDebugging: ->
@@ -63,16 +91,6 @@ class DebuggerPresenter
   stopDebugging: ->
     if @isExecutableInDebuggingMode
       @disconnectAndCleanup()
-    return
-
-  disconnectAndCleanup: ->
-    @variableTable = []
-    @callStack = []
-    @socketChannel.disconnect()
-    executor.stopDebugger()
-    @isExecutableInDebuggingMode = false
-    @stopExecutable()
-    variableTableManager.resetSortMode()
     return
 
   step: ->
@@ -104,7 +122,7 @@ class DebuggerPresenter
   enableDisableAllBreakpoints: ->
     breakpointManager.flip()
     @sendEnableDisableAllBreakpoints()
-    @emitter.emit 'enable-disable-all-breakpoints', breakpointManager.getAreBreakpointsEnabled()
+    @emitEnableDisableAllBreakpoints()
     return
 
   runToNextBreakpoint: ->
@@ -121,22 +139,20 @@ class DebuggerPresenter
 
   startReplay: (element) ->
     callID = element.getAttribute 'data-call-id'
-    @socketChannel.sendMessage OutgoingMessageFactory.createStartReplayMessage "#{callID}"
+    @socketChannel.sendMessage OutgoingMessageFactory.createStartReplayMessage callID
 
     if !@isReplay && @currentStatusEvent.getStatus() != StatusUpdateEventFactory.END_OF_TAPE_STATUS
       @lastEventBeforeReplay = @currentStatusEvent
     @isReplay = true
+    @emitReplayStarted()
+
     return
 
   stopReplay: ->
     @socketChannel.sendMessage OutgoingMessageFactory.createStopReplayMessage()
     @isReplay = false
+    @emitReplayStopped()
     @emitStatusUpdate @lastEventBeforeReplay
-    return
-
-  popFromCallStack: ->
-    @callStack.pop()
-    @emitCallStackUpdated()
     return
 
   saveDocument: ->
@@ -151,6 +167,7 @@ class DebuggerPresenter
         terminal.show()
         terminal.focus()
         return true
+
     return false
 
   variableTableFromString: (string) ->
@@ -220,10 +237,24 @@ class DebuggerPresenter
     @emitter.on 'enable-disable-all-breakpoints', callback
 
   onEnableDisableAllControls: (callback) ->
-    @emitter.on 'enable-disable-all-commands', callback
+    @emitter.on 'enable-disable-all-controls', callback
 
-  emitPositionUpdated: (positionString) ->
-    splitted = positionString.split MessageUtils.DELIMITER
+  onReplayStarted: (callback) ->
+    @emitter.on 'replay-started', callback
+
+  onReplayStopped: (callback) ->
+    @emitter.on 'replay-stopped', callback
+
+  emitRunning: ->
+    @emitter.emit 'running'
+    return
+
+  emitStopped: ->
+    @emitter.emit 'stopped'
+    return
+
+  emitPositionUpdated: (string) ->
+    splitted = string.split MessageUtils.DELIMITER
     currentPosition = new Position +splitted[0], +splitted[1]
 
     breakpointManager.restoreHiddenBreakpoint()
@@ -247,21 +278,36 @@ class DebuggerPresenter
     @emitter.emit 'variable-table-updated'
     return
 
-  emitAutoSteppingEnabled: ->
-    @emitter.emit 'auto-stepping-enabled'
-    return
-
-  emitAutoSteppingDisabled: ->
-    @emitter.emit 'auto-stepping-disabled'
-    return
-
   emitStatusUpdate: (event) ->
     @emitter.emit 'status-updated', event
     @currentStatusEvent = event
     return
 
+  emitAutoSteppingEnabled: ->
+    @autoSteppingEnabled = true
+    @emitter.emit 'auto-stepping-enabled'
+    return
+
+  emitAutoSteppingDisabled: ->
+    @autoSteppingEnabled = false
+    @emitter.emit 'auto-stepping-disabled'
+    return
+
+  emitEnableDisableAllBreakpoints: ->
+    @emitter.emit 'enable-disable-all-breakpoints', breakpointManager.getAreBreakpointsEnabled()
+    return
+
   emitEnableDisableAllControls: (enabled) ->
-    @emitter.emit 'enable-disable-all-commands', enabled
+    @allControlsEnabled = enabled
+    @emitter.emit 'enable-disable-all-controls', enabled
+    return
+
+  emitReplayStarted: ->
+    @emitter.emit 'replay-started'
+    return
+
+  emitReplayStopped: ->
+    @emitter.emit 'replay-stopped'
     return
 
   handleChannelError: (error) ->
@@ -291,12 +337,11 @@ class DebuggerPresenter
   handleExecutableStopped: ->
     if @isExecutableInDebuggingMode
       @disconnectAndCleanup()
-      @isExecutableInDebuggingMode = false
     @emitEnableDisableAllControls levelsWorkspaceManager.isActiveLevelDebuggable()
     return
 
   handleReady: ->
-    @emitter.emit 'running'
+    @emitRunning()
     for bp in breakpointManager.getBreakpoints()
       @socketChannel.sendMessage OutgoingMessageFactory.createAddBreakpointMessage bp.getPosition()
     @sendEnableDisableAllBreakpoints()
@@ -304,7 +349,9 @@ class DebuggerPresenter
 
   handleStopping: ->
     @isReplay = false
-    @emitter.emit 'stopped'
+    @autoSteppingEnabled = false
+    @allControlsEnabled = levelsWorkspaceManager.isActiveLevelDebuggable()
+    @emitStopped()
     if @positionMarker?
       @positionMarker.destroy()
     breakpointManager.restoreHiddenBreakpoint()
