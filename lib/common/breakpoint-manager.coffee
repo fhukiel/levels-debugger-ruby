@@ -16,7 +16,7 @@ class BreakpointManager
 
   removeAll: ->
     for bp in @breakPoints
-      bp?.destroyMarker()
+      bp.destroyMarker()
 
     @breakPoints = []
     return
@@ -24,7 +24,7 @@ class BreakpointManager
   flip: ->
     @areBreakpointsEnabled = !@areBreakpointsEnabled
     for bp in @breakPoints
-      if bp?.hasMarker()
+      if bp.hasMarker()
         bp.destroyMarker()
         bp.setMarker levelsWorkspaceManager.addBreakpointMarker PositionUtils.toPoint(bp.getPosition()), @areBreakpointsEnabled
     return
@@ -44,7 +44,7 @@ class BreakpointManager
 
   getBreakpoint: (position) ->
     for bp in @breakPoints
-      if bp?.getPosition().isOnSameLine position
+      if bp.getPosition().isOnSameLine position
         return bp
     return null
 

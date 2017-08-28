@@ -123,7 +123,7 @@ class DebuggerPresenter
     callID = element.getAttribute 'data-call-id'
     @socketChannel.sendMessage OutgoingMessageFactory.createStartReplayMessage "#{callID}"
 
-    if !@isReplay && @currentStatusEvent.getStatus() != StatusUpdateEventFactory.getEndOfTapeStatus()
+    if !@isReplay && @currentStatusEvent.getStatus() != StatusUpdateEventFactory.END_OF_TAPE_STATUS
       @lastEventBeforeReplay = @currentStatusEvent
     @isReplay = true
     return
@@ -321,7 +321,7 @@ class DebuggerPresenter
         @emitStatusUpdate @lastEventBeforeDisabling
         @emitEnableDisableAllControls true
       else
-        if @currentStatusEvent.getStatus() != StatusUpdateEventFactory.getDisabledStatus()
+        if @currentStatusEvent.getStatus() != StatusUpdateEventFactory.DISABLED_STATUS
           @lastEventBeforeDisabling = @currentStatusEvent
         @emitStatusUpdate StatusUpdateEventFactory.createDisabled @isReplay
         @emitEnableDisableAllControls false

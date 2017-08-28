@@ -3,19 +3,19 @@ StatusUpdateEvent = require './status-update-event'
 module.exports =
 class StatusUpdateEventFactory
   @createDisabled: (isReplay) ->
-    return StatusUpdateEventFactory.createGeneric isReplay, StatusUpdateEventFactory.getDisabledMessage(), StatusUpdateEventFactory.getDisabledStatus(), true
+    return StatusUpdateEventFactory.createGeneric isReplay, StatusUpdateEventFactory.DISABLED_MESSAGE, StatusUpdateEventFactory.DISABLED_STATUS, true
 
   @createRunning: (isReplay) ->
-    return StatusUpdateEventFactory.createGeneric isReplay, StatusUpdateEventFactory.getRunningMessage(), StatusUpdateEventFactory.getRunningStatus(), true
+    return StatusUpdateEventFactory.createGeneric isReplay, StatusUpdateEventFactory.RUNNING_MESSAGE, StatusUpdateEventFactory.RUNNING_STATUS, true
 
   @createWaiting: (isReplay) ->
-    return StatusUpdateEventFactory.createGeneric isReplay, StatusUpdateEventFactory.getWaitingMessage(), StatusUpdateEventFactory.getWaitingStatus(), false
+    return StatusUpdateEventFactory.createGeneric isReplay, StatusUpdateEventFactory.WAITING_MESSAGE, StatusUpdateEventFactory.WAITING_STATUS, false
 
   @createStopped: (isReplay) ->
-    return StatusUpdateEventFactory.createGeneric isReplay, StatusUpdateEventFactory.getStoppedMessage(), StatusUpdateEventFactory.getStoppedStatus(), true
+    return StatusUpdateEventFactory.createGeneric isReplay, StatusUpdateEventFactory.STOPPED_MESSAGE, StatusUpdateEventFactory.STOPPED_STATUS, true
 
   @createEndOfTape: (isReplay) ->
-    return StatusUpdateEventFactory.createGeneric isReplay, StatusUpdateEventFactory.getEndOfTapeMessage(), StatusUpdateEventFactory.getEndOfTapeStatus(), true
+    return StatusUpdateEventFactory.createGeneric isReplay, StatusUpdateEventFactory.END_OF_TAPE_MESSAGE, StatusUpdateEventFactory.END_OF_TAPE_STATUS, true
 
   @createGeneric: (isReplay, message, status, isBlocking) ->
     msg = StatusUpdateEventFactory.createMessage isReplay, message
@@ -33,32 +33,22 @@ class StatusUpdateEventFactory
   @createMessage: (isReplay, message) ->
     return if isReplay then '(REPLAY) ' + message else message
 
-  @getRunningStatus: ->
-    return 'running'
+  @RUNNING_STATUS: 'running'
 
-  @getWaitingStatus: ->
-    return 'waiting'
+  @WAITING_STATUS: 'waiting'
 
-  @getStoppedStatus: ->
-    return 'stopped'
+  @STOPPED_STATUS: 'stopped'
 
-  @getEndOfTapeStatus: ->
-    return 'endoftape'
+  @END_OF_TAPE_STATUS: 'endoftape'
 
-  @getDisabledStatus: ->
-    return 'disabled'
+  @DISABLED_STATUS: 'disabled'
 
-  @getRunningMessage: ->
-    return 'Debugger Running'
+  @RUNNING_MESSAGE: 'Debugger Running'
 
-  @getWaitingMessage: ->
-    return 'Debugger Waiting For Step'
+  @WAITING_MESSAGE: 'Debugger Waiting For Step'
 
-  @getStoppedMessage: ->
-    return 'Debugger Stopped'
+  @STOPPED_MESSAGE: 'Debugger Stopped'
 
-  @getEndOfTapeMessage: ->
-    return 'End Of Tape'
+  @END_OF_TAPE_MESSAGE: 'End Of Tape'
 
-  @getDisabledMessage: ->
-    return 'Level Not Debuggable'
+  @DISABLED_MESSAGE: 'Level Not Debuggable'
