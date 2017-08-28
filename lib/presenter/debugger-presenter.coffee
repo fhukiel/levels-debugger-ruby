@@ -75,17 +75,18 @@ class DebuggerPresenter
     levelsWorkspaceManager.attachWorkspace workspace
     workspace.onDidEnterWorkspace => @handleWorkspaceEntered()
     workspace.onDidExitWorkspace => @handleWorkspaceExited()
+    @handleWorkspaceEntered()
     return
 
   startDebugging: ->
-    if @saveDocument() && !@isExecutableInDebuggingMode
+    if !@isExecutableInDebuggingMode && @saveDocument()
       executor.startDebugger()
     return
 
   startExecutableAndConnect: ->
     @socketChannel.connect()
     @isExecutableInDebuggingMode = true
-    @runExecutable()
+    @startExecutable()
     return
 
   stopDebugging: ->
@@ -186,14 +187,13 @@ class DebuggerPresenter
   getCallStack: ->
     return @callStack
 
-  runExecutable: ->
+  startExecutable: ->
     editor = levelsWorkspaceManager.getActiveLevelCodeEditor()
     editor.startExecution {runExecArgs: ['-d']}
     return
 
   stopExecutable: ->
-    workspaceView = atom.views.getView atom.workspace
-    atom.commands.dispatch workspaceView, 'levels:stop-execution'
+    levelsWorkspaceManager.getActiveLevelCodeEditor().stopExecution()
     return
 
   sendEnableDisableAllBreakpoints: ->
@@ -350,7 +350,6 @@ class DebuggerPresenter
   handleStopping: ->
     @isReplay = false
     @autoSteppingEnabled = false
-    @allControlsEnabled = levelsWorkspaceManager.isActiveLevelDebuggable()
     @emitStopped()
     if @positionMarker?
       @positionMarker.destroy()
