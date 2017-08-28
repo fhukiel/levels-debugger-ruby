@@ -6,13 +6,12 @@ class CallStackFactory
   @fromString: (string) ->
     callStack = []
 
-    if string.length != 0
-      splitted = string?.split MessageUtils.DELIMITER
+    if string? && string.length != 0
+      splitted = string.split MessageUtils.DELIMITER
 
-      if splitted?
-        for elem in splitted
-          innerSplitted = elem.split MessageUtils.ASSIGN_SYMBOL
-          entry = new CallStackEntry innerSplitted[0], innerSplitted[1]
-          callStack.push entry
+      for elem in splitted
+        innerSplitted = elem.split MessageUtils.ASSIGN_SYMBOL
+        entry = new CallStackEntry innerSplitted[0], innerSplitted[1]
+        callStack.push entry
 
     return callStack
