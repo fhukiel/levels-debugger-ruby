@@ -33,6 +33,8 @@ class DebuggerPresenter
     @subscriptions.add @incomingMessageDispatcher.onEndOfReplayTape => @handleEndOfReplayTape()
     @subscriptions.add @incomingMessageDispatcher.onAutoSteppingEnabled => @emitAutoSteppingEnabled()
     @subscriptions.add @incomingMessageDispatcher.onAutoSteppingDisabled => @emitAutoSteppingDisabled()
+    @subscriptions.add executor.onReady => @startExecutableAndConnect()
+    @subscriptions.add executor.onStop => @handleStopping()
 
   destroy: ->
     @disconnectAndCleanup()
@@ -50,8 +52,6 @@ class DebuggerPresenter
   startDebugging: ->
     if @saveDocument() && !@isExecutableInDebuggingMode
       executor.startDebugger()
-      executor.onReady => @startExecutableAndConnect()
-      executor.onStop => @handleStopping()
     return
 
   startExecutableAndConnect: ->

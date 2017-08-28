@@ -3,16 +3,22 @@ path                       = require 'path'
 
 class Executor
   constructor: ->
+    @emitter = new Emitter
     @resetFlags()
 
+  destroy: ->
+    @stopDebugger()
+    @emitter.dispose()
+    return
+
   startDebugger: ->
-    debuggerPath = path.join __dirname, 'debugger.jar'
-    command = 'java'
-    args = ['-jar', debuggerPath]
-    stdout = (output) => @handleOutput output
-    exit = (code) => @handleExit code
-    @process = new BufferedProcess {command, args, stdout, exit}
-    @emitter = new Emitter
+    if !@process?
+      debuggerPath = path.join __dirname, 'debugger.jar'
+      command = 'java'
+      args = ['-jar', debuggerPath]
+      stdout = (output) => @handleOutput output
+      exit = (code) => @handleExit code
+      @process = new BufferedProcess {command, args, stdout, exit}
     return
 
   stopDebugger: ->
@@ -22,9 +28,9 @@ class Executor
     return
 
   handleExit: (code) ->
-    @emitStop()
-    @emitter.dispose()
+    @process = null
     @resetFlags()
+    @emitStop()
     return
 
   handleOutput: (output) ->
