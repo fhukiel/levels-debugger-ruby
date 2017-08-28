@@ -224,7 +224,7 @@ class DebuggerPresenter
 
   emitPositionUpdated: (positionString) ->
     splitted = positionString.split MessageUtils.DELIMITER
-    currentPosition = new Position +splitted[1], +splitted[2]
+    currentPosition = new Position +splitted[0], +splitted[1]
 
     breakpointManager.restoreHiddenBreakpoint()
     breakpointManager.hideBreakpoint currentPosition

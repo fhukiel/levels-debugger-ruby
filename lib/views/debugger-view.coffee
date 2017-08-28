@@ -1,5 +1,4 @@
 {CompositeDisposable} = require 'atom'
-MessageUtils          = require '../messaging/message-utils'
 
 module.exports =
 class DebuggerView
@@ -280,9 +279,8 @@ class DebuggerView
     @clearTableBody @stackBodyTableBody
 
     for value in @debuggerPresenter.getCallStack() by -1
-      splitted = value.split MessageUtils.ASSIGN_SYMBOL
-      methodAndArgs = splitted[0]
-      callID = splitted[1]
+      methodAndArgs = "#{value.getMethodAndArgs()}"
+      callID = "#{value.getCallID()}"
 
       row = document.createElement 'tr'
       cellCall = document.createElement 'td'

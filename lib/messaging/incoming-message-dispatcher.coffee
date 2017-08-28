@@ -24,12 +24,14 @@ class IncomingMessageDispatcher
     if message? && message.length != 0
       messageCategory = message.split(MessageUtils.DELIMITER)[0]
 
+      msg = message.substring messageCategory.length + 1
+
       if messageCategory == 'TABLEUPDATED'
-        @emitter.emit 'table-updated', message
+        @emitter.emit 'table-updated', msg
       else if messageCategory == 'POSITIONUPDATED'
-        @emitter.emit 'position-updated', message
+        @emitter.emit 'position-updated', msg
       else if messageCategory == 'CALLSTACKUPDATED'
-        @emitter.emit 'callstack-updated', message
+        @emitter.emit 'callstack-updated', msg
       else if messageCategory == 'READY'
         @emitter.emit 'ready'
       else if messageCategory == 'TERMINATECOMMUNICATION'

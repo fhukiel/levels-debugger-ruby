@@ -1,14 +1,18 @@
-MessageUtils = require '../messaging/message-utils'
+CallStackEntry = require './call-stack-entry'
+MessageUtils   = require '../messaging/message-utils'
 
 module.exports =
 class CallStackFactory
   @fromString: (string) ->
     callStack = []
-    splitted = string?.split MessageUtils.DELIMITER
 
-    if splitted?
-      for i in [1..splitted.length]
-        if splitted[i]?
-          callStack.push splitted[i]
+    if string.length != 0
+      splitted = string?.split MessageUtils.DELIMITER
+
+      if splitted?
+        for elem in splitted
+          innerSplitted = elem.split MessageUtils.ASSIGN_SYMBOL
+          entry = new CallStackEntry innerSplitted[0], innerSplitted[1]
+          callStack.push entry
 
     return callStack

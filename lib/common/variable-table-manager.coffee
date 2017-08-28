@@ -14,18 +14,18 @@ class VariableTableManager
 
   fromString: (string, oldTable) ->
     variableTable = []
-    splitted = string?.split MessageUtils.DELIMITER
 
-    if splitted?
-      for i in [1..splitted.length]
-        string = splitted[i]
-        if string?
-          innerSplitted = string.split MessageUtils.ASSIGN_SYMBOL
+    if string.length != 0
+      splitted = string?.split MessageUtils.DELIMITER
+
+      if splitted?
+        for elem in splitted
+          innerSplitted = elem.split MessageUtils.ASSIGN_SYMBOL
           entry = new VariableTableEntry innerSplitted[0], innerSplitted[1], innerSplitted[2]
           variableTable.push entry
 
-      @sort variableTable
-      @markChangedEntries oldTable, variableTable
+        @sort variableTable
+        @markChangedEntries oldTable, variableTable
 
     return variableTable
 
