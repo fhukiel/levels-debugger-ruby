@@ -10,7 +10,7 @@ module.exports =
     packageDeps.install('levels-debugger-ruby').then console.log 'All dependencies installed, good to go!'
 
     incomingMessageDispatcher = new IncomingMessageDispatcher
-    socketChannel = new SocketChannel incomingMessageDispatcher
+    socketChannel = new SocketChannel 'localhost', 59599, incomingMessageDispatcher
     @debuggerPresenter = new DebuggerPresenter incomingMessageDispatcher, socketChannel
     @debuggerView = new DebuggerView @debuggerPresenter
 
@@ -48,7 +48,7 @@ module.exports =
   handleOnDidDestroyPaneItem: (event) ->
     if event.item.getURI() == 'atom://levels-debugger-ruby'
       incomingMessageDispatcher = new IncomingMessageDispatcher
-      socketChannel = new SocketChannel incomingMessageDispatcher
+      socketChannel = new SocketChannel 'localhost', 59599, incomingMessageDispatcher
       @debuggerPresenter = new DebuggerPresenter incomingMessageDispatcher, socketChannel
       @debuggerView = new DebuggerView @debuggerPresenter
       @debuggerPresenter.setLevelsWorkspace @levelsWorkspace

@@ -3,28 +3,29 @@ net       = require 'net'
 
 module.exports =
 class SocketChannel
-  constructor: (@dispatcher) ->
-    @port = 59599
-    @host = 'localhost'
+  constructor: (@host, @port, @dispatcher) ->
     @emitter = new Emitter
     @available = false
 
+  destroy: ->
+    @disconnect()
+    @emitter.dispose()
+
   connect: ->
-    @socket = net.createConnection @port, @host
-    @socket.setNoDelay true
-    @socket.on 'close', => @handleClose()
-    @socket.on 'connect', => @handleConnect()
-    @socket.on 'data', (data) => @handleData data
-    @socket.on 'error', (error) => @handleError error
-    @socket.on 'timeout', => @handleTimeout()
+    if !@socket?
+      @socket = net.createConnection @port, @host
+      @socket.setNoDelay true
+      @socket.on 'close', => @handleClose()
+      @socket.on 'connect', => @handleConnect()
+      @socket.on 'data', (data) => @handleData data
+      @socket.on 'error', (error) => @handleError error
+      @socket.on 'timeout', => @handleTimeout()
     return
 
   disconnect: ->
     if @socket?
       @socket.end()
       @socket.destroy()
-
-    @available = false
     return
 
   handleClose: ->
@@ -41,13 +42,12 @@ class SocketChannel
     return
 
   handleError: (error) ->
-    console.log "An error occurred: #{error}"
-    @emitter.emit 'channel-error'
+    console.log "A channel error occurred: #{error}"
+    @emitError()
     return
 
   handleTimeout: ->
-    @socket.destroy()
-    @available = false
+    @disconnect()
     return
 
   sendMessage: (msg) ->
@@ -57,5 +57,9 @@ class SocketChannel
       console.log "Cannot send message '#{msg}', channel not available!"
     return
 
+  emitError: ->
+    @emitter.emit 'error'
+    return
+
   onError: (callback) ->
-    @emitter.on 'channel-error', callback
+    @emitter.on 'error', callback
