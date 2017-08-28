@@ -9,9 +9,9 @@ module.exports =
   activate: (state) ->
     packageDeps.install('levels-debugger-ruby').then console.log 'All dependencies installed, good to go!'
 
-    incomingMessageDispatcher = new IncomingMessageDispatcher
-    socketChannel = new SocketChannel 'localhost', 59599, incomingMessageDispatcher
-    @debuggerPresenter = new DebuggerPresenter incomingMessageDispatcher, socketChannel
+    @incomingMessageDispatcher = new IncomingMessageDispatcher
+    @socketChannel = new SocketChannel 'localhost', 59599, @incomingMessageDispatcher
+    @debuggerPresenter = new DebuggerPresenter @incomingMessageDispatcher, @socketChannel
     @debuggerView = new DebuggerView @debuggerPresenter
 
     @subscriptions = new CompositeDisposable
@@ -34,6 +34,8 @@ module.exports =
   deactivate: ->
     @debuggerView.destroy()
     @debuggerPresenter.destroy()
+    @socketChannel.destroy()
+    @incomingMessageDispatcher.destroy()
     @subscriptions.dispose()
 
   handleOpener: (uri) ->
@@ -47,9 +49,7 @@ module.exports =
 
   handleOnDidDestroyPaneItem: (event) ->
     if event.item.getURI() == 'atom://levels-debugger-ruby'
-      incomingMessageDispatcher = new IncomingMessageDispatcher
-      socketChannel = new SocketChannel 'localhost', 59599, incomingMessageDispatcher
-      @debuggerPresenter = new DebuggerPresenter incomingMessageDispatcher, socketChannel
+      @debuggerPresenter = new DebuggerPresenter @incomingMessageDispatcher, @socketChannel
       @debuggerView = new DebuggerView @debuggerPresenter
       @debuggerPresenter.setLevelsWorkspace @levelsWorkspace
 

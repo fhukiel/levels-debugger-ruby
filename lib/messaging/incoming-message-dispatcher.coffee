@@ -6,6 +6,10 @@ class IncomingMessageDispatcher
   constructor: ->
     @emitter = new Emitter
 
+  destroy: ->
+    @emitter.dispose()
+    return
+
   dispatch: (message) ->
     if message?
       if message.includes MessageUtils.FINAL_SYMBOL
