@@ -95,13 +95,13 @@ class DebuggerPresenter
     return
 
   step: ->
-    if @isExecutableInDebuggingMode
+    if @isExecutableInDebuggingMode && @areSteppingCommandsEnabled()
       @emitStatusUpdate StatusUpdateEventFactory.createRunning @isReplay
       @socketChannel.sendMessage OutgoingMessageFactory.createStepMessage()
     return
 
   stepOver: ->
-    if @isExecutableInDebuggingMode
+    if @isExecutableInDebuggingMode && @areSteppingCommandsEnabled()
       @emitStatusUpdate StatusUpdateEventFactory.createRunning @isReplay
       @socketChannel.sendMessage OutgoingMessageFactory.createStepOverMessage()
     return
@@ -127,13 +127,13 @@ class DebuggerPresenter
     return
 
   runToNextBreakpoint: ->
-    if @isExecutableInDebuggingMode
+    if @isExecutableInDebuggingMode  && @areSteppingCommandsEnabled()
       @emitStatusUpdate StatusUpdateEventFactory.createRunning @isReplay
       @socketChannel.sendMessage OutgoingMessageFactory.createRunToNextBreakpointMessage()
     return
 
   runToEndOfMethod: ->
-    if @isExecutableInDebuggingMode
+    if @isExecutableInDebuggingMode  && @areSteppingCommandsEnabled()
       @emitStatusUpdate StatusUpdateEventFactory.createRunning @isReplay
       @socketChannel.sendMessage OutgoingMessageFactory.createRunToEndOfMethodMessage()
     return
@@ -155,6 +155,9 @@ class DebuggerPresenter
     @emitReplayStopped()
     @emitStatusUpdate @lastEventBeforeReplay
     return
+
+  areSteppingCommandsEnabled: ->
+    return !@autoSteppingEnabled && !@currentStatusEvent.isBlockingStatus()
 
   saveDocument: ->
     textEditor = levelsWorkspaceManager.getActiveTextEditor()
