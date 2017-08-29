@@ -47,10 +47,9 @@ class VariableTableManager
 
   sort: (table) ->
     if @sortAscending
-      table.sort (e1, e2) -> if e1.getName() >= e2.getName() then 1 else -1
+      table?.sort (e1, e2) -> if e1.getName() >= e2.getName() then 1 else -1
     else
-      table.sort (e1, e2) -> if e1.getName() <= e2.getName() then 1 else -1
-
+      table?.sort (e1, e2) -> if e1.getName() <= e2.getName() then 1 else -1
     return
 
 module.exports =

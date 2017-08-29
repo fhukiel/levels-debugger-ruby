@@ -13,19 +13,22 @@ OutgoingMessageFactory         = require '../messaging/outgoing-message-factory'
 module.exports =
 class DebuggerPresenter
   constructor: (@incomingMessageDispatcher, @socketChannel) ->
+    @emitter = new Emitter
     @callStack = []
     @variableTable = []
-    @emitter = new Emitter
     @positionMarker = null
     @isReplay = false
     @isExecutableInDebuggingMode = false
     @currentStatusEvent = StatusUpdateEventFactory.createStopped false
     @lastEventBeforeDisabling = @currentStatusEvent
     @lastEventBeforeReplay = null
-    @autoSteppingEnabled = false
-    @allControlsEnabled = true
+    @autoSteppingEnabled = true
+    @allControlsDisabled = false
 
     @subscriptions = new CompositeDisposable
+    @subscriptions.add executor.onReady => @startExecutableAndConnect()
+    @subscriptions.add executor.onStop => @handleStopping()
+    @subscriptions.add levelsWorkspaceManager.onWorkspaceAttached (workspace) => @setLevelsWorkspace workspace
     @subscriptions.add @socketChannel.onError (error) => @handleChannelError error
     @subscriptions.add @incomingMessageDispatcher.onReady => @handleReady()
     @subscriptions.add @incomingMessageDispatcher.onTerminate => @handleStopping()
@@ -35,21 +38,26 @@ class DebuggerPresenter
     @subscriptions.add @incomingMessageDispatcher.onEndOfReplayTape => @handleEndOfReplayTape()
     @subscriptions.add @incomingMessageDispatcher.onAutoSteppingEnabled => @emitAutoSteppingEnabled()
     @subscriptions.add @incomingMessageDispatcher.onAutoSteppingDisabled => @emitAutoSteppingDisabled()
-    @subscriptions.add executor.onReady => @startExecutableAndConnect()
-    @subscriptions.add executor.onStop => @handleStopping()
 
   destroy: ->
     @disconnectAndCleanup()
     @subscriptions.dispose()
+    @execSubscriptions?.dispose()
     return
 
   initDebuggerView: ->
+    autoSteppingEnabled = @autoSteppingEnabled
+
+    @emitEnableDisableAllBreakpoints()
+    @emitStatusUpdate @currentStatusEvent
+    @emitEnableDisableAllControls !@allControlsDisabled
+
     if @isExecutableInDebuggingMode
       @emitRunning()
       @emitVariableTableUpdated()
       @emitCallStackUpdated()
 
-      if @autoSteppingEnabled
+      if autoSteppingEnabled
         @emitAutoSteppingEnabled()
       else
         @emitAutoSteppingDisabled()
@@ -57,107 +65,110 @@ class DebuggerPresenter
       if @isReplay
         @emitReplayStarted()
 
-    @emitEnableDisableAllBreakpoints()
-    @emitStatusUpdate @currentStatusEvent
-    @emitEnableDisableAllControls @allControlsEnabled
-
   disconnectAndCleanup: ->
-    @variableTable = []
-    @callStack = []
     @socketChannel.disconnect()
     executor.stopDebugger()
     @isExecutableInDebuggingMode = false
     @stopExecutable()
-    variableTableManager.resetSortMode()
     return
 
   setLevelsWorkspace: (workspace) ->
-    levelsWorkspaceManager.attachWorkspace workspace
-    workspace.onDidEnterWorkspace => @handleWorkspaceEntered()
-    workspace.onDidExitWorkspace => @handleWorkspaceExited()
-    @handleWorkspaceEntered()
+    @subscriptions.add workspace.onDidEnterWorkspace => @handleWorkspaceEntered()
+    @subscriptions.add workspace.onDidExitWorkspace => @handleWorkspaceExited()
+    @subscriptions.add workspace.onDidChangeActiveLevel => @handleLevelChanged()
+    @subscriptions.add workspace.onDidChangeActiveLevelCodeEditor => @handleActiveLevelCodeEditorChanged()
+
+    if !levelsWorkspaceManager.getActiveLevelCodeEditor()?
+      @handleLevelChanged()
+
     return
 
   startDebugging: ->
-    if !@isExecutableInDebuggingMode && @saveDocument()
+    if !@allControlsDisabled && !@isExecutableInDebuggingMode && @saveDocument()
       executor.startDebugger()
     return
 
   startExecutableAndConnect: ->
     @socketChannel.connect()
     @isExecutableInDebuggingMode = true
+    @debuggingEditorId = levelsWorkspaceManager.getActiveLevelCodeEditor().getId()
     @startExecutable()
     return
 
   stopDebugging: ->
-    if @isExecutableInDebuggingMode
+    if !@allControlsDisabled && @isExecutableInDebuggingMode
       @disconnectAndCleanup()
     return
 
   step: ->
-    if @isExecutableInDebuggingMode && @areSteppingCommandsEnabled()
+    if @areSteppingCommandsEnabled()
       @emitStatusUpdate StatusUpdateEventFactory.createRunning @isReplay
       @socketChannel.sendMessage OutgoingMessageFactory.createStepMessage()
     return
 
   stepOver: ->
-    if @isExecutableInDebuggingMode && @areSteppingCommandsEnabled()
+    if @areSteppingCommandsEnabled()
       @emitStatusUpdate StatusUpdateEventFactory.createRunning @isReplay
       @socketChannel.sendMessage OutgoingMessageFactory.createStepOverMessage()
     return
 
   toggleBreakpoint: ->
-    if levelsWorkspaceManager.isActiveLevelDebuggable()
-      currentPosition = levelsWorkspaceManager.getActiveTextEditorPosition()
-      if breakpointManager.toggle currentPosition
-        @socketChannel.sendMessage OutgoingMessageFactory.createAddBreakpointMessage PositionUtils.fromPoint currentPosition
-      else
-        @socketChannel.sendMessage OutgoingMessageFactory.createRemoveBreakpointMessage PositionUtils.fromPoint currentPosition
+    if !@allControlsDisabled && levelsWorkspaceManager.isActiveLevelDebuggable()
+      positions = levelsWorkspaceManager.getActiveTextEditorCursorPositions()
+      for pos in positions
+        if breakpointManager.toggle pos
+          @socketChannel.sendMessage OutgoingMessageFactory.createAddBreakpointMessage PositionUtils.fromPoint pos
+        else
+          @socketChannel.sendMessage OutgoingMessageFactory.createRemoveBreakpointMessage PositionUtils.fromPoint pos
     return
 
   removeAllBreakpoints: ->
-    breakpointManager.removeAll()
-    @socketChannel.sendMessage OutgoingMessageFactory.createRemoveAllBreakpointsMessage()
+    if !@allControlsDisabled
+      breakpointManager.removeAll()
+      @socketChannel.sendMessage OutgoingMessageFactory.createRemoveAllBreakpointsMessage()
     return
 
   enableDisableAllBreakpoints: ->
-    breakpointManager.flip()
-    @sendEnableDisableAllBreakpoints()
-    @emitEnableDisableAllBreakpoints()
+    if !@allControlsDisabled
+      breakpointManager.flip()
+      @sendEnableDisableAllBreakpoints()
+      @emitEnableDisableAllBreakpoints()
     return
 
   runToNextBreakpoint: ->
-    if @isExecutableInDebuggingMode  && @areSteppingCommandsEnabled()
+    if @areSteppingCommandsEnabled()
       @emitStatusUpdate StatusUpdateEventFactory.createRunning @isReplay
       @socketChannel.sendMessage OutgoingMessageFactory.createRunToNextBreakpointMessage()
     return
 
   runToEndOfMethod: ->
-    if @isExecutableInDebuggingMode  && @areSteppingCommandsEnabled()
+    if @areSteppingCommandsEnabled()
       @emitStatusUpdate StatusUpdateEventFactory.createRunning @isReplay
       @socketChannel.sendMessage OutgoingMessageFactory.createRunToEndOfMethodMessage()
     return
 
   startReplay: (element) ->
-    callID = element.getAttribute 'data-call-id'
-    @socketChannel.sendMessage OutgoingMessageFactory.createStartReplayMessage callID
+    if !@allControlsDisabled && @isExecutableInDebuggingMode
+      callID = element.getAttribute 'data-call-id'
+      @socketChannel.sendMessage OutgoingMessageFactory.createStartReplayMessage callID
 
-    if !@isReplay && @currentStatusEvent.getStatus() != StatusUpdateEventFactory.END_OF_TAPE_STATUS
-      @lastEventBeforeReplay = @currentStatusEvent
-    @isReplay = true
-    @emitReplayStarted()
+      if !@isReplay && @currentStatusEvent.getStatus() != StatusUpdateEventFactory.END_OF_TAPE_STATUS
+        @lastEventBeforeReplay = @currentStatusEvent
+      @isReplay = true
+      @emitReplayStarted()
 
     return
 
   stopReplay: ->
-    @socketChannel.sendMessage OutgoingMessageFactory.createStopReplayMessage()
-    @isReplay = false
-    @emitReplayStopped()
-    @emitStatusUpdate @lastEventBeforeReplay
+    if !@allControlsDisabled && @isExecutableInDebuggingMode && @isReplay
+      @socketChannel.sendMessage OutgoingMessageFactory.createStopReplayMessage()
+      @isReplay = false
+      @emitReplayStopped()
+      @emitStatusUpdate @lastEventBeforeReplay
     return
 
   areSteppingCommandsEnabled: ->
-    return !@autoSteppingEnabled && !@currentStatusEvent.isBlockingStatus()
+    return !@allControlsDisabled && @isExecutableInDebuggingMode && !@autoSteppingEnabled
 
   saveDocument: ->
     textEditor = levelsWorkspaceManager.getActiveTextEditor()
@@ -191,8 +202,7 @@ class DebuggerPresenter
     return @callStack
 
   startExecutable: ->
-    editor = levelsWorkspaceManager.getActiveLevelCodeEditor()
-    editor.startExecution {runExecArgs: ['-d']}
+    levelsWorkspaceManager.getActiveLevelCodeEditor().startExecution {runExecArgs: ['-d']}
     return
 
   stopExecutable: ->
@@ -207,9 +217,10 @@ class DebuggerPresenter
     return
 
   flipAndSortVariableTable: ->
-    variableTableManager.flipSortMode()
-    variableTableManager.sort @variableTable
-    @emitVariableTableUpdated()
+    if !@allControlsDisabled && @isExecutableInDebuggingMode
+      variableTableManager.flipSortMode()
+      variableTableManager.sort @variableTable
+      @emitVariableTableUpdated()
     return
 
   onRunning: (callback) ->
@@ -265,7 +276,7 @@ class DebuggerPresenter
 
     if @positionMarker?
       @positionMarker.destroy()
-    @positionMarker = levelsWorkspaceManager.addPositionMarker currentPosition
+    @positionMarker = levelsWorkspaceManager.addPositionMarker PositionUtils.toPoint currentPosition
 
     @emitter.emit 'position-updated', currentPosition
     @emitStatusUpdate StatusUpdateEventFactory.createWaiting @isReplay
@@ -284,6 +295,10 @@ class DebuggerPresenter
   emitStatusUpdate: (event) ->
     @emitter.emit 'status-updated', event
     @currentStatusEvent = event
+    if event.isBlockingStatus()
+      @emitAutoSteppingEnabled()
+    else
+      @emitAutoSteppingDisabled()
     return
 
   emitAutoSteppingEnabled: ->
@@ -301,7 +316,7 @@ class DebuggerPresenter
     return
 
   emitEnableDisableAllControls: (enabled) ->
-    @allControlsEnabled = enabled
+    @allControlsDisabled = !enabled
     @emitter.emit 'enable-disable-all-controls', enabled
     return
 
@@ -315,25 +330,47 @@ class DebuggerPresenter
 
   handleChannelError: (error) ->
     console.log "A communication channel error occurred: #{error}"
-    stopDebugging()
+    @disconnectAndCleanup()
     return
 
   handleWorkspaceEntered: ->
-    @handleLevelChanged()
     editor = levelsWorkspaceManager.getActiveLevelCodeEditor()
-    editor?.onDidStartExecution => @handleExecutableStarted()
-    editor?.onDidStopExecution => @handleExecutableStopped()
-    levelsWorkspaceManager.getWorkspace().onDidChangeActiveLevel => @handleLevelChanged()
+    if @isExecutableInDebuggingMode
+      enabled = @debuggingEditorId == editor.getId()
+      @emitEnableDisableAllControls enabled
+    else
+      @handleLevelChanged()
+      @execSubscriptions = new CompositeDisposable
+      @execSubscriptions.add editor.onDidStartExecution => @handleExecutableStarted()
+      @execSubscriptions.add editor.onDidStopExecution => @handleExecutableStopped()
+      if editor.isExecuting()
+        @emitEnableDisableAllControls false
     return
 
   handleWorkspaceExited: ->
-    @handleLevelChanged()
+    if @isExecutableInDebuggingMode
+      @emitEnableDisableAllControls false
+    else
+      @handleLevelChanged()
+      @execSubscriptions?.dispose()
+    return
+
+  handleActiveLevelCodeEditorChanged: ->
+    editor = levelsWorkspaceManager.getActiveLevelCodeEditor()
+    if @isExecutableInDebuggingMode
+      enabled = @debuggingEditorId == editor.getId()
+      @emitEnableDisableAllControls enabled
+    else
+      @execSubscriptions?.dispose()
+      @execSubscriptions = new CompositeDisposable
+      @execSubscriptions.add editor.onDidStartExecution => @handleExecutableStarted()
+      @execSubscriptions.add editor.onDidStopExecution => @handleExecutableStopped()
+      if editor.isExecuting()
+        @emitEnableDisableAllControls false
     return
 
   handleExecutableStarted: ->
-    if @isExecutableInDebuggingMode
-      @emitEnableDisableAllControls levelsWorkspaceManager.isActiveLevelDebuggable()
-    else
+    if !@isExecutableInDebuggingMode
       @emitEnableDisableAllControls false
     return
 
@@ -343,17 +380,26 @@ class DebuggerPresenter
     @emitEnableDisableAllControls levelsWorkspaceManager.isActiveLevelDebuggable()
     return
 
+  reset: ->
+    @isReplay = false
+    @autoSteppingEnabled = true
+    @variableTable = []
+    @callStack = []
+    @isExecutableInDebuggingMode = false
+    variableTableManager.resetSortMode()
+
   handleReady: ->
     @emitRunning()
+    @emitAutoSteppingDisabled()
     for bp in breakpointManager.getBreakpoints()
       @socketChannel.sendMessage OutgoingMessageFactory.createAddBreakpointMessage bp.getPosition()
     @sendEnableDisableAllBreakpoints()
     return
 
   handleStopping: ->
-    @isReplay = false
-    @autoSteppingEnabled = false
+    @reset()
     @emitStopped()
+    @emitAutoSteppingEnabled()
     if @positionMarker?
       @positionMarker.destroy()
     breakpointManager.restoreHiddenBreakpoint()
@@ -365,7 +411,9 @@ class DebuggerPresenter
     return
 
   handleLevelChanged: ->
-    if !@isExecutableInDebuggingMode
+    if @isExecutableInDebuggingMode
+      @emitEnableDisableAllControls levelsWorkspaceManager.isActiveLevelDebuggable()
+    else
       if levelsWorkspaceManager.isActiveLevelDebuggable()
         @emitStatusUpdate @lastEventBeforeDisabling
         @emitEnableDisableAllControls true

@@ -262,12 +262,10 @@ class DebuggerView
 
   sortVariableTableByName: ->
     @debuggerPresenter.flipAndSortVariableTable()
-    return
 
   enableDisableCommandsOnStartStop: (enabled) ->
     @startDebuggingButton.disabled = enabled
     @stopDebuggingButton.disabled = !enabled
-    @handleEnableDisableSteppingCommands enabled
     return
 
   handleRunning: ->
@@ -340,11 +338,11 @@ class DebuggerView
 
     return
 
-  handleStatusUpdated: (event) ->
-    @statusDiv.className = 'status ' + event.getStyleClass()
-    @statusDiv.innerHTML = event.getDisplayMessage()
-    @statusDiv.title = event.getDisplayMessage()
-    @handleEnableDisableSteppingCommands !event.isBlockingStatus()
+  handleStatusUpdated: (status) ->
+    text = status.getDisplayMessage()
+    @statusDiv.className = 'status ' + status.getStyleClass()
+    @statusDiv.innerHTML = text
+    @statusDiv.title = text
     return
 
   handleEnableDisableSteppingCommands: (enabled) ->

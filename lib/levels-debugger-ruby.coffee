@@ -1,5 +1,6 @@
 {CompositeDisposable}     = require 'atom'
 packageDeps               = require 'atom-package-deps'
+levelsWorkspaceManager    = require('./common/levels-workspace-manager').getInstance()
 IncomingMessageDispatcher = require './messaging/incoming-message-dispatcher'
 SocketChannel             = require './messaging/socket-channel'
 DebuggerPresenter         = require './presenter/debugger-presenter'
@@ -44,6 +45,5 @@ module.exports =
     atom.workspace.toggle 'atom://levels-debugger-ruby'
 
   consumeLevels: ({workspace}) ->
-    @levelsWorkspace = workspace
-    @debuggerPresenter.setLevelsWorkspace @levelsWorkspace
+    levelsWorkspaceManager.attachWorkspace workspace
     return

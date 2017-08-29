@@ -1,5 +1,19 @@
+{Emitter} = require 'atom'
+
 class LevelsWorkspaceManager
+  constructor: ->
+    @emitter = new Emitter
+
+  destroy: ->
+    @emitter.dispose()
+    return
+
   attachWorkspace: (@levelsWorkspace) ->
+    @emitter.emit 'workspace-attached', @levelsWorkspace
+    return
+
+  onWorkspaceAttached: (callback) ->
+    @emitter.on 'workspace-attached', callback
 
   getWorkspace: ->
     return @levelsWorkspace
@@ -18,23 +32,22 @@ class LevelsWorkspaceManager
 
   isActiveLevelDebuggable: ->
     isDebuggable = @getActiveLevel()?.getOption 'debuggable'
-
     return isDebuggable? && isDebuggable
 
-  getActiveTextEditorPosition: ->
-    return @getActiveTextEditor()?.getCursorBufferPosition()
+  getActiveTextEditorCursorPositions: ->
+    return @getActiveTextEditor()?.getCursorBufferPositions()
 
-  addBreakpointMarker: (atPoint, isEnabled) ->
+  addBreakpointMarker: (point, enabled) ->
     textEditor = @getActiveTextEditor()
-    marker = textEditor?.markBufferPosition atPoint, invalidate: 'inside'
-    className = if isEnabled then 'annotation annotation-breakpoint' else 'annotation annotation-breakpoint-disabled'
+    marker = textEditor?.markBufferPosition point, invalidate: 'inside'
+    className = if enabled then 'annotation annotation-breakpoint' else 'annotation annotation-breakpoint-disabled'
     textEditor?.decorateMarker marker, {type: 'line-number', class: className}
 
     return marker
 
-  addPositionMarker: (atPosition) ->
+  addPositionMarker: (point) ->
     textEditor = @getActiveTextEditor()
-    marker = textEditor?.markBufferPosition [atPosition.getLine() - 1, atPosition.getColumn()], invalidate: 'inside'
+    marker = textEditor?.markBufferPosition point, invalidate: 'inside'
     textEditor?.decorateMarker marker, {type: 'line-number', class: 'annotation annotation-position'}
 
     return marker

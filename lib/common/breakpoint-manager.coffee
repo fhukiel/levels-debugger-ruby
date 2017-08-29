@@ -48,9 +48,6 @@ class BreakpointManager
         return bp
     return null
 
-  isBreakpoint: (position) ->
-    return @getBreakpoint(position)?
-
   hideBreakpoint: (position) ->
     if @hiddenBreakpointPosition? && position.isOnSameLine(@hiddenBreakpointPosition)
       console.log "Breakpoint already hidden, can't hide again!"
