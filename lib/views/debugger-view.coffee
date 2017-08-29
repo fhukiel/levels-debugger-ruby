@@ -24,28 +24,28 @@ class DebuggerView
     toggleBreakpointButton.className = 'btn'
     toggleBreakpointButton.innerHTML = 'Toggle Breakpoint'
     toggleBreakpointButton.title = 'Toggle Breakpoint'
-    toggleBreakpointButton.addEventListener 'click', => @toggleBreakpoint()
+    toggleBreakpointButton.addEventListener 'click', => @debuggerPresenter.toggleBreakpoint()
     commandsDiv.appendChild toggleBreakpointButton
 
     removeAllBreakpointsButton = document.createElement 'button'
     removeAllBreakpointsButton.className = 'btn'
     removeAllBreakpointsButton.innerHTML = 'Remove All Breakpoints'
     removeAllBreakpointsButton.title = 'Remove All Breakpoints'
-    removeAllBreakpointsButton.addEventListener 'click', => @removeAllBreakpoints()
+    removeAllBreakpointsButton.addEventListener 'click', => @debuggerPresenter.removeAllBreakpoints()
     commandsDiv.appendChild removeAllBreakpointsButton
 
     @enableDisableAllBreakpointsButton = document.createElement 'button'
     @enableDisableAllBreakpointsButton.className = 'btn'
     @enableDisableAllBreakpointsButton.innerHTML = 'Disable All Breakpoints'
     @enableDisableAllBreakpointsButton.title = 'Disable All Breakpoints'
-    @enableDisableAllBreakpointsButton.addEventListener 'click', => @enableDisableAllBreakpoints()
+    @enableDisableAllBreakpointsButton.addEventListener 'click', => @debuggerPresenter.enableDisableAllBreakpoints()
     commandsDiv.appendChild @enableDisableAllBreakpointsButton
 
     @startDebuggingButton = document.createElement 'button'
     @startDebuggingButton.className = 'btn'
     @startDebuggingButton.innerHTML = 'Start Debugging'
     @startDebuggingButton.title = 'Start Debugging'
-    @startDebuggingButton.addEventListener 'click', => @startDebugging()
+    @startDebuggingButton.addEventListener 'click', => @debuggerPresenter.startDebugging()
     commandsDiv.appendChild @startDebuggingButton
 
     @stopDebuggingButton = document.createElement 'button'
@@ -53,7 +53,7 @@ class DebuggerView
     @stopDebuggingButton.disabled = true
     @stopDebuggingButton.innerHTML = 'Stop Debugging'
     @stopDebuggingButton.title = 'Stop Debugging'
-    @stopDebuggingButton.addEventListener 'click', => @stopDebugging()
+    @stopDebuggingButton.addEventListener 'click', => @debuggerPresenter.stopDebugging()
     commandsDiv.appendChild @stopDebuggingButton
 
     @stepButton = document.createElement 'button'
@@ -61,7 +61,7 @@ class DebuggerView
     @stepButton.disabled = true
     @stepButton.innerHTML = 'Step'
     @stepButton.title = 'Step'
-    @stepButton.addEventListener 'click', => @step()
+    @stepButton.addEventListener 'click', => @debuggerPresenter.step()
     commandsDiv.appendChild @stepButton
 
     @stepOverButton = document.createElement 'button'
@@ -69,7 +69,7 @@ class DebuggerView
     @stepOverButton.disabled = true
     @stepOverButton.innerHTML = 'Step Over'
     @stepOverButton.title = 'Step Over'
-    @stepOverButton.addEventListener 'click', => @stepOver()
+    @stepOverButton.addEventListener 'click', => @debuggerPresenter.stepOver()
     commandsDiv.appendChild @stepOverButton
 
     @runToEndOfMethodButton = document.createElement 'button'
@@ -77,7 +77,7 @@ class DebuggerView
     @runToEndOfMethodButton.disabled = true
     @runToEndOfMethodButton.innerHTML = 'Run To End Of Method'
     @runToEndOfMethodButton.title = 'Run To End Of Method'
-    @runToEndOfMethodButton.addEventListener 'click', => @runToEndOfMethod()
+    @runToEndOfMethodButton.addEventListener 'click', => @debuggerPresenter.runToEndOfMethod()
     commandsDiv.appendChild @runToEndOfMethodButton
 
     @runToNextBreakpointButton = document.createElement 'button'
@@ -85,7 +85,7 @@ class DebuggerView
     @runToNextBreakpointButton.disabled = true
     @runToNextBreakpointButton.innerHTML = 'Run To Next Breakpoint'
     @runToNextBreakpointButton.title = 'Run To Next Breakpoint'
-    @runToNextBreakpointButton.addEventListener 'click', => @runToNextBreakpoint()
+    @runToNextBreakpointButton.addEventListener 'click', => @debuggerPresenter.runToNextBreakpoint()
     commandsDiv.appendChild @runToNextBreakpointButton
 
     @stopReplayButton = document.createElement 'button'
@@ -93,7 +93,7 @@ class DebuggerView
     @stopReplayButton.disabled = true
     @stopReplayButton.innerHTML = 'Stop Replay'
     @stopReplayButton.title = 'Stop Replay'
-    @stopReplayButton.addEventListener 'click', => @stopReplay()
+    @stopReplayButton.addEventListener 'click', => @debuggerPresenter.stopReplay()
     commandsDiv.appendChild @stopReplayButton
 
     variablesHeader = document.createElement 'div'
@@ -216,39 +216,6 @@ class DebuggerView
   getElement: ->
     return @element
 
-  toggleBreakpoint: ->
-    @debuggerPresenter.toggleBreakpoint()
-
-  removeAllBreakpoints: ->
-    @debuggerPresenter.removeAllBreakpoints()
-
-  enableDisableAllBreakpoints: ->
-    @debuggerPresenter.enableDisableAllBreakpoints()
-
-  startDebugging: ->
-    @debuggerPresenter.startDebugging()
-
-  stopDebugging: ->
-    @debuggerPresenter.stopDebugging()
-
-  step: ->
-    @debuggerPresenter.step()
-
-  stepOver: ->
-    @debuggerPresenter.stepOver()
-
-  runToEndOfMethod: ->
-    @debuggerPresenter.runToEndOfMethod()
-
-  runToNextBreakpoint: ->
-    @debuggerPresenter.runToNextBreakpoint()
-
-  startReplay: (event) ->
-    @debuggerPresenter.startReplay event.target
-
-  stopReplay: ->
-    @debuggerPresenter.stopReplay()
-
   clearTableBody: (tableBody) ->
     i = tableBody.rows.length
     while i-- > 0
@@ -303,7 +270,7 @@ class DebuggerView
       replayButton.innerHTML = 'Replay'
       replayButton.title = 'Replay'
       replayButton.setAttribute 'data-call-id', callID
-      replayButton.addEventListener 'click', (event) => @startReplay event
+      replayButton.addEventListener 'click', (event) => @debuggerPresenter.startReplay event.target
       cellReplay.appendChild replayButton
       row.appendChild cellCall
       row.appendChild cellReplay
