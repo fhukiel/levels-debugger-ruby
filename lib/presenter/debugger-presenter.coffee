@@ -114,12 +114,12 @@ class DebuggerPresenter
 
   toggleBreakpoint: ->
     if !@allControlsDisabled && levelsWorkspaceManager.isActiveLevelDebuggable()
-      positions = levelsWorkspaceManager.getActiveTextEditorCursorPositions()
-      for pos in positions
-        if breakpointManager.toggle pos
-          @socketChannel.sendMessage OutgoingMessageFactory.createAddBreakpointMessage PositionUtils.fromPoint pos
+      points = levelsWorkspaceManager.getActiveTextEditorCursorPositions()
+      for point in points
+        if breakpointManager.toggle point
+          @socketChannel.sendMessage OutgoingMessageFactory.createAddBreakpointMessage PositionUtils.fromPoint point
         else
-          @socketChannel.sendMessage OutgoingMessageFactory.createRemoveBreakpointMessage PositionUtils.fromPoint pos
+          @socketChannel.sendMessage OutgoingMessageFactory.createRemoveBreakpointMessage PositionUtils.fromPoint point
     return
 
   removeAllBreakpoints: ->
@@ -352,7 +352,7 @@ class DebuggerPresenter
       @emitEnableDisableAllControls false
     else
       @handleLevelChanged()
-      @execSubscriptions?.dispose()
+      @execSubscriptions.dispose()
     return
 
   handleActiveLevelCodeEditorChanged: ->
@@ -361,7 +361,7 @@ class DebuggerPresenter
       enabled = @debuggingEditorId == editor.getId()
       @emitEnableDisableAllControls enabled
     else
-      @execSubscriptions?.dispose()
+      @execSubscriptions.dispose()
       @execSubscriptions = new CompositeDisposable
       @execSubscriptions.add editor.onDidStartExecution => @handleExecutableStarted()
       @execSubscriptions.add editor.onDidStopExecution => @handleExecutableStopped()
