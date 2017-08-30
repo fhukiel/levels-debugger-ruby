@@ -1,3 +1,10 @@
+## 0.5.0 (2017-08-30)
+
+* Improved the debugger state when switching between different files, language grammars and levels
+* Added support for multiple cursors when adding or removing breakpoints
+* Disabled the stepping commands when a blocking status reached
+* Fixed a bug where the ruby program was not terminated correctly
+
 ## 0.4.3 (2017-08-25)
 
 * Made the status div scrollable when the status text is too long
