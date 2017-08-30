@@ -51,6 +51,10 @@
           {
             'label': 'Run To Next Breakpoint'
             'command': 'levels-debugger-ruby:run-to-next-breakpoint'
+          },
+          {
+            'label': 'Stop Replay'
+            'command': 'levels-debugger-ruby:stop-replay'
           }
         ]
       }

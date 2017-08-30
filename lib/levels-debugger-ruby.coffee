@@ -26,6 +26,7 @@ module.exports =
     @subscriptions.add atom.commands.add 'atom-workspace', 'levels-debugger-ruby:step-over': => @debuggerPresenter.stepOver()
     @subscriptions.add atom.commands.add 'atom-workspace', 'levels-debugger-ruby:run-to-end-of-method': => @debuggerPresenter.runToEndOfMethod()
     @subscriptions.add atom.commands.add 'atom-workspace', 'levels-debugger-ruby:run-to-next-breakpoint': => @debuggerPresenter.runToNextBreakpoint()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'levels-debugger-ruby:stop-replay': => @debuggerPresenter.stopReplay()
 
     return
 
