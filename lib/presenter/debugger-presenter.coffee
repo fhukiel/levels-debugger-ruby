@@ -19,19 +19,21 @@ class DebuggerPresenter
     @positionMarker = null
     @isReplay = false
     @isExecutableInDebuggingMode = false
-    @currentStatusEvent = StatusUpdateEventFactory.createStopped false
-    @lastEventBeforeDisabling = @currentStatusEvent
-    @lastEventBeforeReplay = null
     @autoSteppingEnabled = true
     @allControlsDisabled = false
 
+    @currentStatusEvent = StatusUpdateEventFactory.createStopped false
+    @lastEventBeforeDisabling = @currentStatusEvent
+    @lastEventBeforeReplay = null
+
+    @execSubscriptions = null
+
     @subscriptions = new CompositeDisposable
     @subscriptions.add executor.onReady => @startExecutableAndConnect()
-    @subscriptions.add executor.onStop => @handleStopping()
+    @subscriptions.add executor.onStop => @handleStop()
     @subscriptions.add levelsWorkspaceManager.onWorkspaceAttached (workspace) => @setLevelsWorkspace workspace
     @subscriptions.add @socketChannel.onError (error) => @handleChannelError error
     @subscriptions.add @incomingMessageDispatcher.onReady => @handleReady()
-    @subscriptions.add @incomingMessageDispatcher.onTerminate => @handleStopping()
     @subscriptions.add @incomingMessageDispatcher.onPositionUpdated (string) => @emitPositionUpdated string
     @subscriptions.add @incomingMessageDispatcher.onCallStackUpdated (string) => @callStackFromString string
     @subscriptions.add @incomingMessageDispatcher.onTableUpdated (string) => @variableTableFromString string
@@ -65,10 +67,12 @@ class DebuggerPresenter
       if @isReplay
         @emitReplayStarted()
 
+    return
+
   disconnectAndCleanup: ->
     @socketChannel.disconnect()
-    executor.stopDebugger()
     @isExecutableInDebuggingMode = false
+    executor.stopDebugger()
     @stopExecutable()
     return
 
@@ -160,7 +164,7 @@ class DebuggerPresenter
     return
 
   stopReplay: ->
-    if !@allControlsDisabled && @isExecutableInDebuggingMode && @isReplay
+    if !@allControlsDisabled && @isReplay
       @socketChannel.sendMessage OutgoingMessageFactory.createStopReplayMessage()
       @isReplay = false
       @emitReplayStopped()
@@ -270,18 +274,19 @@ class DebuggerPresenter
   emitPositionUpdated: (string) ->
     splitted = string.split MessageUtils.DELIMITER
     currentPosition = new Position +splitted[0], +splitted[1]
+    point = PositionUtils.toPoint currentPosition
 
     breakpointManager.restoreHiddenBreakpoint()
     breakpointManager.hideBreakpoint currentPosition
 
     if @positionMarker?
       @positionMarker.destroy()
-    @positionMarker = levelsWorkspaceManager.addPositionMarker PositionUtils.toPoint currentPosition
+    @positionMarker = levelsWorkspaceManager.addPositionMarker point
 
     @emitter.emit 'position-updated', currentPosition
     @emitStatusUpdate StatusUpdateEventFactory.createWaiting @isReplay
 
-    levelsWorkspaceManager.getActiveTextEditor()?.scrollToBufferPosition PositionUtils.toPoint currentPosition
+    levelsWorkspaceManager.getActiveTextEditor()?.scrollToBufferPosition point
     return
 
   emitCallStackUpdated: ->
@@ -367,6 +372,8 @@ class DebuggerPresenter
       @execSubscriptions.add editor.onDidStopExecution => @handleExecutableStopped()
       if editor.isExecuting()
         @emitEnableDisableAllControls false
+      else
+        @emitEnableDisableAllControls levelsWorkspaceManager.isActiveLevelDebuggable()
     return
 
   handleExecutableStarted: ->
@@ -380,14 +387,6 @@ class DebuggerPresenter
     @emitEnableDisableAllControls levelsWorkspaceManager.isActiveLevelDebuggable()
     return
 
-  reset: ->
-    @isReplay = false
-    @autoSteppingEnabled = true
-    @variableTable = []
-    @callStack = []
-    @isExecutableInDebuggingMode = false
-    variableTableManager.resetSortMode()
-
   handleReady: ->
     @emitRunning()
     @emitAutoSteppingDisabled()
@@ -396,8 +395,14 @@ class DebuggerPresenter
     @sendEnableDisableAllBreakpoints()
     return
 
-  handleStopping: ->
-    @reset()
+  handleStop: ->
+    if @isExecutableInDebuggingMode
+      @disconnectAndCleanup()
+    @isReplay = false
+    @autoSteppingEnabled = true
+    @variableTable = []
+    @callStack = []
+    variableTableManager.resetSortMode()
     @emitStopped()
     @emitAutoSteppingEnabled()
     if @positionMarker?
@@ -411,9 +416,7 @@ class DebuggerPresenter
     return
 
   handleLevelChanged: ->
-    if @isExecutableInDebuggingMode
-      @emitEnableDisableAllControls levelsWorkspaceManager.isActiveLevelDebuggable()
-    else
+    if !@isExecutableInDebuggingMode
       if levelsWorkspaceManager.isActiveLevelDebuggable()
         @emitStatusUpdate @lastEventBeforeDisabling
         @emitEnableDisableAllControls true
