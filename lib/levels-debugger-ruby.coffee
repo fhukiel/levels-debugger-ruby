@@ -16,17 +16,18 @@ module.exports =
 
     @subscriptions = new CompositeDisposable
     @subscriptions.add atom.workspace.addOpener (uri) => @handleOpener uri
-    @subscriptions.add atom.commands.add 'atom-workspace', 'levels-debugger-ruby:toggle-debugger-view': => @toggle()
-    @subscriptions.add atom.commands.add 'atom-workspace', 'levels-debugger-ruby:toggle-breakpoint': => @debuggerPresenter.toggleBreakpoint()
-    @subscriptions.add atom.commands.add 'atom-workspace', 'levels-debugger-ruby:remove-all-breakpoints': => @debuggerPresenter.removeAllBreakpoints()
-    @subscriptions.add atom.commands.add 'atom-workspace', 'levels-debugger-ruby:enable-disable-all-breakpoints': => @debuggerPresenter.enableDisableAllBreakpoints()
-    @subscriptions.add atom.commands.add 'atom-workspace', 'levels-debugger-ruby:start-debugging': => @debuggerPresenter.startDebugging()
-    @subscriptions.add atom.commands.add 'atom-workspace', 'levels-debugger-ruby:stop-debugging': => @debuggerPresenter.stopDebugging()
-    @subscriptions.add atom.commands.add 'atom-workspace', 'levels-debugger-ruby:step': => @debuggerPresenter.step()
-    @subscriptions.add atom.commands.add 'atom-workspace', 'levels-debugger-ruby:step-over': => @debuggerPresenter.stepOver()
-    @subscriptions.add atom.commands.add 'atom-workspace', 'levels-debugger-ruby:run-to-end-of-method': => @debuggerPresenter.runToEndOfMethod()
-    @subscriptions.add atom.commands.add 'atom-workspace', 'levels-debugger-ruby:run-to-next-breakpoint': => @debuggerPresenter.runToNextBreakpoint()
-    @subscriptions.add atom.commands.add 'atom-workspace', 'levels-debugger-ruby:stop-replay': => @debuggerPresenter.stopReplay()
+    @subscriptions.add atom.commands.add 'atom-workspace',
+      'levels-debugger-ruby:toggle-debugger-view': => @toggle()
+      'levels-debugger-ruby:toggle-breakpoint': => @debuggerPresenter.toggleBreakpoint()
+      'levels-debugger-ruby:remove-all-breakpoints': => @debuggerPresenter.removeAllBreakpoints()
+      'levels-debugger-ruby:enable-disable-all-breakpoints': => @debuggerPresenter.enableDisableAllBreakpoints()
+      'levels-debugger-ruby:start-debugging': => @debuggerPresenter.startDebugging()
+      'levels-debugger-ruby:stop-debugging': => @debuggerPresenter.stopDebugging()
+      'levels-debugger-ruby:step': => @debuggerPresenter.step()
+      'levels-debugger-ruby:step-over': => @debuggerPresenter.stepOver()
+      'levels-debugger-ruby:run-to-end-of-method': => @debuggerPresenter.runToEndOfMethod()
+      'levels-debugger-ruby:run-to-next-breakpoint': => @debuggerPresenter.runToNextBreakpoint()
+      'levels-debugger-ruby:stop-replay': => @debuggerPresenter.stopReplay()
 
     return
 
