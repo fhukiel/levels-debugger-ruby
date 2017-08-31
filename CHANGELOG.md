@@ -1,3 +1,9 @@
+## 0.5.1 (2017-08-31)
+
+* Added menu entry and keyboard shortcut to stop a replay
+* Converted title tooltips into Atoms beautiful native tooltips
+* Fixed a bug where a replay could be started during running status
+
 ## 0.5.0 (2017-08-30)
 
 * Improved the debugger state when switching between different files, language grammars and levels
