@@ -36,44 +36,38 @@ atom-text-editor.editor {
   }
 }
 
-.levels-debugger-ruby[disabled="true"] {
-  opacity: 0.3;
-  pointer-events: none;
-  user-select: none;
-}
-
 .levels-debugger-ruby {
   display: flex;
   flex-direction: column;
   height: 100%;
   width: 100%;
 
-  button {
-    display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  &.disabled {
+    opacity: 0.3;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .btn {
     width: 100%;
+    .overflow-ellipsis;
   }
 
   .commands {
     flex: 0 0 auto;
     margin: 5px;
 
-    button {
-      margin: 5px 0px;
+    .btn {
+      margin-bottom: 5px;
     }
 
-    button:first-child {
-      margin-top: 0px;
-    }
-
-    button:last-child {
+    .btn:last-child {
       margin-bottom: 0px;
     }
   }
 
   .header {
+    display: flex;
     flex: 0 0 auto;
     font-weight: bold;
     margin: 5px;
@@ -81,6 +75,12 @@ atom-text-editor.editor {
 
   .highlight {
     animation: highlight 1s;
+  }
+
+  .overflow-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .stack-body {
@@ -109,8 +109,7 @@ atom-text-editor.editor {
     height: @status-height;
     justify-content: center;
     margin-bottom: 5px;
-    overflow: auto;
-    text-align: center;
+    padding: @component-padding;
 
     &.status-disabled {
       background-color: @disabled-color;
@@ -138,11 +137,16 @@ atom-text-editor.editor {
     }
   }
 
-  table {
-    border-collapse: collapse;
+  .table {
     margin: 0px;
     table-layout: fixed;
-    width: 100%;
+
+    td, th {
+      border-top: 1px solid @base-border-color;
+      text-align: center;
+      vertical-align: middle;
+      .overflow-ellipsis;
+    }
   }
 
   .table > tbody:first-child > tr:first-child > td {
@@ -155,16 +159,6 @@ atom-text-editor.editor {
 
   .table > thead:last-child > tr:last-child > th {
     border-bottom: 2px solid @base-border-color;
-  }
-
-  .table td, .table th {
-    border-color: @base-border-color;
-    border-top: 1px solid @base-border-color;
-    overflow: hidden;
-    text-align: center;
-    text-overflow: ellipsis;
-    vertical-align: middle;
-    white-space: nowrap;
   }
 
   .variables-body {

@@ -10,11 +10,18 @@ class DebuggerView
     @statusDiv.className = 'status'
     @element.appendChild @statusDiv
 
+    @statusSpan = document.createElement 'span'
+    @statusSpan.className = 'overflow-ellipsis'
+    @statusDiv.appendChild @statusSpan
+
     commandsHeader = document.createElement 'div'
     commandsHeader.className = 'header'
-    commandsHeader.innerHTML = 'Commands'
-    commandsHeader.title = 'Commands'
     @element.appendChild commandsHeader
+
+    commandsHeaderSpan = document.createElement 'span'
+    commandsHeaderSpan.className = 'overflow-ellipsis'
+    commandsHeaderSpan.textContent = 'Commands'
+    commandsHeader.appendChild commandsHeaderSpan
 
     commandsDiv = document.createElement 'div'
     commandsDiv.className = 'commands'
@@ -22,85 +29,72 @@ class DebuggerView
 
     toggleBreakpointButton = document.createElement 'button'
     toggleBreakpointButton.className = 'btn'
-    toggleBreakpointButton.innerHTML = 'Toggle Breakpoint'
-    toggleBreakpointButton.title = 'Toggle Breakpoint'
+    toggleBreakpointButton.textContent = 'Toggle Breakpoint'
     toggleBreakpointButton.addEventListener 'click', => @debuggerPresenter.toggleBreakpoint()
     commandsDiv.appendChild toggleBreakpointButton
 
     removeAllBreakpointsButton = document.createElement 'button'
     removeAllBreakpointsButton.className = 'btn'
-    removeAllBreakpointsButton.innerHTML = 'Remove All Breakpoints'
-    removeAllBreakpointsButton.title = 'Remove All Breakpoints'
+    removeAllBreakpointsButton.textContent = 'Remove All Breakpoints'
     removeAllBreakpointsButton.addEventListener 'click', => @debuggerPresenter.removeAllBreakpoints()
     commandsDiv.appendChild removeAllBreakpointsButton
 
     @enableDisableAllBreakpointsButton = document.createElement 'button'
     @enableDisableAllBreakpointsButton.className = 'btn'
-    @enableDisableAllBreakpointsButton.innerHTML = 'Disable All Breakpoints'
-    @enableDisableAllBreakpointsButton.title = 'Disable All Breakpoints'
+    @enableDisableAllBreakpointsButton.textContent = 'Disable All Breakpoints'
     @enableDisableAllBreakpointsButton.addEventListener 'click', => @debuggerPresenter.enableDisableAllBreakpoints()
     commandsDiv.appendChild @enableDisableAllBreakpointsButton
 
     @startDebuggingButton = document.createElement 'button'
     @startDebuggingButton.className = 'btn'
-    @startDebuggingButton.innerHTML = 'Start Debugging'
-    @startDebuggingButton.title = 'Start Debugging'
+    @startDebuggingButton.textContent = 'Start Debugging'
     @startDebuggingButton.addEventListener 'click', => @debuggerPresenter.startDebugging()
     commandsDiv.appendChild @startDebuggingButton
 
     @stopDebuggingButton = document.createElement 'button'
-    @stopDebuggingButton.className = 'btn'
-    @stopDebuggingButton.disabled = true
-    @stopDebuggingButton.innerHTML = 'Stop Debugging'
-    @stopDebuggingButton.title = 'Stop Debugging'
+    @stopDebuggingButton.className = 'btn disabled'
+    @stopDebuggingButton.textContent = 'Stop Debugging'
     @stopDebuggingButton.addEventListener 'click', => @debuggerPresenter.stopDebugging()
     commandsDiv.appendChild @stopDebuggingButton
 
     @stepButton = document.createElement 'button'
-    @stepButton.className = 'btn'
-    @stepButton.disabled = true
-    @stepButton.innerHTML = 'Step'
-    @stepButton.title = 'Step'
+    @stepButton.className = 'btn disabled'
+    @stepButton.textContent = 'Step'
     @stepButton.addEventListener 'click', => @debuggerPresenter.step()
     commandsDiv.appendChild @stepButton
 
     @stepOverButton = document.createElement 'button'
-    @stepOverButton.className = 'btn'
-    @stepOverButton.disabled = true
-    @stepOverButton.innerHTML = 'Step Over'
-    @stepOverButton.title = 'Step Over'
+    @stepOverButton.className = 'btn disabled'
+    @stepOverButton.textContent = 'Step Over'
     @stepOverButton.addEventListener 'click', => @debuggerPresenter.stepOver()
     commandsDiv.appendChild @stepOverButton
 
     @runToEndOfMethodButton = document.createElement 'button'
-    @runToEndOfMethodButton.className = 'btn'
-    @runToEndOfMethodButton.disabled = true
-    @runToEndOfMethodButton.innerHTML = 'Run To End Of Method'
-    @runToEndOfMethodButton.title = 'Run To End Of Method'
+    @runToEndOfMethodButton.className = 'btn disabled'
+    @runToEndOfMethodButton.textContent = 'Run To End Of Method'
     @runToEndOfMethodButton.addEventListener 'click', => @debuggerPresenter.runToEndOfMethod()
     commandsDiv.appendChild @runToEndOfMethodButton
 
     @runToNextBreakpointButton = document.createElement 'button'
-    @runToNextBreakpointButton.className = 'btn'
-    @runToNextBreakpointButton.disabled = true
-    @runToNextBreakpointButton.innerHTML = 'Run To Next Breakpoint'
-    @runToNextBreakpointButton.title = 'Run To Next Breakpoint'
+    @runToNextBreakpointButton.className = 'btn disabled'
+    @runToNextBreakpointButton.textContent = 'Run To Next Breakpoint'
     @runToNextBreakpointButton.addEventListener 'click', => @debuggerPresenter.runToNextBreakpoint()
     commandsDiv.appendChild @runToNextBreakpointButton
 
     @stopReplayButton = document.createElement 'button'
-    @stopReplayButton.className = 'btn'
-    @stopReplayButton.disabled = true
-    @stopReplayButton.innerHTML = 'Stop Replay'
-    @stopReplayButton.title = 'Stop Replay'
+    @stopReplayButton.className = 'btn disabled'
+    @stopReplayButton.textContent = 'Stop Replay'
     @stopReplayButton.addEventListener 'click', => @debuggerPresenter.stopReplay()
     commandsDiv.appendChild @stopReplayButton
 
     variablesHeader = document.createElement 'div'
     variablesHeader.className = 'header'
-    variablesHeader.innerHTML = 'Defined Variables'
-    variablesHeader.title = 'Defined Variables'
     @element.appendChild variablesHeader
+
+    variablesHeaderSpan = document.createElement 'span'
+    variablesHeaderSpan.className = 'overflow-ellipsis'
+    variablesHeaderSpan.textContent = 'Defined Variables'
+    variablesHeader.appendChild variablesHeaderSpan
 
     variablesHeadDiv = document.createElement 'div'
     variablesHeadDiv.className = 'variables-head'
@@ -117,15 +111,12 @@ class DebuggerView
     variablesHeadTableHead.appendChild variablesHeadTableHeadRow
 
     variablesHeadTableHeadVariable = document.createElement 'th'
-    variablesHeadTableHeadVariable.innerHTML = 'Variable'
-    variablesHeadTableHeadVariable.title = 'Variable'
-    variablesHeadTableHeadVariable.addEventListener 'click', => @sortVariableTableByName()
+    variablesHeadTableHeadVariable.textContent = 'Variable'
+    variablesHeadTableHeadVariable.addEventListener 'click', => @debuggerPresenter.flipAndSortVariableTable()
     variablesHeadTableHeadValue = document.createElement 'th'
-    variablesHeadTableHeadValue.innerHTML = 'Value'
-    variablesHeadTableHeadValue.title = 'Value'
+    variablesHeadTableHeadValue.textContent = 'Value'
     variablesHeadTableHeadAddress = document.createElement 'th'
-    variablesHeadTableHeadAddress.innerHTML = 'Address'
-    variablesHeadTableHeadAddress.title = 'Address'
+    variablesHeadTableHeadAddress.textContent = 'Address'
     variablesHeadTableHeadRow.appendChild variablesHeadTableHeadVariable
     variablesHeadTableHeadRow.appendChild variablesHeadTableHeadValue
     variablesHeadTableHeadRow.appendChild variablesHeadTableHeadAddress
@@ -143,9 +134,12 @@ class DebuggerView
 
     stackHeader = document.createElement 'div'
     stackHeader.className = 'header'
-    stackHeader.innerHTML = 'Call Stack'
-    stackHeader.title = 'Call Stack'
     @element.appendChild stackHeader
+
+    stackHeaderSpan = document.createElement 'span'
+    stackHeaderSpan.className = 'overflow-ellipsis'
+    stackHeaderSpan.textContent = 'Call Stack'
+    stackHeader.appendChild stackHeaderSpan
 
     stackHeadDiv = document.createElement 'div'
     stackHeadDiv.className = 'stack-head'
@@ -162,11 +156,9 @@ class DebuggerView
     stackHeadTableHead.appendChild stackHeadTableHeadRow
 
     stackHeadTableHeadCall = document.createElement 'th'
-    stackHeadTableHeadCall.innerHTML = 'Call'
-    stackHeadTableHeadCall.title = 'Call'
+    stackHeadTableHeadCall.textContent = 'Call'
     stackHeadTableHeadReplay = document.createElement 'th'
-    stackHeadTableHeadReplay.innerHTML = 'Replay'
-    stackHeadTableHeadReplay.title = 'Replay'
+    stackHeadTableHeadReplay.textContent = 'Replay'
     stackHeadTableHeadRow.appendChild stackHeadTableHeadCall
     stackHeadTableHeadRow.appendChild stackHeadTableHeadReplay
 
@@ -182,6 +174,7 @@ class DebuggerView
     stackBodyTable.appendChild @stackBodyTableBody
 
     @subscriptions = new CompositeDisposable
+
     @subscriptions.add @debuggerPresenter.onRunning => @handleRunning()
     @subscriptions.add @debuggerPresenter.onStopped => @handleStopped()
     @subscriptions.add @debuggerPresenter.onReplayStarted => @handleReplayStarted()
@@ -194,11 +187,43 @@ class DebuggerView
     @subscriptions.add @debuggerPresenter.onEnableDisableAllBreakpoints (enable) => @handleEnableDisableAllBreakpoints enable
     @subscriptions.add @debuggerPresenter.onEnableDisableAllControls (enable) => @handleEnableDisableAllControls enable
 
+    @subscriptions.add atom.tooltips.add toggleBreakpointButton,
+      title: toggleBreakpointButton.textContent
+      keyBindingCommand: 'levels-debugger-ruby:toggle-breakpoint'
+    @subscriptions.add atom.tooltips.add removeAllBreakpointsButton,
+      title: removeAllBreakpointsButton.textContent
+      keyBindingCommand: 'levels-debugger-ruby:remove-all-breakpoints'
+    @subscriptions.add atom.tooltips.add @startDebuggingButton,
+      title: @startDebuggingButton.textContent
+      keyBindingCommand: 'levels-debugger-ruby:start-debugging'
+    @subscriptions.add atom.tooltips.add @stopDebuggingButton,
+      title: @stopDebuggingButton.textContent
+      keyBindingCommand: 'levels-debugger-ruby:stop-debugging'
+    @subscriptions.add atom.tooltips.add @stepButton,
+      title: @stepButton.textContent
+      keyBindingCommand: 'levels-debugger-ruby:step'
+    @subscriptions.add atom.tooltips.add @stepOverButton,
+      title: @stepOverButton.textContent
+      keyBindingCommand: 'levels-debugger-ruby:step-over'
+    @subscriptions.add atom.tooltips.add @runToEndOfMethodButton,
+      title: @runToEndOfMethodButton.textContent
+      keyBindingCommand: 'levels-debugger-ruby:run-to-end-of-method'
+    @subscriptions.add atom.tooltips.add @runToNextBreakpointButton,
+      title: @runToNextBreakpointButton.textContent
+      keyBindingCommand: 'levels-debugger-ruby:run-to-next-breakpoint'
+    @subscriptions.add atom.tooltips.add @stopReplayButton,
+      title: @stopReplayButton.textContent
+      keyBindingCommand: 'levels-debugger-ruby:stop-replay'
+
     @debuggerPresenter.initDebuggerView()
 
   destroy: ->
     @element.remove()
     @subscriptions.dispose()
+    @statusTooltip?.dispose()
+    @enableDisableAllBreakpointsButtonTooltip?.dispose()
+    @variableTableSubscriptions?.dispose()
+    @callStackSubscriptions?.dispose()
     return
 
   getTitle: ->
@@ -216,23 +241,13 @@ class DebuggerView
   getElement: ->
     return @element
 
-  clearTableBody: (tableBody) ->
-    i = tableBody.rows.length
-    while i-- > 0
-      tableBody.deleteRow i
-    return
-
-  clearTables: ->
-    @clearTableBody @stackBodyTableBody
-    @clearTableBody @variablesBodyTableBody
-    return
-
-  sortVariableTableByName: ->
-    @debuggerPresenter.flipAndSortVariableTable()
-
   enableDisableCommandsOnStartStop: (enabled) ->
-    @startDebuggingButton.disabled = enabled
-    @stopDebuggingButton.disabled = !enabled
+    if enabled
+      @startDebuggingButton.classList.add 'disabled'
+      @stopDebuggingButton.classList.remove 'disabled'
+    else
+      @startDebuggingButton.classList.remove 'disabled'
+      @stopDebuggingButton.classList.add 'disabled'
     return
 
   handleRunning: ->
@@ -240,21 +255,24 @@ class DebuggerView
     return
 
   handleStopped: ->
-    @clearTables()
+    @updateVariableTable()
+    @updateCallStack()
     @enableDisableCommandsOnStartStop false
-    @stopReplayButton.disabled = true
+    @stopReplayButton.classList.add 'disabled'
     return
 
   handleReplayStarted: ->
-    @stopReplayButton.disabled = false
+    @stopReplayButton.classList.remove 'disabled'
     return
 
   handleReplayStopped: ->
-    @stopReplayButton.disabled = true
+    @stopReplayButton.classList.add 'disabled'
     return
 
   updateCallStack: ->
-    @clearTableBody @stackBodyTableBody
+    @stackBodyTableBody.innerHTML = ''
+    @callStackSubscriptions?.dispose()
+    @callStackSubscriptions = new CompositeDisposable
 
     for entry in @debuggerPresenter.getCallStack() by -1
       methodAndArgs = entry.getMethodAndArgs()
@@ -262,13 +280,11 @@ class DebuggerView
 
       row = document.createElement 'tr'
       cellCall = document.createElement 'td'
-      cellCall.innerHTML = methodAndArgs
-      cellCall.title = methodAndArgs
+      cellCall.textContent = methodAndArgs
       cellReplay = document.createElement 'td'
       replayButton = document.createElement 'button'
       replayButton.className = 'btn'
-      replayButton.innerHTML = 'Replay'
-      replayButton.title = 'Replay'
+      replayButton.textContent = 'Replay'
       replayButton.setAttribute 'data-call-id', callID
       replayButton.addEventListener 'click', (event) => @debuggerPresenter.startReplay event.target
       cellReplay.appendChild replayButton
@@ -276,56 +292,76 @@ class DebuggerView
       row.appendChild cellReplay
       @stackBodyTableBody.appendChild row
 
+      @callStackSubscriptions.add atom.tooltips.add replayButton, title: replayButton.textContent
+      @callStackSubscriptions.add atom.tooltips.add cellCall, {title: methodAndArgs, html: false}
+
     return
 
   updateVariableTable: ->
-    @clearTableBody @variablesBodyTableBody
+    @variablesBodyTableBody.innerHTML = ''
+    @variableTableSubscriptions?.dispose()
+    @variableTableSubscriptions = new CompositeDisposable
 
     for entry in @debuggerPresenter.getVariableTable()
       name = entry.getName()
       value = entry.getValue()
       address = entry.getAddress()
-      rowClass = if entry.isChanged() then 'highlight' else ''
 
       row = document.createElement 'tr'
-      row.className = rowClass
+      if entry.isChanged()
+        row.className = 'highlight'
+
       cellName = document.createElement 'td'
-      cellName.innerHTML = name
-      cellName.title = name
+      cellName.textContent = name
       cellValue = document.createElement 'td'
-      cellValue.innerHTML = value
-      cellValue.title = value
+      cellValue.textContent = value
       cellAddress = document.createElement 'td'
-      cellAddress.innerHTML = address
-      cellAddress.title = address
+      cellAddress.textContent = address
       row.appendChild cellName
       row.appendChild cellValue
       row.appendChild cellAddress
+
       @variablesBodyTableBody.appendChild row
+
+      @variableTableSubscriptions.add atom.tooltips.add cellName, {title: name, html: false}
+      @variableTableSubscriptions.add atom.tooltips.add cellValue, {title: value, html: false}
+      @variableTableSubscriptions.add atom.tooltips.add cellAddress, {title: address, html: false}
 
     return
 
   handleStatusUpdated: (status) ->
     text = status.getDisplayMessage()
     @statusDiv.className = 'status ' + status.getStyleClass()
-    @statusDiv.innerHTML = text
-    @statusDiv.title = text
+    @statusSpan.textContent = text
+    @statusTooltip?.dispose()
+    @statusTooltip = atom.tooltips.add @statusSpan, title: text
     return
 
   handleEnableDisableSteppingCommands: (enabled) ->
-    disabled = !enabled
-    @stepButton.disabled = disabled
-    @stepOverButton.disabled = disabled
-    @runToNextBreakpointButton.disabled = disabled
-    @runToEndOfMethodButton.disabled = disabled
+    if enabled
+      @stepButton.classList.remove 'disabled'
+      @stepOverButton.classList.remove 'disabled'
+      @runToNextBreakpointButton.classList.remove 'disabled'
+      @runToEndOfMethodButton.classList.remove 'disabled'
+    else
+      @stepButton.classList.add 'disabled'
+      @stepOverButton.classList.add 'disabled'
+      @runToNextBreakpointButton.classList.add 'disabled'
+      @runToEndOfMethodButton.classList.add 'disabled'
     return
 
   handleEnableDisableAllBreakpoints: (enabled) ->
     text = if enabled then 'Disable All Breakpoints' else 'Enable All Breakpoints'
-    @enableDisableAllBreakpointsButton.innerHTML = text
-    @enableDisableAllBreakpointsButton.title = text
+    @enableDisableAllBreakpointsButton.textContent = text
+    @enableDisableAllBreakpointsButtonTooltip?.dispose()
+    @enableDisableAllBreakpointsButtonTooltip = atom.tooltips.add @enableDisableAllBreakpointsButton,
+      title: text
+      keyBindingCommand: 'levels-debugger-ruby:enable-disable-all-breakpoints'
     return
 
   handleEnableDisableAllControls: (enabled) ->
-    @element.setAttribute 'disabled', !enabled
+    if enabled
+      @element.classList.remove 'disabled'
+    else
+      @element.classList.add 'disabled'
     return
