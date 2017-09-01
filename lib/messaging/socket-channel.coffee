@@ -10,6 +10,7 @@ class SocketChannel
   destroy: ->
     @disconnect()
     @emitter.dispose()
+    return
 
   connect: ->
     if !@socket?

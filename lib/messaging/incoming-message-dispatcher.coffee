@@ -27,11 +27,11 @@ class IncomingMessageDispatcher
       msg = message.substring messageCategory.length + 1
 
       if messageCategory == 'TABLEUPDATED'
-        @emitter.emit 'table-updated', msg
+        @emitter.emit 'variable-table-updated', msg
       else if messageCategory == 'POSITIONUPDATED'
         @emitter.emit 'position-updated', msg
       else if messageCategory == 'CALLSTACKUPDATED'
-        @emitter.emit 'callstack-updated', msg
+        @emitter.emit 'call-stack-updated', msg
       else if messageCategory == 'READY'
         @emitter.emit 'ready'
       else if messageCategory == 'TERMINATECOMMUNICATION'
@@ -47,14 +47,14 @@ class IncomingMessageDispatcher
 
     return
 
-  onTableUpdated: (callback) ->
-    @emitter.on 'table-updated', callback
+  onVariableTableUpdated: (callback) ->
+    @emitter.on 'variable-table-updated', callback
 
   onPositionUpdated: (callback) ->
     @emitter.on 'position-updated', callback
 
   onCallStackUpdated: (callback) ->
-    @emitter.on 'callstack-updated', callback
+    @emitter.on 'call-stack-updated', callback
 
   onReady: (callback) ->
     @emitter.on 'ready', callback
