@@ -21,7 +21,7 @@ class IncomingMessageDispatcher
     return
 
   handleMessage: (message) ->
-    if message? && message.length != 0
+    if message
       messageCategory = message.split(MessageUtils.DELIMITER)[0]
 
       msg = message.substring messageCategory.length + 1

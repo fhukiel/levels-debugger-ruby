@@ -15,7 +15,7 @@ class VariableTableManager
   fromString: (string, oldTable) ->
     variableTable = []
 
-    if string? && string.length != 0
+    if string
       splitted = string.split MessageUtils.DELIMITER
 
       for elem in splitted
