@@ -27,6 +27,9 @@ class LevelsWorkspaceManager
   getActiveTextEditor: ->
     return @getActiveLevelCodeEditor()?.getTextEditor()
 
+  getActiveLanguage: ->
+    return @levelsWorkspace?.getActiveLanguage()
+
   getActiveLevel: ->
     return @levelsWorkspace?.getActiveLevel()
 
