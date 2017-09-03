@@ -26,24 +26,16 @@ class IncomingMessageDispatcher
 
       msg = message.substring messageCategory.length + 1
 
-      if messageCategory == 'TABLEUPDATED'
-        @emitter.emit 'variable-table-updated', msg
-      else if messageCategory == 'POSITIONUPDATED'
-        @emitter.emit 'position-updated', msg
-      else if messageCategory == 'CALLSTACKUPDATED'
-        @emitter.emit 'call-stack-updated', msg
-      else if messageCategory == 'READY'
-        @emitter.emit 'ready'
-      else if messageCategory == 'TERMINATECOMMUNICATION'
-        @emitter.emit 'terminate-communication'
-      else if messageCategory == 'ENDOFREPLAYTAPE'
-        @emitter.emit 'end-of-replay-tape'
-      else if messageCategory == 'AUTOSTEPPINGENABLED'
-        @emitter.emit 'auto-stepping-enabled'
-      else if messageCategory == 'AUTOSTEPPINGDISABLED'
-        @emitter.emit 'auto-stepping-disabled'
-      else
-        console.log "Cannot handle message category '#{messageCategory}'!"
+      switch messageCategory
+        when 'TABLEUPDATED' then @emitter.emit 'variable-table-updated', msg
+        when 'POSITIONUPDATED' then @emitter.emit 'position-updated', msg
+        when 'CALLSTACKUPDATED' then @emitter.emit 'call-stack-updated', msg
+        when 'READY' then @emitter.emit 'ready'
+        when 'TERMINATECOMMUNICATION' then @emitter.emit 'terminate-communication'
+        when 'ENDOFREPLAYTAPE' then @emitter.emit 'end-of-replay-tape'
+        when 'AUTOSTEPPINGENABLED' then @emitter.emit 'auto-stepping-enabled'
+        when 'AUTOSTEPPINGDISABLED' then @emitter.emit 'auto-stepping-disabled'
+        else console.log "Cannot handle message category '#{messageCategory}'!"
 
     return
 
