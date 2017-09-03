@@ -30,6 +30,9 @@ class LevelsWorkspaceManager
   getActiveLanguage: ->
     return @levelsWorkspace?.getActiveLanguage()
 
+  isActiveLanguageRuby: ->
+    return @getActiveLanguage()?.getName() == 'Ruby'
+
   getActiveLevel: ->
     return @levelsWorkspace?.getActiveLevel()
 
