@@ -12,7 +12,7 @@ class Executor
     return
 
   startDebugger: ->
-    if !@process?
+    if !@process
       debuggerPath = path.join __dirname, 'debugger.jar'
       command = 'java'
       args = ['-jar', debuggerPath]
@@ -22,7 +22,7 @@ class Executor
     return
 
   stopDebugger: ->
-    if @process?
+    if @process
       @process.kill()
       @handleExit undefined
     return

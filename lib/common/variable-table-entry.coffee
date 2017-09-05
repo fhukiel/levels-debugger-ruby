@@ -30,7 +30,7 @@ class VariableTableEntry
   setChangedExpiresAt: (@changedExpiresAt) ->
 
   equals: (other) ->
-    if !other?
+    if !other
       return false
     if other.getName() != @name
       return false

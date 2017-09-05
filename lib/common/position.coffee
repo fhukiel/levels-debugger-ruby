@@ -9,6 +9,6 @@ class Position
     return @column
 
   isOnSameLine: (other) ->
-    if other?
+    if other
       return other.getLine() == @line
     return false

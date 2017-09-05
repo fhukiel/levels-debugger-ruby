@@ -13,7 +13,7 @@ class SocketChannel
     return
 
   connect: ->
-    if !@socket?
+    if !@socket
       @socket = net.createConnection @port, @host
       @socket.setNoDelay true
       @socket.on 'close', => @handleClose()
@@ -24,7 +24,7 @@ class SocketChannel
     return
 
   disconnect: ->
-    if @socket?
+    if @socket
       @socket.end()
       @socket.destroy()
     return

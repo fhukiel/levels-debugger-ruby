@@ -33,7 +33,7 @@ class BreakpointManager
     breakPointPosition = PositionUtils.fromPoint point
     existingBreakpoint = @getBreakpoint breakPointPosition
 
-    if existingBreakpoint?
+    if existingBreakpoint
       @breakPoints = @breakPoints.filter (bp) -> bp != existingBreakpoint
       existingBreakpoint.destroyMarker()
       return false
@@ -49,19 +49,19 @@ class BreakpointManager
     return null
 
   hideBreakpoint: (position) ->
-    if @hiddenBreakpointPosition? && position.isOnSameLine(@hiddenBreakpointPosition)
+    if @hiddenBreakpointPosition && position.isOnSameLine(@hiddenBreakpointPosition)
       console.log "Breakpoint already hidden, can't hide again!"
     else
       breakpoint = @getBreakpoint position
-      if breakpoint?
+      if breakpoint
         breakpoint.destroyMarker()
         @hiddenBreakpointPosition = breakpoint.getPosition()
     return
 
   restoreHiddenBreakpoint: ->
-    if @hiddenBreakpointPosition?
+    if @hiddenBreakpointPosition
       existingBreakpoint = @getBreakpoint @hiddenBreakpointPosition
-      if existingBreakpoint?
+      if existingBreakpoint
         marker = levelsWorkspaceManager.addBreakpointMarker PositionUtils.toPoint(@hiddenBreakpointPosition), @areBreakpointsEnabled
         existingBreakpoint.setMarker marker
 

@@ -11,7 +11,7 @@ class IncomingMessageDispatcher
     return
 
   dispatch: (message) ->
-    if message?
+    if message
       if message.includes MessageUtils.FINAL_SYMBOL
         for msg in message.split MessageUtils.FINAL_SYMBOL
           @handleMessage MessageUtils.removeNewlineSymbol msg
