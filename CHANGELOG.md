@@ -1,3 +1,7 @@
+## 0.5.2 (2017-09-05)
+
+* Bug fixes and performance improvements
+
 ## 0.5.1 (2017-08-31)
 
 * Added menu entry and keyboard shortcut to stop a replay
