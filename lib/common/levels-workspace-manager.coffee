@@ -40,6 +40,10 @@ class LevelsWorkspaceManager
     isDebuggable = @getActiveLevel()?.getOption 'debuggable'
     return isDebuggable? && isDebuggable
 
+  isActive: ->
+    isActive = @levelsWorkspace?.isActive()
+    return isActive? && isActive
+
   getActiveTextEditorCursorPositions: ->
     return @getActiveTextEditor()?.getCursorBufferPositions()
 
