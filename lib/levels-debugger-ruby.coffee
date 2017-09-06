@@ -7,7 +7,7 @@ DebuggerPresenter         = require './presenter/debugger-presenter'
 DebuggerView              = require './views/debugger-view'
 
 module.exports =
-  activate: (state) ->
+  activate: ->
     packageDeps.install('levels-debugger-ruby').then console.log 'All dependencies installed, good to go!'
 
     @incomingMessageDispatcher = new IncomingMessageDispatcher
