@@ -1,4 +1,4 @@
-# Debugging package for Ruby
+# A debugger for use with the levels package for Ruby
 
 ![Levels Debugger Ruby](https://user-images.githubusercontent.com/26176396/29485449-4bd911a2-84d2-11e7-8b63-9055307246e7.png)
 
