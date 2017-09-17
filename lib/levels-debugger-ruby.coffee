@@ -8,7 +8,7 @@ DebuggerView              = require './views/debugger-view'
 
 module.exports =
   activate: ->
-    packageDeps.install('levels-debugger-ruby').then console.log 'All dependencies installed, good to go!'
+    packageDeps.install 'levels-debugger-ruby'
 
     @incomingMessageDispatcher = new IncomingMessageDispatcher
     @socketChannel = new SocketChannel 'localhost', 59599, @incomingMessageDispatcher

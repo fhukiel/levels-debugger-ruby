@@ -43,7 +43,6 @@ class SocketChannel
     return
 
   handleError: (error) ->
-    console.log "A channel error occurred: #{error}"
     @emitError()
     return
 
@@ -54,8 +53,6 @@ class SocketChannel
   sendMessage: (msg) ->
     if @available
       @socket.write msg
-    else
-      console.log "Cannot send message '#{msg}', channel not available!"
     return
 
   emitError: ->

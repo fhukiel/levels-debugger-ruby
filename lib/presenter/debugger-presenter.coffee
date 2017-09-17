@@ -334,7 +334,6 @@ class DebuggerPresenter
     return
 
   handleChannelError: (error) ->
-    console.log "A communication channel error occurred: #{error}"
     @disconnectAndCleanup()
     return
 

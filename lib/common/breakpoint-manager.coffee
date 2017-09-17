@@ -49,9 +49,7 @@ class BreakpointManager
     return null
 
   hideBreakpoint: (position) ->
-    if @hiddenBreakpointPosition && position.isOnSameLine(@hiddenBreakpointPosition)
-      console.log "Breakpoint already hidden, can't hide again!"
-    else
+    if !@hiddenBreakpointPosition || !position.isOnSameLine(@hiddenBreakpointPosition)
       breakpoint = @getBreakpoint position
       if breakpoint
         breakpoint.destroyMarker()

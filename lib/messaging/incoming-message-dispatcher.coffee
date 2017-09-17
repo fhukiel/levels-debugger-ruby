@@ -27,15 +27,14 @@ class IncomingMessageDispatcher
       msg = message.substring messageCategory.length + 1
 
       switch messageCategory
-        when 'TABLEUPDATED' then @emitter.emit 'variable-table-updated', msg
-        when 'POSITIONUPDATED' then @emitter.emit 'position-updated', msg
-        when 'CALLSTACKUPDATED' then @emitter.emit 'call-stack-updated', msg
-        when 'READY' then @emitter.emit 'ready'
+        when 'TABLEUPDATED'           then @emitter.emit 'variable-table-updated', msg
+        when 'POSITIONUPDATED'        then @emitter.emit 'position-updated', msg
+        when 'CALLSTACKUPDATED'       then @emitter.emit 'call-stack-updated', msg
+        when 'READY'                  then @emitter.emit 'ready'
         when 'TERMINATECOMMUNICATION' then @emitter.emit 'terminate-communication'
-        when 'ENDOFREPLAYTAPE' then @emitter.emit 'end-of-replay-tape'
-        when 'AUTOSTEPPINGENABLED' then @emitter.emit 'auto-stepping-enabled'
-        when 'AUTOSTEPPINGDISABLED' then @emitter.emit 'auto-stepping-disabled'
-        else console.log "Cannot handle message category '#{messageCategory}'!"
+        when 'ENDOFREPLAYTAPE'        then @emitter.emit 'end-of-replay-tape'
+        when 'AUTOSTEPPINGENABLED'    then @emitter.emit 'auto-stepping-enabled'
+        when 'AUTOSTEPPINGDISABLED'   then @emitter.emit 'auto-stepping-disabled'
 
     return
 
