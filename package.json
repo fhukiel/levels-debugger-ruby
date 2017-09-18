@@ -1,6 +1,6 @@
 {
   "name": "levels-debugger-ruby",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "A debugger for use with the levels package for Ruby. Please note that it requires the levels and the levels-language-ruby packages to run.",
   "keywords": [
     "atom",
