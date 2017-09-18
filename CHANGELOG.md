@@ -1,3 +1,7 @@
+## 0.5.3 (2017-09-18)
+
+* Bug fixes and performance improvements
+
 ## 0.5.2 (2017-09-05)
 
 * Bug fixes and performance improvements
