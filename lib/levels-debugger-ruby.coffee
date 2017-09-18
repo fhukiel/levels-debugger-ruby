@@ -37,6 +37,7 @@ module.exports =
     @debuggerPresenter.destroy()
     @socketChannel.destroy()
     @incomingMessageDispatcher.destroy()
+    levelsWorkspaceManager.destroy()
     return
 
   handleOpener: (uri) ->
