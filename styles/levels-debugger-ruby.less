@@ -12,6 +12,7 @@
 @stopped-color: @contrast-color;
 @waiting-color: @highlight-color;
 
+@component-margin: @component-padding / 2;
 @status-height: @tab-height + @component-padding;
 
 atom-text-editor.editor {
@@ -56,14 +57,14 @@ atom-text-editor.editor {
 
   .commands {
     flex: 0 0 auto;
-    margin: 5px;
+    margin: @component-margin;
 
     .btn {
-      margin-bottom: 5px;
+      margin-bottom: @component-margin;
     }
 
     .btn:last-child {
-      margin-bottom: 0px;
+      margin-bottom: 0;
     }
   }
 
@@ -71,7 +72,7 @@ atom-text-editor.editor {
     display: flex;
     flex: 0 0 auto;
     font-weight: bold;
-    margin: 5px;
+    margin: @component-margin;
   }
 
   .highlight {
@@ -85,7 +86,7 @@ atom-text-editor.editor {
   }
 
   .stack-body {
-    margin: 0px 5px;
+    margin: 0 @component-margin;
     overflow-y: auto;
 
     td, th {
@@ -95,7 +96,8 @@ atom-text-editor.editor {
 
   .stack-head {
     flex: 0 0 auto;
-    margin: 5px 5px 0px 5px;
+    margin: @component-margin;
+    margin-bottom: 0;
 
     td, th {
       width: 50%;
@@ -109,7 +111,7 @@ atom-text-editor.editor {
     flex: 0 0 auto;
     height: @status-height;
     justify-content: center;
-    margin-bottom: 5px;
+    margin-bottom: @component-margin;
     padding: @component-padding;
 
     &.status-disabled {
@@ -139,7 +141,7 @@ atom-text-editor.editor {
   }
 
   .table {
-    margin: 0px;
+    margin: 0;
     table-layout: fixed;
 
     td, th {
@@ -163,7 +165,8 @@ atom-text-editor.editor {
   }
 
   .variables-body {
-    margin: 0px 5px 5px 5px;
+    margin: @component-margin;
+    margin-top: 0;
     overflow-y: auto;
 
     td, th {
@@ -173,7 +176,8 @@ atom-text-editor.editor {
 
   .variables-head {
     flex: 0 0 auto;
-    margin: 5px 5px 0px 5px;
+    margin: @component-margin;
+    margin-bottom: 0;
 
     td, th {
       width: 33%;
