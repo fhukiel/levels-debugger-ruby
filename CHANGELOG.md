@@ -1,3 +1,7 @@
+## 0.5.4 (2017-09-30)
+
+* Changed the border color of the tables to the pane item border color
+
 ## 0.5.3 (2017-09-18)
 
 * Bug fixes and performance improvements
