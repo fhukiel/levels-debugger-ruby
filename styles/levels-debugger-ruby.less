@@ -1,16 +1,22 @@
 @import "ui-variables";
 
 @border-color: @pane-item-border-color;
-@breakpoint-color: @contrast-color;
-@breakpoint-disabled-color: silver;
 @contrast-color: navy;
-@disabled-color: red;
-@end-of-tape-color: purple;
 @highlight-color: #FFE600;
-@position-color: @highlight-color;
-@running-color: #00805E;
-@stopped-color: @contrast-color;
-@waiting-color: @highlight-color;
+
+@breakpoint-color-background: @contrast-color;
+@breakpoint-color-text: lime;
+@breakpoint-disabled-color-background: silver;
+@breakpoint-disabled-color-text: black;
+
+@position-color-background: @highlight-color;
+@position-color-text: black;
+
+@status-disabled-color: red;
+@status-end-of-tape-color: purple;
+@status-running-color: #00805E;
+@status-stopped-color: @contrast-color;
+@status-waiting-color: @highlight-color;
 
 @component-margin: @component-padding / 2;
 @status-height: @tab-height + @component-padding;
@@ -22,18 +28,18 @@ atom-text-editor.editor {
     }
 
     &.annotation-breakpoint {
-      background-color: @breakpoint-color;
-      color: lime;
+      background-color: @breakpoint-color-background;
+      color: @breakpoint-color-text;
     }
 
     &.annotation-breakpoint-disabled {
-      background-color: @breakpoint-disabled-color;
-      color: black;
+      background-color: @breakpoint-disabled-color-background;
+      color: @breakpoint-disabled-color-text;
     }
 
     &.annotation-position {
-      background-color: @position-color;
-      color: black;
+      background-color: @position-color-background;
+      color: @position-color-text;
     }
   }
 }
@@ -115,11 +121,11 @@ atom-text-editor.editor {
     padding: @component-padding;
 
     &.status-disabled {
-      background-color: @disabled-color;
+      background-color: @status-disabled-color;
     }
 
     &.status-endoftape {
-      background-color: @end-of-tape-color;
+      background-color: @status-end-of-tape-color;
     }
 
     &.status-replay {
@@ -127,15 +133,15 @@ atom-text-editor.editor {
     }
 
     &.status-running {
-      background-color: @running-color;
+      background-color: @status-running-color;
     }
 
     &.status-stopped {
-      background-color: @stopped-color;
+      background-color: @status-stopped-color;
     }
 
     &.status-waiting {
-      background-color: @waiting-color;
+      background-color: @status-waiting-color;
       color: black;
     }
   }
