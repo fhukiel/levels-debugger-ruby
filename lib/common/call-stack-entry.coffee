@@ -1,9 +1,9 @@
 module.exports =
 class CallStackEntry
-  constructor: (@methodAndArgs, @callID) ->
+  constructor: (@methodAndArgs, @callId) ->
 
   getMethodAndArgs: ->
     return @methodAndArgs
 
-  getCallID: ->
-    return @callID
+  getCallId: ->
+    return @callId

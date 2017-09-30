@@ -23,8 +23,8 @@ class OutgoingMessageFactory
   @createDisableAllBreakpointsMessage: ->
     return OutgoingMessageFactory.createMessage 'DISABLEALLBREAKPOINTS'
 
-  @createStartReplayMessage: (callID) ->
-    return OutgoingMessageFactory.createMessage 'STARTREPLAY' + MessageUtils.DELIMITER + callID
+  @createStartReplayMessage: (callId) ->
+    return OutgoingMessageFactory.createMessage 'STARTREPLAY' + MessageUtils.DELIMITER + callId
 
   @createStepMessage: ->
     return OutgoingMessageFactory.createMessage 'STEP'

@@ -153,8 +153,8 @@ class DebuggerPresenter
 
   startReplay: (element) ->
     if !@areAllControlsDisabled && @isExecutableInDebuggingMode && @currentStatusEvent.getStatus() != StatusUpdateEventFactory.RUNNING_STATUS
-      callID = element.getAttribute 'data-call-id'
-      @socketChannel.sendMessage OutgoingMessageFactory.createStartReplayMessage callID
+      callId = element.dataset.callId
+      @socketChannel.sendMessage OutgoingMessageFactory.createStartReplayMessage callId
 
       if !@isReplay && @currentStatusEvent.getStatus() != StatusUpdateEventFactory.END_OF_TAPE_STATUS
         @lastEventBeforeReplay = @currentStatusEvent

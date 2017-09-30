@@ -276,7 +276,7 @@ class DebuggerView
 
     for entry in @debuggerPresenter.getCallStack() by -1
       methodAndArgs = entry.getMethodAndArgs()
-      callID = entry.getCallID()
+      callId = entry.getCallId()
 
       row = document.createElement 'tr'
       cellCall = document.createElement 'td'
@@ -285,7 +285,7 @@ class DebuggerView
       replayButton = document.createElement 'button'
       replayButton.className = 'btn'
       replayButton.textContent = 'Replay'
-      replayButton.setAttribute 'data-call-id', callID
+      replayButton.dataset.callId = callId
       replayButton.addEventListener 'click', (event) => @debuggerPresenter.startReplay event.target
       cellReplay.appendChild replayButton
       row.appendChild cellCall
