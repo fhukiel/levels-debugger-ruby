@@ -1,3 +1,7 @@
+## 0.5.5 (2017-10-02)
+
+* Disabled the debugger for level languages other than Ruby
+
 ## 0.5.4 (2017-09-30)
 
 * Changed the border color of the tables to the pane item border color
