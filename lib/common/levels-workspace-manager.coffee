@@ -38,7 +38,7 @@ class LevelsWorkspaceManager
 
   isActiveLevelDebuggable: ->
     isDebuggable = @getActiveLevel()?.getOption 'debuggable'
-    return isDebuggable? && isDebuggable
+    return isDebuggable? && isDebuggable && @isActiveLanguageRuby()
 
   isActive: ->
     isActive = @levelsWorkspace?.isActive()
