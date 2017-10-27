@@ -8,7 +8,7 @@
     "levels",
     "ruby"
   ],
-  "main": "./lib/levels-debugger-ruby",
+  "main": "./lib/main",
   "repository": {
     "type": "git",
     "url": "https://github.com/fhukiel/levels-debugger-ruby.git"
