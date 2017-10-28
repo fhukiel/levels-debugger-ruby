@@ -1,6 +1,6 @@
 {CompositeDisposable, Emitter} = require 'atom'
 breakpointManager              = require('../common/breakpoint-manager').getInstance()
-CallStackFactory               = require '../common/call-stack-factory'
+callStackFromString            = require '../common/call-stack-factory'
 levelsWorkspaceManager         = require '../common/levels-workspace-manager'
 Position                       = require '../common/position'
 PositionUtils                  = require '../common/position-utils'
@@ -198,7 +198,7 @@ class DebuggerPresenter
     return @variableTable
 
   callStackFromString: (string) ->
-    @callStack = CallStackFactory.fromString string
+    @callStack = callStackFromString string
     @emitCallStackUpdated()
     return
 
