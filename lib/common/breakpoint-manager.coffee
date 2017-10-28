@@ -1,6 +1,6 @@
 Breakpoint             = require './breakpoint'
 levelsWorkspaceManager = require './levels-workspace-manager'
-PositionUtils          = require './position-utils'
+{fromPoint, toPoint}   = require './position-utils'
 
 class BreakpointManager
   constructor: ->
@@ -26,11 +26,11 @@ class BreakpointManager
     for bp in @breakPoints
       if bp.hasMarker()
         bp.destroyMarker()
-        bp.setMarker levelsWorkspaceManager.addBreakpointMarker PositionUtils.toPoint(bp.getPosition()), @areBreakpointsEnabled
+        bp.setMarker levelsWorkspaceManager.addBreakpointMarker toPoint(bp.getPosition()), @areBreakpointsEnabled
     return
 
   toggle: (point) ->
-    breakPointPosition = PositionUtils.fromPoint point
+    breakPointPosition = fromPoint point
     existingBreakpoint = @getBreakpoint breakPointPosition
 
     if existingBreakpoint
@@ -60,7 +60,7 @@ class BreakpointManager
     if @hiddenBreakpointPosition
       existingBreakpoint = @getBreakpoint @hiddenBreakpointPosition
       if existingBreakpoint
-        marker = levelsWorkspaceManager.addBreakpointMarker PositionUtils.toPoint(@hiddenBreakpointPosition), @areBreakpointsEnabled
+        marker = levelsWorkspaceManager.addBreakpointMarker toPoint(@hiddenBreakpointPosition), @areBreakpointsEnabled
         existingBreakpoint.setMarker marker
 
     @hiddenBreakpointPosition = null

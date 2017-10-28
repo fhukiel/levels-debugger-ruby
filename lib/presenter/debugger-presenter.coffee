@@ -3,7 +3,7 @@ breakpointManager              = require('../common/breakpoint-manager').getInst
 callStackFromString            = require '../common/call-stack-factory'
 levelsWorkspaceManager         = require '../common/levels-workspace-manager'
 Position                       = require '../common/position'
-PositionUtils                  = require '../common/position-utils'
+{fromPoint, toPoint}           = require '../common/position-utils'
 StatusUpdateEventFactory       = require '../common/status-update-event-factory'
 variableTableManager           = require('../common/variable-table-manager').getInstance()
 executor                       = require '../debugger/executor'
@@ -121,9 +121,9 @@ class DebuggerPresenter
       points = levelsWorkspaceManager.getActiveTextEditorCursorPositions()
       for point in points
         if breakpointManager.toggle point
-          @socketChannel.sendMessage OutgoingMessageFactory.createAddBreakpointMessage PositionUtils.fromPoint point
+          @socketChannel.sendMessage OutgoingMessageFactory.createAddBreakpointMessage fromPoint point
         else
-          @socketChannel.sendMessage OutgoingMessageFactory.createRemoveBreakpointMessage PositionUtils.fromPoint point
+          @socketChannel.sendMessage OutgoingMessageFactory.createRemoveBreakpointMessage fromPoint point
     return
 
   removeAllBreakpoints: ->
@@ -274,7 +274,7 @@ class DebuggerPresenter
   emitPositionUpdated: (string) ->
     splitted = string.split DELIMITER
     currentPosition = new Position +splitted[0], +splitted[1]
-    point = PositionUtils.toPoint currentPosition
+    point = toPoint currentPosition
 
     breakpointManager.restoreHiddenBreakpoint()
     breakpointManager.hideBreakpoint currentPosition
