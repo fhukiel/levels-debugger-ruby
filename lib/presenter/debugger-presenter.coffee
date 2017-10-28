@@ -6,7 +6,7 @@ Position                       = require '../common/position'
 PositionUtils                  = require '../common/position-utils'
 StatusUpdateEventFactory       = require '../common/status-update-event-factory'
 variableTableManager           = require('../common/variable-table-manager').getInstance()
-executor                       = require('../debugger/executor').getInstance()
+executor                       = require '../debugger/executor'
 MessageUtils                   = require '../messaging/message-utils'
 OutgoingMessageFactory         = require '../messaging/outgoing-message-factory'
 
