@@ -18,6 +18,9 @@
 @status-stopped-color: @contrast-color;
 @status-waiting-color: @highlight-color;
 
+@stack-column-width: 50%;
+@variables-column-width: 100% / 3;
+
 @component-margin: @component-padding / 2;
 @status-height: @tab-height + @component-padding;
 
@@ -96,7 +99,7 @@ atom-text-editor.editor {
     overflow-y: auto;
 
     td, th {
-      width: 50%;
+      width: @stack-column-width;
     }
   }
 
@@ -106,7 +109,7 @@ atom-text-editor.editor {
     margin-bottom: 0;
 
     td, th {
-      width: 50%;
+      width: @stack-column-width;
     }
   }
 
@@ -176,7 +179,7 @@ atom-text-editor.editor {
     overflow-y: auto;
 
     td, th {
-      width: 33%;
+      width: @variables-column-width;
     }
   }
 
@@ -186,7 +189,7 @@ atom-text-editor.editor {
     margin-bottom: 0;
 
     td, th {
-      width: 33%;
+      width: @variables-column-width;
     }
   }
 
