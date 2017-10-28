@@ -1,5 +1,5 @@
-VariableTableEntry = require './variable-table-entry'
-MessageUtils       = require '../messaging/message-utils'
+VariableTableEntry         = require './variable-table-entry'
+{DELIMITER, ASSIGN_SYMBOL} = require '../messaging/message-utils'
 
 class VariableTableManager
   constructor: ->
@@ -16,10 +16,10 @@ class VariableTableManager
     variableTable = []
 
     if string
-      splitted = string.split MessageUtils.DELIMITER
+      splitted = string.split DELIMITER
 
       for elem in splitted
-        innerSplitted = elem.split MessageUtils.ASSIGN_SYMBOL
+        innerSplitted = elem.split ASSIGN_SYMBOL
         entry = new VariableTableEntry innerSplitted[0], innerSplitted[1], innerSplitted[2]
         variableTable.push entry
 

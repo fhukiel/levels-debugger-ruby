@@ -7,7 +7,7 @@ PositionUtils                  = require '../common/position-utils'
 StatusUpdateEventFactory       = require '../common/status-update-event-factory'
 variableTableManager           = require('../common/variable-table-manager').getInstance()
 executor                       = require '../debugger/executor'
-MessageUtils                   = require '../messaging/message-utils'
+{DELIMITER}                    = require '../messaging/message-utils'
 OutgoingMessageFactory         = require '../messaging/outgoing-message-factory'
 
 module.exports =
@@ -272,7 +272,7 @@ class DebuggerPresenter
     return
 
   emitPositionUpdated: (string) ->
-    splitted = string.split MessageUtils.DELIMITER
+    splitted = string.split DELIMITER
     currentPosition = new Position +splitted[0], +splitted[1]
     point = PositionUtils.toPoint currentPosition
 

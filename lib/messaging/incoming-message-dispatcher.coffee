@@ -1,5 +1,5 @@
-{Emitter}    = require 'atom'
-MessageUtils = require './message-utils'
+{Emitter}                                      = require 'atom'
+{DELIMITER, FINAL_SYMBOL, removeNewlineSymbol} = require './message-utils'
 
 module.exports =
 class IncomingMessageDispatcher
@@ -12,9 +12,9 @@ class IncomingMessageDispatcher
 
   dispatch: (message) ->
     if message
-      if message.includes MessageUtils.FINAL_SYMBOL
-        for msg in message.split MessageUtils.FINAL_SYMBOL
-          @handleMessage MessageUtils.removeNewlineSymbol msg
+      if message.includes FINAL_SYMBOL
+        for msg in message.split FINAL_SYMBOL
+          @handleMessage removeNewlineSymbol msg
       else
         @handleMessage message
 
@@ -22,7 +22,7 @@ class IncomingMessageDispatcher
 
   handleMessage: (message) ->
     if message
-      messageCategory = message.split(MessageUtils.DELIMITER)[0]
+      messageCategory = message.split(DELIMITER)[0]
 
       msg = message.substring messageCategory.length + 1
 
