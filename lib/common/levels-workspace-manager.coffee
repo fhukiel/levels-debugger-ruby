@@ -62,9 +62,4 @@ class LevelsWorkspaceManager
 
     return marker
 
-module.exports =
-class LevelsWorkspaceManagerProvider
-  instance = null
-
-  @getInstance: ->
-    instance ?= new LevelsWorkspaceManager
+module.exports = new LevelsWorkspaceManager

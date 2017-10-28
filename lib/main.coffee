@@ -1,6 +1,6 @@
 {CompositeDisposable}     = require 'atom'
 packageDeps               = require 'atom-package-deps'
-levelsWorkspaceManager    = require('./common/levels-workspace-manager').getInstance()
+levelsWorkspaceManager    = require './common/levels-workspace-manager'
 IncomingMessageDispatcher = require './messaging/incoming-message-dispatcher'
 SocketChannel             = require './messaging/socket-channel'
 DebuggerPresenter         = require './presenter/debugger-presenter'

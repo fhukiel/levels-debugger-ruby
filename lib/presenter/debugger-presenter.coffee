@@ -1,7 +1,7 @@
 {CompositeDisposable, Emitter} = require 'atom'
 breakpointManager              = require('../common/breakpoint-manager').getInstance()
 CallStackFactory               = require '../common/call-stack-factory'
-levelsWorkspaceManager         = require('../common/levels-workspace-manager').getInstance()
+levelsWorkspaceManager         = require '../common/levels-workspace-manager'
 Position                       = require '../common/position'
 PositionUtils                  = require '../common/position-utils'
 StatusUpdateEventFactory       = require '../common/status-update-event-factory'

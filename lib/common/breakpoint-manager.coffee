@@ -1,5 +1,5 @@
 Breakpoint             = require './breakpoint'
-levelsWorkspaceManager = require('./levels-workspace-manager').getInstance()
+levelsWorkspaceManager = require './levels-workspace-manager'
 PositionUtils          = require './position-utils'
 
 class BreakpointManager
