@@ -1,3 +1,9 @@
+## 0.5.6 (2017-11-01)
+
+* Fixed the misalignment of variable table columns
+* Converted all CSON files to JSON
+* Converted all CoffeeScript files to JavaScript
+
 ## 0.5.5 (2017-10-02)
 
 * Disabled the debugger for level languages other than Ruby
