@@ -1,5 +1,5 @@
 {CompositeDisposable, Emitter} = require 'atom'
-breakpointManager              = require('../common/breakpoint-manager').getInstance()
+breakpointManager              = require '../common/breakpoint-manager'
 callStackFromString            = require '../common/call-stack-factory'
 levelsWorkspaceManager         = require '../common/levels-workspace-manager'
 Position                       = require '../common/position'
