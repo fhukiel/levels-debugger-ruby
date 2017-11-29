@@ -1,3 +1,7 @@
+## 0.5.7 (2017-11-29)
+
+* Removed the soon to be deprecated and undocumented Atom function `::showSaveDialogSync`
+
 ## 0.5.6 (2017-11-01)
 
 * Fixed the misalignment of variable table columns
