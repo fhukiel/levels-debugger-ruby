@@ -19,6 +19,9 @@
               "command": "levels-debugger-ruby:toggle-debugger-view"
             },
             {
+              "type": "separator"
+            },
+            {
               "label": "Toggle Breakpoint",
               "command": "levels-debugger-ruby:toggle-breakpoint"
             },
@@ -29,6 +32,9 @@
             {
               "label": "Enable/Disable All Breakpoints",
               "command": "levels-debugger-ruby:enable-disable-all-breakpoints"
+            },
+            {
+              "type": "separator"
             },
             {
               "label": "Start Debugging",
