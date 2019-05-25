@@ -1,3 +1,8 @@
+## 0.5.8 (2019-05-25)
+
+* Added separators to the package menu
+* Updated `atom-package-deps` to version 5.1.0
+
 ## 0.5.7 (2017-11-29)
 
 * Removed the soon to be deprecated and undocumented Atom function `::showSaveDialogSync`
