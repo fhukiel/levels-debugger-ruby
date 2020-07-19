@@ -1,3 +1,7 @@
+## 0.5.9 (2020-07-19)
+
+* Updated `atom-package-deps` to version 6.0.0
+
 ## 0.5.8 (2019-05-25)
 
 * Added separators to the package menu
