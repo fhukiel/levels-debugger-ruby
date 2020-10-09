@@ -26,11 +26,15 @@
     "atom-package-deps": "^7.0.1"
   },
   "devDependencies": {
-    "eslint": "^7.10.0"
+    "eslint": "^7.11.0"
   },
   "package-deps": [
-    { "name": "levels" },
-    { "name": "levels-language-ruby" }
+    {
+      "name": "levels"
+    },
+    {
+      "name": "levels-language-ruby"
+    }
   ],
   "consumedServices": {
     "levels": {
